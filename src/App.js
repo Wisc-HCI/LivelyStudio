@@ -1,10 +1,14 @@
 import { Grommet, Grid, Box } from "grommet";
 import { getTheme } from "./theme";
 // import { Scene } from 'robot-scene';
+import { Environment } from 'simple-vp';
+import useStore from './store';
+import useMeasure from 'react-use-measure';
 
 function App() {
   const primaryColor = "#c5050c";
   const theme = getTheme(primaryColor);
+  const [editorRef, editorBounds] = useMeasure();
 
   return (
     <Grommet full theme={theme}>
@@ -35,7 +39,9 @@ function App() {
               // paused={paused}
           /> */}
         </Box>
-        <Box gridArea="main" round='xsmall' background="#44444477"/>
+        <Box ref={editorRef} gridArea="main" round='xsmall' background="#44444477" align='center' justify='center'>
+          <Environment store={useStore} highlightColor={primaryColor} height={editorBounds.height-5} width={editorBounds.width-5} snapToGrid={false}/>
+        </Box>
       </Grid>
     </Grommet>
   );
