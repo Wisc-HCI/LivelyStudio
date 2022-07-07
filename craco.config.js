@@ -1,5 +1,6 @@
 const path = require("path");
 // const HtmlWebpackPlugin = require("html-webpack-plugin");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const webpack = require("webpack");
 
 module.exports = {
@@ -15,9 +16,12 @@ module.exports = {
     output: {
       publicPath: "auto",
     },
-    // resolve: {
-    //   extensions: [".js", ".jsx"],
-    // },
+    node: {
+      fs: 'empty'
+    },
+    resolve: {
+      extensions: [".js", ".jsx"]
+    },
     module: {
       rules: [
         {
@@ -45,6 +49,7 @@ module.exports = {
       //   favicon: "./public/favicon.ico",
       //   template: "./public/index.html",
       // }),
+      new NodePolyfillPlugin(),
       new webpack.ContextReplacementPlugin(/@people_and_robots/),
     ],
     experiments: {
