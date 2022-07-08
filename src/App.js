@@ -21,12 +21,12 @@ function App() {
         gap="xsmall"
         areas={[
           { name: "header", start: [0, 0], end: [1, 0] },
-          { name: "nav", start: [0, 1], end: [0, 1] },
-          { name: "main", start: [1, 1], end: [1, 1] },
+          { name: "sim", start: [0, 1], end: [0, 1] },
+          { name: "editor", start: [1, 1], end: [1, 1] },
         ]}
       >
         <Box gridArea="header" background="#9b0000" justify='center' pad='small'>Puppeteer</Box>
-        <Box gridArea="nav" round='xsmall' background="#44444477" pad='xxsmall' style={{overflow:'hidden'}}>
+        <Box gridArea="sim" round='xsmall' background="#44444477" pad='xxsmall' style={{overflow:'hidden'}}>
         <Scene
               displayTfs={true}
               displayGrid={true}
@@ -41,7 +41,7 @@ function App() {
               // paused={paused}
           />
         </Box>
-        <Box ref={editorRef} gridArea="main" round='xsmall' background="#44444477" align='center' justify='center'>
+        <Box ref={editorRef} gridArea="editor" round='xsmall' background="#44444477" align='center' justify='center'>
           <Environment store={useStore} highlightColor={primaryColor} height={editorBounds.height-5} width={editorBounds.width-5} snapToGrid={false}/>
         </Box>
       </Grid>
