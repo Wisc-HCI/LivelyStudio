@@ -15,7 +15,7 @@
     "react-icons": "^4.4.0",
     "react-scripts": "5.0.1",
     "react-use-measure": "^2.1.1",
-    "robot-scene": "github:Wisc-HCI/robot-scene#v0.8.1",
+    "robot-scene": "github:Wisc-HCI/robot-scene#v0.8.2",
     "simple-vp": "github:Wisc-HCI/simple-vp#v0.5.2",
     "stream": "^0.0.2",
     "stream-browserify": "^3.0.0",
@@ -23,6 +23,10 @@
     "three-stdlib": "^2.12.1",
     "web-vitals": "^2.1.4",
     "zustand": "^4.0.0-rc.1"
+  },
+  "peerDependencies": {
+    "three": "^0.142.0",
+    "three-stdlib": "^2.12.1"
   },
   "scripts": {
     "start": "craco start",
