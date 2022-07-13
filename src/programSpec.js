@@ -43,6 +43,109 @@ import {
     FiMoreHorizontal,
     FiFeather
   } from "react-icons/fi";
+import { merge } from 'lodash';
+
+const behaviorPropertyTemplate = {
+  type: TYPES.OBJECT,
+  // referenceBlock: {
+  //   onCanvas: false,
+  //   // icon: FiGrid,
+  //   extras: [
+  //     EXTRA_TYPES.LOCKED_INDICATOR,
+  //     {
+  //       icon: FiMoreHorizontal,
+  //       type: EXTRA_TYPES.DROPDOWN,
+  //       contents: [
+  //         EXTRA_TYPES.DELETE_BUTTON,
+  //         EXTRA_TYPES.DEBUG_TOGGLE,
+  //         EXTRA_TYPES.NAME_EDIT_TOGGLE,
+  //         EXTRA_TYPES.SELECTION_TOGGLE,
+  //       ],
+  //     },
+  //   ],
+  // },
+  instanceBlock: {
+    onCanvas: false,
+    // color: "#bdb655",
+    // icon: FiGrid,
+    extras: [
+      EXTRA_TYPES.LOCKED_INDICATOR,
+      {
+        icon: FiMoreHorizontal,
+        type: EXTRA_TYPES.DROPDOWN,
+        contents: [
+          EXTRA_TYPES.DELETE_BUTTON,
+          EXTRA_TYPES.DEBUG_TOGGLE,
+          EXTRA_TYPES.NAME_EDIT_TOGGLE,
+          EXTRA_TYPES.SELECTION_TOGGLE,
+        ],
+      },
+    ],
+  },
+  properties: {
+
+  }
+}
+
+const positionMatchBehaviorData = {
+  name: 'Position Match Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+    link: {
+      name: "Link",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [/* We will generate these based on the robot */],
+      default: '', // This will probably just be the first option.
+    }
+    /* 
+    There will be other properties that will need to be specified. 
+    See struct information in files like src/objectives/core/base.rs for more detail on what needs to be included. 
+    For now, you can ignore 'name' and 'weight' fields, but generally look at the 'new()' 
+    methods in those files, and you should see the initialization fields.
+    For example, the PositionMatchObjective (src/objectives/core/matching.rs)
+    looks like this:
+
+    #[repr(C)]
+    #[derive(Serialize,Deserialize,Clone,Debug,Default)]
+    pub struct PositionMatchObjective {
+      pub name: String,
+      pub weight: f64,
+      pub link: String,
+      // Goal Value
+      #[serde(skip)]
+      pub goal: Vector3<f64>
+    }
+
+    impl PositionMatchObjective {
+
+      pub fn new(name: String, weight: f64, link: String) -> Self {
+          Self { name, weight, link, goal: vector![0.0,0.0,0.0] }
+      }
+
+      pub fn call(
+        &self,
+        _v: &Vars,
+        state: &State,
+        _is_core: bool,
+      ) -> f64 {
+        // Get the link transform from frames
+        let link_translation = state.get_link_transform(&self.link).translation.vector;
+
+        let x_val = (link_translation - self.goal).norm();
+
+        return self.weight * groove_loss(x_val, 0., 2, 0.1, 10.0, 2)
+      }
+    }
+
+    The 'new' method in the "impl" block takes 3 inputs, 'name', 'weight', and 'link'.
+    So we really only need to add 'link' for this one.
+    */
+  }
+}
+
 
 export const programSpec = {
   drawers: [
@@ -61,9 +164,9 @@ export const programSpec = {
     //},
     {
       //Changed "Hat" to "Goals" and added two goal types.
-      title: "Goals",
+      title: "Positions",
       dataType: DATA_TYPES.INSTANCE,
-      objectTypes: ["goalTypeRot", "goalTypePos"],
+      objectTypes: ["positionMatchBehaviorProperty", "goalTypePos"],
       icon: FiGrid, //
     },
     //Commented out Boots as this will no longer be needed.
@@ -178,162 +281,162 @@ export const programSpec = {
         },
       },
     },
-    operationType: {
-      name: "Operation",
-      type: TYPES.OBJECT,
-      instanceBlock: {
-        onCanvas: true,
-        color: "#629e6c",
-        icon: FiClipboard,
-        connections: {
-          bottom: {
-            direction: CONNECTIONS.OUTBOUND,
-            allowed: ["operationType"],
-            limitOne: true,
-          },
-          top: {
-            direction: CONNECTIONS.INBOUND,
-            allowed: ["operationType", "programType"],
-            limitOne: false,
-          },
-        },
-        extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-            ],
-          },
-        ],
-        hideNewPrefix: true,
-      },
-      properties: {
-        hat: {
-          name: "Hat",
-          accepts: ["hatType"],
-          default: null,
-          isList: false,
-        },
-        boot: {
-          name: "Boot",
-          accepts: ["bootType"],
-          default: null,
-          isList: false,
-        },
-        speed: {
-          name: "Speed",
-          type: SIMPLE_PROPERTY_TYPES.NUMBER,
-          default: 1,
-          min: 0,
-          max: 20,
-          step: 0.1,
-          units: "m/s",
-          visualScaling: 0.1,
-          visualPrecision: 1,
-        },
-        doFunky: {
-          name: "Do Funky",
-          type: SIMPLE_PROPERTY_TYPES.BOOLEAN,
-          default: false,
-        },
-        greeting: {
-          name: "Greeting",
-          type: SIMPLE_PROPERTY_TYPES.STRING,
-          default: "",
-        },
-        time: {
-          name: "Time",
-          type: SIMPLE_PROPERTY_TYPES.OPTIONS,
-          options: [
-            { value: "am", label: "AM" },
-            { value: "pm", label: "PM" },
-          ],
-          default: "am",
-        },
-      },
-    },
-    hatType: {
-      name: "Hat",
-      type: TYPES.OBJECT,
-      referenceBlock: {
-        onCanvas: false,
-        color: "#AD1FDE",
-        icon: FiGrid,
-        extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.NAME_EDIT_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-            ],
-          },
-        ],
-      },
-      instanceBlock: {
-        onCanvas: true,
-        color: "#AD1FDE",
-        icon: FiGrid,
-        extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.NAME_EDIT_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-            ],
-          },
-        ],
-      },
-    },
-    bootType: {
-      name: "Boot",
-      type: TYPES.OBJECT,
-      referenceBlock: {
-        onCanvas: false,
-        color: "#B3A533",
-        icon: FiGrid,
-        extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-            ],
-          },
-        ],
-      },
-      instanceBlock: {
-        onCanvas: true,
-        color: "#B3A533",
-        icon: FiGrid,
-        extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-            ],
-          },
-        ],
-      },
-    },
+    // operationType: {
+    //   name: "Operation",
+    //   type: TYPES.OBJECT,
+    //   instanceBlock: {
+    //     onCanvas: true,
+    //     color: "#629e6c",
+    //     icon: FiClipboard,
+    //     connections: {
+    //       bottom: {
+    //         direction: CONNECTIONS.OUTBOUND,
+    //         allowed: ["operationType"],
+    //         limitOne: true,
+    //       },
+    //       top: {
+    //         direction: CONNECTIONS.INBOUND,
+    //         allowed: ["operationType", "programType"],
+    //         limitOne: false,
+    //       },
+    //     },
+    //     extras: [
+    //       EXTRA_TYPES.LOCKED_INDICATOR,
+    //       {
+    //         icon: FiMoreHorizontal,
+    //         type: EXTRA_TYPES.DROPDOWN,
+    //         contents: [
+    //           EXTRA_TYPES.DELETE_BUTTON,
+    //           EXTRA_TYPES.DEBUG_TOGGLE,
+    //           EXTRA_TYPES.SELECTION_TOGGLE,
+    //         ],
+    //       },
+    //     ],
+    //     hideNewPrefix: true,
+    //   },
+    //   properties: {
+    //     hat: {
+    //       name: "Hat",
+    //       accepts: ["hatType"],
+    //       default: null,
+    //       isList: false,
+    //     },
+    //     boot: {
+    //       name: "Boot",
+    //       accepts: ["bootType"],
+    //       default: null,
+    //       isList: false,
+    //     },
+    //     speed: {
+    //       name: "Speed",
+    //       type: SIMPLE_PROPERTY_TYPES.NUMBER,
+    //       default: 1,
+    //       min: 0,
+    //       max: 20,
+    //       step: 0.1,
+    //       units: "m/s",
+    //       visualScaling: 0.1,
+    //       visualPrecision: 1,
+    //     },
+    //     doFunky: {
+    //       name: "Do Funky",
+    //       type: SIMPLE_PROPERTY_TYPES.BOOLEAN,
+    //       default: false,
+    //     },
+    //     greeting: {
+    //       name: "Greeting",
+    //       type: SIMPLE_PROPERTY_TYPES.STRING,
+    //       default: "",
+    //     },
+    //     time: {
+    //       name: "Time",
+    //       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+    //       options: [
+    //         { value: "am", label: "AM" },
+    //         { value: "pm", label: "PM" },
+    //       ],
+    //       default: "am",
+    //     },
+    //   },
+    // },
+    // hatType: {
+    //   name: "Hat",
+    //   type: TYPES.OBJECT,
+    //   referenceBlock: {
+    //     onCanvas: false,
+    //     color: "#AD1FDE",
+    //     icon: FiGrid,
+    //     extras: [
+    //       EXTRA_TYPES.LOCKED_INDICATOR,
+    //       {
+    //         icon: FiMoreHorizontal,
+    //         type: EXTRA_TYPES.DROPDOWN,
+    //         contents: [
+    //           EXTRA_TYPES.DELETE_BUTTON,
+    //           EXTRA_TYPES.DEBUG_TOGGLE,
+    //           EXTRA_TYPES.NAME_EDIT_TOGGLE,
+    //           EXTRA_TYPES.SELECTION_TOGGLE,
+    //         ],
+    //       },
+    //     ],
+    //   },
+    //   instanceBlock: {
+    //     onCanvas: true,
+    //     color: "#AD1FDE",
+    //     icon: FiGrid,
+    //     extras: [
+    //       EXTRA_TYPES.LOCKED_INDICATOR,
+    //       {
+    //         icon: FiMoreHorizontal,
+    //         type: EXTRA_TYPES.DROPDOWN,
+    //         contents: [
+    //           EXTRA_TYPES.DELETE_BUTTON,
+    //           EXTRA_TYPES.DEBUG_TOGGLE,
+    //           EXTRA_TYPES.NAME_EDIT_TOGGLE,
+    //           EXTRA_TYPES.SELECTION_TOGGLE,
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // },
+    // bootType: {
+    //   name: "Boot",
+    //   type: TYPES.OBJECT,
+    //   referenceBlock: {
+    //     onCanvas: false,
+    //     color: "#B3A533",
+    //     icon: FiGrid,
+    //     extras: [
+    //       EXTRA_TYPES.LOCKED_INDICATOR,
+    //       {
+    //         icon: FiMoreHorizontal,
+    //         type: EXTRA_TYPES.DROPDOWN,
+    //         contents: [
+    //           EXTRA_TYPES.DELETE_BUTTON,
+    //           EXTRA_TYPES.DEBUG_TOGGLE,
+    //           EXTRA_TYPES.SELECTION_TOGGLE,
+    //         ],
+    //       },
+    //     ],
+    //   },
+    //   instanceBlock: {
+    //     onCanvas: true,
+    //     color: "#B3A533",
+    //     icon: FiGrid,
+    //     extras: [
+    //       EXTRA_TYPES.LOCKED_INDICATOR,
+    //       {
+    //         icon: FiMoreHorizontal,
+    //         type: EXTRA_TYPES.DROPDOWN,
+    //         contents: [
+    //           EXTRA_TYPES.DELETE_BUTTON,
+    //           EXTRA_TYPES.DEBUG_TOGGLE,
+    //           EXTRA_TYPES.SELECTION_TOGGLE,
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // },
     //New goal, rotate: this can be one of several goal type.------------------------------------------
     goalTypeRot: {
       name: "Goal: Rotate",
@@ -375,6 +478,8 @@ export const programSpec = {
         ],
       },
     },
+    // Add a new positionMatchBehaviorProperty
+    positionMatchBehaviorProperty: merge(positionMatchBehaviorData,behaviorPropertyTemplate),
     //New goal, position.------------------------------------------------------------------------------
     goalTypePos: {
       name: "Goal: Position",
@@ -453,7 +558,7 @@ export const programSpec = {
       properties: {
         children: {
           name: "Children",
-          accepts: ["goalTypePos", "goalTypeRot"],
+          accepts: ["positionMatchBehaviorProperty", "goalTypeRot"],
           default: [],
           isList: true,
           fullWidth: true,
