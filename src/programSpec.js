@@ -1,14 +1,15 @@
 import { DATA_TYPES, CONNECTIONS, EXTRA_TYPES, TYPES, SIMPLE_PROPERTY_TYPES } from "simple-vp";
 import {
-    FiClipboard,
-    FiBriefcase,
-    FiGrid,
-    FiBox,
-    FiLogOut,
-    FiMoreHorizontal,
-    FiFeather
-  } from "react-icons/fi";
+  FiClipboard,
+  FiBriefcase,
+  FiGrid,
+  FiBox,
+  FiLogOut,
+  FiMoreHorizontal,
+  FiFeather
+} from "react-icons/fi";
 import { merge } from 'lodash';
+import { behaviorPropertyColorBase, behaviorPropertyColorBounding, behaviorPropertyColorMatching, behaviorPropertyColorMirroring, behaviorPropertyColorForces, behaviorPropertyColorLiveliness, behaviorPropertyDrawerBase, behaviorPropertyDrawerBounding, behaviorPropertyDrawerMatching, behaviorPropertyDrawerMirroring, behaviorPropertyDrawerForces, behaviorPropertyDrawerLiveliness } from './Constants.js'
 
 const behaviorPropertyTemplate = {
   type: TYPES.OBJECT,
@@ -53,12 +54,24 @@ const behaviorPropertyTemplate = {
 }
 
 //Defining Behavioral Properties------------------------------------------------------------------------
+const defaultFrequency = {
+  name: "Frequency",
+  type: SIMPLE_PROPERTY_TYPES.NUMBER,
+  min: 0,
+  max: 20,
+  step: 0.1,
+  units: 'm/s',
+  visualScaling: 1,
+  visualPrecision: 1,
+  default: 1,
+}
+
 //Name, weight, link
 const positionMatchBehaviorData = {
   name: 'Position Match Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorMatching
   },
   properties: {
     link: {
@@ -118,7 +131,7 @@ const orientationMatchBehaviorData = {
   name: 'Orientation Match Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorMatching
   },
   properties: {
     link: {
@@ -130,25 +143,39 @@ const orientationMatchBehaviorData = {
   }
 }
 
-//No objective found
+//Name, weight, link, frequency
 const positionLivelinessBehaviorData = {
   name: 'Position Liveliness Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorLiveliness
   },
   properties: {
+    link: {
+      name: "Link",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    },
+    frequency: defaultFrequency,
   }
 }
 
-//No objective found
+//Name, weight, link, frequency
 const orientationLivelinessBehaviorData = {
   name: 'Orientation Liveliness Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorLiveliness
   },
   properties: {
+    link: {
+      name: "Link",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    },
+    frequency: defaultFrequency,
   }
 }
 
@@ -157,7 +184,7 @@ const positionMirroringBehaviorData = {
   name: 'Position Mirroring Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorMirroring
   },
   properties: {
     link1: {
@@ -180,7 +207,7 @@ const orientationMirroringBehaviorData = {
   name: 'Orientation Mirroring Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorMirroring
   },
   properties: {
     link1: {
@@ -203,7 +230,7 @@ const positionBoundingBehaviorData = {
   name: 'Position Bounding Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBounding
   },
   properties: {
     link: {
@@ -220,7 +247,7 @@ const orientationBoundingBehaviorData = {
   name: 'Orientation Bounding Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBounding
   },
   properties: {
     link: {
@@ -237,7 +264,7 @@ const jointMatchBehaviorData = {
   name: 'Joint Match Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorMatching
   },
   properties: {
     link: {
@@ -249,14 +276,21 @@ const jointMatchBehaviorData = {
   }
 }
 
-//No objective found
+//Name, weight, link, frequency
 const jointLivelinessBehaviorData = {
   name: 'Joint Liveliness Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorLiveliness
   },
   properties: {
+    link: {
+      name: "Link",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    },
+    frequency: defaultFrequency,
   }
 }
 
@@ -265,7 +299,7 @@ const jointMirroringBehaviorData = {
   name: 'Joint Mirroring Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorMirroring
   },
   properties: {
     joint1: {
@@ -283,12 +317,12 @@ const jointMirroringBehaviorData = {
   }
 }
 
-//Only name and weight; no specific feilds to add
+//Name, weight
 const jointLimitsBehaviorData = {
   name: 'Joint Limits Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBase
   },
   properties: {
   }
@@ -299,7 +333,7 @@ const jointBoundingBehaviorData = {
   name: 'Joint Bounding Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBounding
   },
   properties: {
     link: {
@@ -311,155 +345,176 @@ const jointBoundingBehaviorData = {
   }
 }
 
-//Only name and weight; no specific feilds to add
+//Name, weight
 const collisionAvoidanceBehaviorData = {
   name: 'Collision Avoidance Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBase
   },
   properties: {
   }
 }
 
-//Only name and weight; no specific feilds to add
+//Name, weight
 const velocityMinimizationBehaviorData = {
   name: 'Velocity Minimization Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBase
   },
   properties: {
   }
 }
 
-//Only name and weight; no specific feilds to add
+//Name, weight
 const accelerationMinimizationBehaviorData = {
   name: 'Acceleration Minimization Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBase
   },
   properties: {
   }
 }
 
-//Only name and weight; no specific feilds to add
+//Name, weight
 const jerkMinimizationBehaviorData = {
   name: 'Jerk Minimization Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBase
   },
   properties: {
   }
 }
 
-//Only name and weight; no specific feilds to add
+//Name, weight
 const originVelocityMinimizationBehaviorData = {
   name: 'Origin Velocity Minimization Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBase
   },
   properties: {
   }
 }
 
-//Only name and weight; no specific feilds to add
+//Name, weight
 const originAccelerationMinimizationBehaviorData = {
   name: 'Origin Acceleration Minimization Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBase
   },
   properties: {
   }
 }
 
-//Only name and weight; no specific feilds to add
+//Name, weight
 const originJerkMinimizationBehaviorData = {
   name: 'Origin Jerk Minimization Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBase
   },
   properties: {
   }
 }
 
-//No objective found
+//Name, weight, link 1, link 2, frequency
 const relativeMotionLivelinessBehaviorData = {
   name: 'Relative Motion Liveliness Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorLiveliness
   },
   properties: {
+    link1: {
+      name: "Link 1",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    },
+    link2: {
+      name: "Link 2",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    },
+    frequency: defaultFrequency,
   }
 }
 
-//No objective found
+//Name, weight, frequency
 const originPositionLivelinessBehaviorData = {
   name: 'Origin Position Liveliness Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorLiveliness
   },
   properties: {
+    frequency: defaultFrequency,
   }
 }
 
-//No objective found
+//Name, weight, frequency
 const originOrientationLivelinessBehaviorData = {
   name: 'Origin Orientation Liveliness Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorLiveliness
   },
   properties: {
+    frequency: defaultFrequency,
   }
 }
 
-//Only name and weight; no specific feilds to add
+//Name, weight
 const originPositionMatchBehaviorData = {
   name: 'Origin Position Match Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorMatching
   },
   properties: {
   }
 }
 
-//Only name and weight; no specific feilds to add
+//Name, weight
 const originOrientationMatchBehaviorData = {
   name: 'Origin Orientation Match Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorMatching
   },
   properties: {
   }
 }
 
-//No objective found
+//Name, weight, link
 const gravityBehaviorData = {
   name: 'Gravity Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorForces
   },
   properties: {
+    link: {
+      name: "Link",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    },
   }
 }
 
-//Only name and weight; no specific feilds to add
+//Name, weight
 const smoothnessMacroBehaviorData = {
   name: 'Smoothness Macro Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorBase
   },
   properties: {
   }
@@ -470,7 +525,7 @@ const distanceMatchBehaviorData = {
   name: 'Distance Match Behavior',
   instanceBlock: {
     icon: FiGrid,
-    color: "#bdb655"
+    color: behaviorPropertyColorMatching
   },
   properties: {
     link1: {
@@ -506,38 +561,40 @@ export const programSpec = {
     //},
     {
       //Changed "Hat" to "Goals" and added all new behavioral properties.
-      title: "Behavior Properties",
+      title: "Base Behavior Properties",
       dataType: DATA_TYPES.INSTANCE,
-      objectTypes: ["positionMatchBehaviorProperty",
-      "orientationMatchBehaviorProperty",
-      "positionLivelinessBehaviorProperty",
-      "orientationLivelinessBehaviorProperty",
-      "positionMirroringBehaviorProperty",
-      "orientationMirroringBehaviorProperty",
-      "positionBoundingBehaviorProperty",
-      "orientationBoundingBehaviorProperty",
-      "jointMatchBehaviorProperty",
-      "jointLivelinessBehaviorProperty",
-      "jointMirroringBehaviorProperty",
-      "jointLimitsBehaviorProperty",
-      "jointBoundingBehaviorProperty",
-      "collisionAvoidanceBehaviorProperty",
-      "velocityMinimizationBehaviorProperty",
-      "accelerationMinimizationBehaviorProperty",
-      "jerkMinimizationBehaviorProperty",
-      "originVelocityMinimizationBehaviorProperty",
-      "originAccelerationMinimizationBehaviorProperty",
-      "originJerkMinimizationBehaviorProperty",
-      "relativeMotionLivelinessBehaviorProperty",
-      "originPositionLivelinessBehaviorProperty",
-      "originOrientationLivelinessBehaviorProperty",
-      "originPositionMatchBehaviorProperty",
-      "originOrientationMatchBehaviorProperty",
-      "gravityBehaviorProperty",
-      "smoothnessMacroBehaviorProperty",
-      "distanceMatchBehaviorProperty"
-    ],
-      icon: FiGrid, 
+      objectTypes: behaviorPropertyDrawerBase,
+      icon: FiGrid,
+    },
+    {
+      title: "Bounding Behavior Properties",
+      dataType: DATA_TYPES.INSTANCE,
+      objectTypes: behaviorPropertyDrawerBounding,
+      icon: FiGrid,
+    },
+    {
+      title: "Matching Behavior Properties",
+      dataType: DATA_TYPES.INSTANCE,
+      objectTypes: behaviorPropertyDrawerMatching,
+      icon: FiGrid,
+    },
+    {
+      title: "Mirroring Behavior Properties",
+      dataType: DATA_TYPES.INSTANCE,
+      objectTypes: behaviorPropertyDrawerMirroring,
+      icon: FiGrid,
+    },
+    {
+      title: "Forces Behavior Properties",
+      dataType: DATA_TYPES.INSTANCE,
+      objectTypes: behaviorPropertyDrawerForces,
+      icon: FiGrid,
+    },
+    {
+      title: "Liveliness Behavior Properties",
+      dataType: DATA_TYPES.INSTANCE,
+      objectTypes: behaviorPropertyDrawerLiveliness,
+      icon: FiGrid,
     },
     //Commented out Boots as this will no longer be needed.
     //{
@@ -807,37 +864,37 @@ export const programSpec = {
     //     ],
     //   },
     // },
-    
+
     // Add all new behavior properties-----------------------------------------------------------------
-    positionMatchBehaviorProperty: merge(positionMatchBehaviorData,behaviorPropertyTemplate),
-    orientationMatchBehaviorProperty: merge(orientationMatchBehaviorData,behaviorPropertyTemplate),
-    positionLivelinessBehaviorProperty: merge(positionLivelinessBehaviorData,behaviorPropertyTemplate),
-    orientationLivelinessBehaviorProperty: merge(orientationLivelinessBehaviorData,behaviorPropertyTemplate),
-    positionMirroringBehaviorProperty: merge(positionMirroringBehaviorData,behaviorPropertyTemplate),
-    orientationMirroringBehaviorProperty: merge(orientationMirroringBehaviorData,behaviorPropertyTemplate),
-    positionBoundingBehaviorProperty: merge(positionBoundingBehaviorData,behaviorPropertyTemplate),
-    orientationBoundingBehaviorProperty: merge(orientationBoundingBehaviorData,behaviorPropertyTemplate),
-    jointMatchBehaviorProperty: merge(jointMatchBehaviorData,behaviorPropertyTemplate),
-    jointLivelinessBehaviorProperty: merge(jointLivelinessBehaviorData,behaviorPropertyTemplate),
-    jointMirroringBehaviorProperty: merge(jointMirroringBehaviorData,behaviorPropertyTemplate),
-    jointLimitsBehaviorProperty: merge(jointLimitsBehaviorData,behaviorPropertyTemplate),
-    jointBoundingBehaviorProperty: merge(jointBoundingBehaviorData,behaviorPropertyTemplate),
-    collisionAvoidanceBehaviorProperty: merge(collisionAvoidanceBehaviorData,behaviorPropertyTemplate),
-    velocityMinimizationBehaviorProperty: merge(velocityMinimizationBehaviorData,behaviorPropertyTemplate),
-    accelerationMinimizationBehaviorProperty: merge(accelerationMinimizationBehaviorData,behaviorPropertyTemplate),
-    jerkMinimizationBehaviorProperty: merge(jerkMinimizationBehaviorData,behaviorPropertyTemplate),
-    originVelocityMinimizationBehaviorProperty: merge(originVelocityMinimizationBehaviorData,behaviorPropertyTemplate),
-    originAccelerationMinimizationBehaviorProperty: merge(originAccelerationMinimizationBehaviorData,behaviorPropertyTemplate),
-    originJerkMinimizationBehaviorProperty: merge(originJerkMinimizationBehaviorData,behaviorPropertyTemplate),
-    relativeMotionLivelinessBehaviorProperty: merge(relativeMotionLivelinessBehaviorData,behaviorPropertyTemplate),
-    originPositionLivelinessBehaviorProperty: merge(originPositionLivelinessBehaviorData,behaviorPropertyTemplate),
-    originOrientationLivelinessBehaviorProperty: merge(originOrientationLivelinessBehaviorData,behaviorPropertyTemplate),
-    originPositionMatchBehaviorProperty: merge(originPositionMatchBehaviorData,behaviorPropertyTemplate),
-    originOrientationMatchBehaviorProperty: merge(originOrientationMatchBehaviorData,behaviorPropertyTemplate),
-    gravityBehaviorProperty: merge(gravityBehaviorData,behaviorPropertyTemplate),
-    smoothnessMacroBehaviorProperty: merge(smoothnessMacroBehaviorData,behaviorPropertyTemplate),
-    distanceMatchBehaviorProperty: merge(distanceMatchBehaviorData,behaviorPropertyTemplate),
-    
+    positionMatchBehaviorProperty: merge(positionMatchBehaviorData, behaviorPropertyTemplate),
+    orientationMatchBehaviorProperty: merge(orientationMatchBehaviorData, behaviorPropertyTemplate),
+    positionLivelinessBehaviorProperty: merge(positionLivelinessBehaviorData, behaviorPropertyTemplate),
+    orientationLivelinessBehaviorProperty: merge(orientationLivelinessBehaviorData, behaviorPropertyTemplate),
+    positionMirroringBehaviorProperty: merge(positionMirroringBehaviorData, behaviorPropertyTemplate),
+    orientationMirroringBehaviorProperty: merge(orientationMirroringBehaviorData, behaviorPropertyTemplate),
+    positionBoundingBehaviorProperty: merge(positionBoundingBehaviorData, behaviorPropertyTemplate),
+    orientationBoundingBehaviorProperty: merge(orientationBoundingBehaviorData, behaviorPropertyTemplate),
+    jointMatchBehaviorProperty: merge(jointMatchBehaviorData, behaviorPropertyTemplate),
+    jointLivelinessBehaviorProperty: merge(jointLivelinessBehaviorData, behaviorPropertyTemplate),
+    jointMirroringBehaviorProperty: merge(jointMirroringBehaviorData, behaviorPropertyTemplate),
+    jointLimitsBehaviorProperty: merge(jointLimitsBehaviorData, behaviorPropertyTemplate),
+    jointBoundingBehaviorProperty: merge(jointBoundingBehaviorData, behaviorPropertyTemplate),
+    collisionAvoidanceBehaviorProperty: merge(collisionAvoidanceBehaviorData, behaviorPropertyTemplate),
+    velocityMinimizationBehaviorProperty: merge(velocityMinimizationBehaviorData, behaviorPropertyTemplate),
+    accelerationMinimizationBehaviorProperty: merge(accelerationMinimizationBehaviorData, behaviorPropertyTemplate),
+    jerkMinimizationBehaviorProperty: merge(jerkMinimizationBehaviorData, behaviorPropertyTemplate),
+    originVelocityMinimizationBehaviorProperty: merge(originVelocityMinimizationBehaviorData, behaviorPropertyTemplate),
+    originAccelerationMinimizationBehaviorProperty: merge(originAccelerationMinimizationBehaviorData, behaviorPropertyTemplate),
+    originJerkMinimizationBehaviorProperty: merge(originJerkMinimizationBehaviorData, behaviorPropertyTemplate),
+    relativeMotionLivelinessBehaviorProperty: merge(relativeMotionLivelinessBehaviorData, behaviorPropertyTemplate),
+    originPositionLivelinessBehaviorProperty: merge(originPositionLivelinessBehaviorData, behaviorPropertyTemplate),
+    originOrientationLivelinessBehaviorProperty: merge(originOrientationLivelinessBehaviorData, behaviorPropertyTemplate),
+    originPositionMatchBehaviorProperty: merge(originPositionMatchBehaviorData, behaviorPropertyTemplate),
+    originOrientationMatchBehaviorProperty: merge(originOrientationMatchBehaviorData, behaviorPropertyTemplate),
+    gravityBehaviorProperty: merge(gravityBehaviorData, behaviorPropertyTemplate),
+    smoothnessMacroBehaviorProperty: merge(smoothnessMacroBehaviorData, behaviorPropertyTemplate),
+    distanceMatchBehaviorProperty: merge(distanceMatchBehaviorData, behaviorPropertyTemplate),
+
     //State Node----------------------------------------------------------------------------------------
     stateType: {
       name: "State",
@@ -876,34 +933,34 @@ export const programSpec = {
         children: {
           name: "Children",
           accepts: ["positionMatchBehaviorProperty",
-          "orientationMatchBehaviorProperty",
-          "positionLivelinessBehaviorProperty",
-          "orientationLivelinessBehaviorProperty",
-          "positionMirroringBehaviorProperty",
-          "orientationMirroringBehaviorProperty",
-          "positionBoundingBehaviorProperty",
-          "orientationBoundingBehaviorProperty",
-          "jointMatchBehaviorProperty",
-          "jointLivelinessBehaviorProperty",
-          "jointMirroringBehaviorProperty",
-          "jointLimitsBehaviorProperty",
-          "jointBoundingBehaviorProperty",
-          "collisionAvoidanceBehaviorProperty",
-          "velocityMinimizationBehaviorProperty",
-          "accelerationMinimizationBehaviorProperty",
-          "jerkMinimizationBehaviorProperty",
-          "originVelocityMinimizationBehaviorProperty",
-          "originAccelerationMinimizationBehaviorProperty",
-          "originJerkMinimizationBehaviorProperty",
-          "relativeMotionLivelinessBehaviorProperty",
-          "originPositionLivelinessBehaviorProperty",
-          "originOrientationLivelinessBehaviorProperty",
-          "originPositionMatchBehaviorProperty",
-          "originOrientationMatchBehaviorProperty",
-          "gravityBehaviorProperty",
-          "smoothnessMacroBehaviorProperty",
-          "distanceMatchBehaviorProperty"
-        ],
+            "orientationMatchBehaviorProperty",
+            "positionLivelinessBehaviorProperty",
+            "orientationLivelinessBehaviorProperty",
+            "positionMirroringBehaviorProperty",
+            "orientationMirroringBehaviorProperty",
+            "positionBoundingBehaviorProperty",
+            "orientationBoundingBehaviorProperty",
+            "jointMatchBehaviorProperty",
+            "jointLivelinessBehaviorProperty",
+            "jointMirroringBehaviorProperty",
+            "jointLimitsBehaviorProperty",
+            "jointBoundingBehaviorProperty",
+            "collisionAvoidanceBehaviorProperty",
+            "velocityMinimizationBehaviorProperty",
+            "accelerationMinimizationBehaviorProperty",
+            "jerkMinimizationBehaviorProperty",
+            "originVelocityMinimizationBehaviorProperty",
+            "originAccelerationMinimizationBehaviorProperty",
+            "originJerkMinimizationBehaviorProperty",
+            "relativeMotionLivelinessBehaviorProperty",
+            "originPositionLivelinessBehaviorProperty",
+            "originOrientationLivelinessBehaviorProperty",
+            "originPositionMatchBehaviorProperty",
+            "originOrientationMatchBehaviorProperty",
+            "gravityBehaviorProperty",
+            "smoothnessMacroBehaviorProperty",
+            "distanceMatchBehaviorProperty"
+          ],
           default: [],
           isList: true,
           fullWidth: true,
