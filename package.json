@@ -11,19 +11,24 @@
     "build:wasm": "wasm-pack build --release ./puppeteer-rust --target web"
   },
   "dependencies": {
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/material": "^5.8.7",
+    "@uiw/react-monacoeditor": "^3.5.4",
     "comlink": "^4.3.1",
+    "fast-xml-parser": "^4.0.9",
     "grommet": "^2.25.0",
     "immer": "^9.0.15",
     "react": "^18.0.0",
+    "react-ace": "^10.1.0",
     "react-dom": "^18.0.0",
-    "robot-scene": "github:Wisc-HCI/robot-scene#v0.9.2",
+    "react-icons": "^4.4.0",
+    "robot-scene": "github:Wisc-HCI/robot-scene#v0.9.3",
     "simple-vp": "github:Wisc-HCI/simple-vp#v0.6.3",
+    "styled-components": "^5.3.5",
     "three-stdlib": "^2.12.1",
-    "zustand": "^4.0.0-rc.1",
-    "styled-components": "^5.3.5"
-  },
-  "peerDependencies": {
-    
+    "three": "^0.142.0",
+    "zustand": "4.0.0-rc.2"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
