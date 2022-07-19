@@ -1,38 +1,3 @@
-//Tasks:
-    //Make goals (DONE):
-    //  Boots and hats will likely be like goals (which we think will be instances??)- switch this to goals
-    //
-    //Make states (DONE):
-    //A state is a collection of objectives which are filled with goals
-    //
-    //Make power on and off nodes (TODO):
-    //State nodes, goal nodes, power on node, power off node (goals will have multiple iterations)
-
-    //Questions:
-    //Where do functions come into play within the framework we are developing?
-
-    //Multiple groups of goals:
-    //  Cartesian Control Goals
-    //    Position (X, Y, Z)
-    //  Joint Control Goals
-    //    Rotate (yaw, pitch, roll)
-    //  General Goals
-    //    Collision avooidance, smoothness (jerk, velocity, accelartion minimzation) 
-    //  Liveliness Goals
-    //    Sway
-
-    //state has all of the joint values at a given that time that satisfy the goal (with certain weights)
-    //goal would be the cartesian values
-
-    //When you create a solver, you have to pass in all the objectives
-
-    //each objective has a type of goal it accepts
-
-    //The length of objectives has to equal the length of goals and weights
-
-    //The goals that user provide are a hybrid of the goals and objectives
-
-
 import { DATA_TYPES, CONNECTIONS, EXTRA_TYPES, TYPES, SIMPLE_PROPERTY_TYPES } from "simple-vp";
 import {
     FiClipboard,
@@ -87,6 +52,8 @@ const behaviorPropertyTemplate = {
   }
 }
 
+//Defining Behavioral Properties------------------------------------------------------------------------
+//Name, weight, link
 const positionMatchBehaviorData = {
   name: 'Position Match Behavior',
   instanceBlock: {
@@ -146,6 +113,381 @@ const positionMatchBehaviorData = {
   }
 }
 
+//Name, weight, link
+const orientationMatchBehaviorData = {
+  name: 'Orientation Match Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+    link: {
+      name: "Link",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    }
+  }
+}
+
+//No objective found
+const positionLivelinessBehaviorData = {
+  name: 'Position Liveliness Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//No objective found
+const orientationLivelinessBehaviorData = {
+  name: 'Orientation Liveliness Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Name, weight, link1, link2
+const positionMirroringBehaviorData = {
+  name: 'Position Mirroring Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+    link1: {
+      name: "Link 1",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    },
+    link2: {
+      name: "Link 2",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    }
+  }
+}
+
+//Name, weight, link1, link2
+const orientationMirroringBehaviorData = {
+  name: 'Orientation Mirroring Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+    link1: {
+      name: "Link 1",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    },
+    link2: {
+      name: "Link 2",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    }
+  }
+}
+
+//Name, weight, link
+const positionBoundingBehaviorData = {
+  name: 'Position Bounding Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+    link: {
+      name: "Link",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    }
+  }
+}
+
+//Name, weight, link
+const orientationBoundingBehaviorData = {
+  name: 'Orientation Bounding Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+    link: {
+      name: "Link",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    }
+  }
+}
+
+//Name, weight, joint
+const jointMatchBehaviorData = {
+  name: 'Joint Match Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+    link: {
+      name: "Joiint",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    }
+  }
+}
+
+//No objective found
+const jointLivelinessBehaviorData = {
+  name: 'Joint Liveliness Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Name, weight, joint1, joint2
+const jointMirroringBehaviorData = {
+  name: 'Joint Mirroring Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+    joint1: {
+      name: "Joint 1",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    },
+    joint2: {
+      name: "Joint 2",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    }
+  }
+}
+
+//Only name and weight; no specific feilds to add
+const jointLimitsBehaviorData = {
+  name: 'Joint Limits Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Name, weight, joint
+const jointBoundingBehaviorData = {
+  name: 'Joint Bounding Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+    link: {
+      name: "Joint",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    }
+  }
+}
+
+//Only name and weight; no specific feilds to add
+const collisionAvoidanceBehaviorData = {
+  name: 'Collision Avoidance Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Only name and weight; no specific feilds to add
+const velocityMinimizationBehaviorData = {
+  name: 'Velocity Minimization Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Only name and weight; no specific feilds to add
+const accelerationMinimizationBehaviorData = {
+  name: 'Acceleration Minimization Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Only name and weight; no specific feilds to add
+const jerkMinimizationBehaviorData = {
+  name: 'Jerk Minimization Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Only name and weight; no specific feilds to add
+const originVelocityMinimizationBehaviorData = {
+  name: 'Origin Velocity Minimization Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Only name and weight; no specific feilds to add
+const originAccelerationMinimizationBehaviorData = {
+  name: 'Origin Acceleration Minimization Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Only name and weight; no specific feilds to add
+const originJerkMinimizationBehaviorData = {
+  name: 'Origin Jerk Minimization Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//No objective found
+const relativeMotionLivelinessBehaviorData = {
+  name: 'Relative Motion Liveliness Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//No objective found
+const originPositionLivelinessBehaviorData = {
+  name: 'Origin Position Liveliness Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//No objective found
+const originOrientationLivelinessBehaviorData = {
+  name: 'Origin Orientation Liveliness Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Only name and weight; no specific feilds to add
+const originPositionMatchBehaviorData = {
+  name: 'Origin Position Match Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Only name and weight; no specific feilds to add
+const originOrientationMatchBehaviorData = {
+  name: 'Origin Orientation Match Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//No objective found
+const gravityBehaviorData = {
+  name: 'Gravity Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Only name and weight; no specific feilds to add
+const smoothnessMacroBehaviorData = {
+  name: 'Smoothness Macro Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+  }
+}
+
+//Name, weight, link1, link2
+const distanceMatchBehaviorData = {
+  name: 'Distance Match Behavior',
+  instanceBlock: {
+    icon: FiGrid,
+    color: "#bdb655"
+  },
+  properties: {
+    link1: {
+      name: "Link 1",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    },
+    link2: {
+      name: "Link 2",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [],
+      default: '',
+    }
+  }
+}
+//---------------------------------------------------------------------------------------------------
 
 export const programSpec = {
   drawers: [
@@ -163,11 +505,39 @@ export const programSpec = {
     //  icon: FiLogOut,
     //},
     {
-      //Changed "Hat" to "Goals" and added two goal types.
-      title: "Positions",
+      //Changed "Hat" to "Goals" and added all new behavioral properties.
+      title: "Behavior Properties",
       dataType: DATA_TYPES.INSTANCE,
-      objectTypes: ["positionMatchBehaviorProperty", "goalTypePos"],
-      icon: FiGrid, //
+      objectTypes: ["positionMatchBehaviorProperty",
+      "orientationMatchBehaviorProperty",
+      "positionLivelinessBehaviorProperty",
+      "orientationLivelinessBehaviorProperty",
+      "positionMirroringBehaviorProperty",
+      "orientationMirroringBehaviorProperty",
+      "positionBoundingBehaviorProperty",
+      "orientationBoundingBehaviorProperty",
+      "jointMatchBehaviorProperty",
+      "jointLivelinessBehaviorProperty",
+      "jointMirroringBehaviorProperty",
+      "jointLimitsBehaviorProperty",
+      "jointBoundingBehaviorProperty",
+      "collisionAvoidanceBehaviorProperty",
+      "velocityMinimizationBehaviorProperty",
+      "accelerationMinimizationBehaviorProperty",
+      "jerkMinimizationBehaviorProperty",
+      "originVelocityMinimizationBehaviorProperty",
+      "originAccelerationMinimizationBehaviorProperty",
+      "originJerkMinimizationBehaviorProperty",
+      "relativeMotionLivelinessBehaviorProperty",
+      "originPositionLivelinessBehaviorProperty",
+      "originOrientationLivelinessBehaviorProperty",
+      "originPositionMatchBehaviorProperty",
+      "originOrientationMatchBehaviorProperty",
+      "gravityBehaviorProperty",
+      "smoothnessMacroBehaviorProperty",
+      "distanceMatchBehaviorProperty"
+    ],
+      icon: FiGrid, 
     },
     //Commented out Boots as this will no longer be needed.
     //{
@@ -437,91 +807,38 @@ export const programSpec = {
     //     ],
     //   },
     // },
-    //New goal, rotate: this can be one of several goal type.------------------------------------------
-    goalTypeRot: {
-      name: "Goal: Rotate",
-      type: TYPES.OBJECT,
-      referenceBlock: {
-        onCanvas: false,
-        color: "#bdb655",
-        icon: FiGrid,
-        extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.NAME_EDIT_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-            ],
-          },
-        ],
-      },
-      instanceBlock: {
-        onCanvas: false,
-        color: "#bdb655",
-        icon: FiGrid,
-        extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.NAME_EDIT_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-            ],
-          },
-        ],
-      },
-    },
-    // Add a new positionMatchBehaviorProperty
+    
+    // Add all new behavior properties-----------------------------------------------------------------
     positionMatchBehaviorProperty: merge(positionMatchBehaviorData,behaviorPropertyTemplate),
-    //New goal, position.------------------------------------------------------------------------------
-    goalTypePos: {
-      name: "Goal: Position",
-      type: TYPES.OBJECT,
-      referenceBlock: {
-        onCanvas: false,
-        color: "#bdb655",
-        icon: FiGrid,
-        extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.NAME_EDIT_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-            ],
-          },
-        ],
-      },
-      instanceBlock: {
-        onCanvas: false,
-        color: "#bdb655",
-        icon: FiGrid,
-        extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.NAME_EDIT_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-            ],
-          },
-        ],
-      },
-    },
-    //State type----------------------------------------------------------------------------------------
+    orientationMatchBehaviorProperty: merge(orientationMatchBehaviorData,behaviorPropertyTemplate),
+    positionLivelinessBehaviorProperty: merge(positionLivelinessBehaviorData,behaviorPropertyTemplate),
+    orientationLivelinessBehaviorProperty: merge(orientationLivelinessBehaviorData,behaviorPropertyTemplate),
+    positionMirroringBehaviorProperty: merge(positionMirroringBehaviorData,behaviorPropertyTemplate),
+    orientationMirroringBehaviorProperty: merge(orientationMirroringBehaviorData,behaviorPropertyTemplate),
+    positionBoundingBehaviorProperty: merge(positionBoundingBehaviorData,behaviorPropertyTemplate),
+    orientationBoundingBehaviorProperty: merge(orientationBoundingBehaviorData,behaviorPropertyTemplate),
+    jointMatchBehaviorProperty: merge(jointMatchBehaviorData,behaviorPropertyTemplate),
+    jointLivelinessBehaviorProperty: merge(jointLivelinessBehaviorData,behaviorPropertyTemplate),
+    jointMirroringBehaviorProperty: merge(jointMirroringBehaviorData,behaviorPropertyTemplate),
+    jointLimitsBehaviorProperty: merge(jointLimitsBehaviorData,behaviorPropertyTemplate),
+    jointBoundingBehaviorProperty: merge(jointBoundingBehaviorData,behaviorPropertyTemplate),
+    collisionAvoidanceBehaviorProperty: merge(collisionAvoidanceBehaviorData,behaviorPropertyTemplate),
+    velocityMinimizationBehaviorProperty: merge(velocityMinimizationBehaviorData,behaviorPropertyTemplate),
+    accelerationMinimizationBehaviorProperty: merge(accelerationMinimizationBehaviorData,behaviorPropertyTemplate),
+    jerkMinimizationBehaviorProperty: merge(jerkMinimizationBehaviorData,behaviorPropertyTemplate),
+    originVelocityMinimizationBehaviorProperty: merge(originVelocityMinimizationBehaviorData,behaviorPropertyTemplate),
+    originAccelerationMinimizationBehaviorProperty: merge(originAccelerationMinimizationBehaviorData,behaviorPropertyTemplate),
+    originJerkMinimizationBehaviorProperty: merge(originJerkMinimizationBehaviorData,behaviorPropertyTemplate),
+    relativeMotionLivelinessBehaviorProperty: merge(relativeMotionLivelinessBehaviorData,behaviorPropertyTemplate),
+    originPositionLivelinessBehaviorProperty: merge(originPositionLivelinessBehaviorData,behaviorPropertyTemplate),
+    originOrientationLivelinessBehaviorProperty: merge(originOrientationLivelinessBehaviorData,behaviorPropertyTemplate),
+    originPositionMatchBehaviorProperty: merge(originPositionMatchBehaviorData,behaviorPropertyTemplate),
+    originOrientationMatchBehaviorProperty: merge(originOrientationMatchBehaviorData,behaviorPropertyTemplate),
+    gravityBehaviorProperty: merge(gravityBehaviorData,behaviorPropertyTemplate),
+    smoothnessMacroBehaviorProperty: merge(smoothnessMacroBehaviorData,behaviorPropertyTemplate),
+    distanceMatchBehaviorProperty: merge(distanceMatchBehaviorData,behaviorPropertyTemplate),
+    
+    //State Node----------------------------------------------------------------------------------------
     stateType: {
       name: "State",
       type: TYPES.OBJECT,
@@ -558,7 +875,35 @@ export const programSpec = {
       properties: {
         children: {
           name: "Children",
-          accepts: ["positionMatchBehaviorProperty", "goalTypeRot"],
+          accepts: ["positionMatchBehaviorProperty",
+          "orientationMatchBehaviorProperty",
+          "positionLivelinessBehaviorProperty",
+          "orientationLivelinessBehaviorProperty",
+          "positionMirroringBehaviorProperty",
+          "orientationMirroringBehaviorProperty",
+          "positionBoundingBehaviorProperty",
+          "orientationBoundingBehaviorProperty",
+          "jointMatchBehaviorProperty",
+          "jointLivelinessBehaviorProperty",
+          "jointMirroringBehaviorProperty",
+          "jointLimitsBehaviorProperty",
+          "jointBoundingBehaviorProperty",
+          "collisionAvoidanceBehaviorProperty",
+          "velocityMinimizationBehaviorProperty",
+          "accelerationMinimizationBehaviorProperty",
+          "jerkMinimizationBehaviorProperty",
+          "originVelocityMinimizationBehaviorProperty",
+          "originAccelerationMinimizationBehaviorProperty",
+          "originJerkMinimizationBehaviorProperty",
+          "relativeMotionLivelinessBehaviorProperty",
+          "originPositionLivelinessBehaviorProperty",
+          "originOrientationLivelinessBehaviorProperty",
+          "originPositionMatchBehaviorProperty",
+          "originOrientationMatchBehaviorProperty",
+          "gravityBehaviorProperty",
+          "smoothnessMacroBehaviorProperty",
+          "distanceMatchBehaviorProperty"
+        ],
           default: [],
           isList: true,
           fullWidth: true,
