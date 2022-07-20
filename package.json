@@ -13,8 +13,10 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
+    "@monaco-editor/react": "^4.4.5",
     "@mui/material": "^5.8.7",
-    "@uiw/react-monacoeditor": "^3.5.4",
+    "@react-three/drei": "^9.17.1",
+    "@react-three/fiber": "^8.2.0",
     "comlink": "^4.3.1",
     "fast-xml-parser": "^4.0.9",
     "grommet": "^2.25.0",
@@ -23,11 +25,11 @@
     "react-ace": "^10.1.0",
     "react-dom": "^18.0.0",
     "react-icons": "^4.4.0",
-    "robot-scene": "github:Wisc-HCI/robot-scene#v0.9.3",
     "simple-vp": "github:Wisc-HCI/simple-vp#v0.6.3",
+    "robot-scene": "github:Wisc-HCI/robot-scene#v0.9.6",
     "styled-components": "^5.3.5",
-    "three-stdlib": "^2.12.1",
     "three": "^0.142.0",
+    "three-stdlib": "^2.12.1",
     "zustand": "4.0.0-rc.2"
   },
   "devDependencies": {

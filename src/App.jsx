@@ -1,16 +1,18 @@
 import { Grommet, Grid, Box } from "grommet";
 import { getTheme } from "./theme";
-import { Scene } from "robot-scene";
+import {
+  Scene
+} from "robot-scene";
 import { Environment } from "simple-vp";
 import useStore from "./store";
 import useMeasure from "react-use-measure";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { URDF } from "./Tabs/URDF";
 import { Menu } from "./Menu";
 // import Button from "@mui/material/Button";
 // import { Icon, IconButton } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import MeshLookupTable from './Meshes';
+import MeshLookupTable from "./Meshes";
 // import { FiSettings } from "react-icons/fi";
 
 function App() {
@@ -36,7 +38,7 @@ function App() {
     },
   });
 
-  // console.log(Scene)
+  // console.log('rerender')
 
   return (
     <ThemeProvider theme={muiTheme}>
@@ -49,24 +51,24 @@ function App() {
             style={{ overflow: "hidden" }}
           >
             <Scene
-              // displayTfs={true}
-              displayGrid={true}
-              isPolar={false}
-              backgroundColor="#1e1e1e"
-              planeColor="#141414"
-              highlightColor={primaryColor}
-              plane={-0.75}
-              fov={50}
-              store={useStore}
-              meshLookup={MeshLookupTable}
-              // onPointerMissed={clearFocus}
-              // paused={paused}
-            />
+                  // displayTfs={true}
+                  displayGrid={true}
+                  isPolar={false}
+                  backgroundColor="#1e1e1e"
+                  planeColor="#141414"
+                  highlightColor={primaryColor}
+                  plane={0}
+                  fov={50}
+                  store={useStore}
+                  meshLookup={MeshLookupTable}
+                  // onPointerMissed={clearFocus}
+                  // paused={paused}
+                />
           </Box>
           <Box flex background="#44444477" direction="column">
             <Box align="center" pad="small" justify="between" direction="row">
-              <Menu mode={mode} setMode={setMode}/>
-              
+              <Menu mode={mode} setMode={setMode} />
+
               {/* <Button color="pop" variant="outlined">
                 {mode === "default" ? "Setup" : "Return"}
               </Button> */}

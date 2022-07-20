@@ -5,29 +5,17 @@ export const panda = `<?xml version="1.0" ?>
 <!-- =================================================================================== -->
 <robot name="panda">
   <link name="panda_link0">
-    <visual>
-      <geometry>
-        <mesh filename="package://franka_ros/franka_description/meshes/visual/link0.dae"/>
-      </geometry>
-    </visual>
-    <collision>
-      <origin rpy="0 1.5707963267948966 0" xyz="-0.075 0 0.06"/>
-      <geometry>
-        <cylinder length="0.03" radius="0.09"/>
-      </geometry>
-    </collision>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.06 0 0.06"/>
-      <geometry>
-        <sphere radius="0.09"/>
-      </geometry>
-    </collision>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.09 0 0.06"/>
-      <geometry>
-        <sphere radius="0.09"/>
-      </geometry>
-    </collision>
+  <visual>
+    <geometry>
+    <mesh filename="package://franka_ros/franka_description/meshes/visual/link0.dae"/>
+  </geometry>
+</visual>
+<collision>
+  <origin rpy="0 0 0" xyz="-0.04 0 0.06"/>
+  <geometry>
+    <box size="0.23 0.2 0.15"/>
+  </geometry>
+</collision>
   </link>
   <link name="panda_link1">
     <visual>
@@ -36,21 +24,15 @@ export const panda = `<?xml version="1.0" ?>
       </geometry>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 -0.1915"/>
+      <origin rpy="0 0 0" xyz="0 -0.01 -0.127"/>
       <geometry>
-        <cylinder length="0.2830" radius="0.09"/>
+        <cylinder length="0.135" radius="0.066"/>
       </geometry>
     </collision>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 -0.333"/>
+      <origin rpy="-1.5707963267948966 0 0" xyz="0 -0.065 -0.01"/>
       <geometry>
-        <sphere radius="0.09"/>
-      </geometry>
-    </collision>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 -0.05"/>
-      <geometry>
-        <sphere radius="0.09"/>
+        <cylinder length="0.125" radius="0.066"/>
       </geometry>
     </collision>
     <inertial>
@@ -74,21 +56,15 @@ export const panda = `<?xml version="1.0" ?>
       </geometry>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0.065"/>
       <geometry>
-        <cylinder length="0.12" radius="0.09"/>
+        <cylinder length="0.13" radius="0.057"/>
       </geometry>
     </collision>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 -0.06"/>
+      <origin rpy="-1.5707963267948966 0 0" xyz="0 -0.125 0.01"/>
       <geometry>
-        <sphere radius="0.09"/>
-      </geometry>
-    </collision>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0.06"/>
-      <geometry>
-        <sphere radius="0.09"/>
+        <cylinder length="0.13" radius="0.066"/>
       </geometry>
     </collision>
     <inertial>
@@ -111,7 +87,7 @@ export const panda = `<?xml version="1.0" ?>
         <mesh filename="package://franka_ros/franka_description/meshes/visual/link3.dae"/>
       </geometry>
     </visual>
-    <collision>
+    <!-- <collision>
       <origin rpy="0 0 0" xyz="0 0 -0.145"/>
       <geometry>
         <cylinder length="0.15" radius="0.09"/>
@@ -128,7 +104,7 @@ export const panda = `<?xml version="1.0" ?>
       <geometry>
         <sphere radius="0.09"/>
       </geometry>
-    </collision>
+    </collision> -->
     <inertial>
       <origin rpy="0 0 0" xyz="2.7518e-02 3.9252e-02 -6.6502e-02"/>
       <mass value="3.228604"/>
@@ -149,7 +125,7 @@ export const panda = `<?xml version="1.0" ?>
         <mesh filename="package://franka_ros/franka_description/meshes/visual/link4.dae"/>
       </geometry>
     </visual>
-    <collision>
+    <!-- <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
         <cylinder length="0.12" radius="0.09"/>
@@ -166,7 +142,7 @@ export const panda = `<?xml version="1.0" ?>
       <geometry>
         <sphere radius="0.09"/>
       </geometry>
-    </collision>
+    </collision> -->
     <inertial>
       <origin rpy="0 0 0" xyz="-5.317e-02 1.04419e-01 2.7454e-02"/>
       <mass value="3.587895"/>
@@ -187,7 +163,7 @@ export const panda = `<?xml version="1.0" ?>
         <mesh filename="package://franka_ros/franka_description/meshes/visual/link5.dae"/>
       </geometry>
     </visual>
-    <collision>
+    <!-- <collision>
       <origin rpy="0 0 0" xyz="0 0 -0.26"/>
       <geometry>
         <cylinder length="0.1" radius="0.09"/>
@@ -222,7 +198,7 @@ export const panda = `<?xml version="1.0" ?>
       <geometry>
         <sphere radius="0.055"/>
       </geometry>
-    </collision>
+    </collision> -->
     <inertial>
       <origin rpy="0 0 0" xyz="-1.1953e-02 4.1065e-02 -3.8437e-02"/>
       <mass value="1.225946"/>
@@ -436,4 +412,4 @@ export const panda = `<?xml version="1.0" ?>
     <limit effort="20" lower="0.0" upper="0.04" velocity="0.2"/>
     <mimic joint="panda_finger_joint1"/>
   </joint>
-</robot>`
+</robot>`;

@@ -7,7 +7,8 @@ import { Box, Heading, Text, Menu } from "grommet";
 import { StatusInfo, StatusGood, StatusWarning, FormDown } from 'grommet-icons';
 import { panda } from "../DefaultRobots/panda";
 import { ur3 } from "../DefaultRobots/ur3";
-import MonacoEditor from '@uiw/react-monacoeditor';
+// import MonacoEditor from '@uiw/react-monacoeditor';
+import Editor from "@monaco-editor/react";
 
 const PresetMenu = (props) => {
     
@@ -86,7 +87,7 @@ export const URDF = () => {
                 <PresetMenu />
             </Box> */}
             <Box animation='fadeIn' fill background='black'>
-                <MonacoEditor
+                <Editor
                     language='xml'
                     value={urdf}
                     onChange={(v,e)=>setUrdf(v)}
