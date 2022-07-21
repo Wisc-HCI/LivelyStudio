@@ -17,7 +17,7 @@ export default function Model(props) {
       // rotation: [Math.PI / 2, Math.PI / 2, -Math.PI / 2],
       // rotation: [Math.PI / 2, -Math.PI / 2, -Math.PI / 2],
       // rotation: [-Math.PI / 2, Math.PI / 2, -Math.PI / 2],
-      rotation: [Math.PI, Math.PI, Math.PI],
+      rotation: [Math.PI/2, Math.PI, Math.PI],
       position: [0, -0.12, 0],
       children: [
         {
