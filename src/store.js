@@ -83,6 +83,9 @@ useStore.subscribe((state)=>state.solverWorker,
   }
 )
 
+// Selector functions take a specific element of a state
+// Need to access state.programData which contains all the blocks that have been added
+
 // Handle cascading listeners to update the solver
 useStore.subscribe(
   (state) => state.urdf,
@@ -120,7 +123,7 @@ useStore.subscribe(
   {equalityFn: shallow}
 )
 
-useStore.subscribe(state=>state.items,console.log)
+useStore.subscribe(state=>state.programData,console.log)
 
 
 // Finally, set the program based on the spec and solver instance
