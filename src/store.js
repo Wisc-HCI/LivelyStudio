@@ -21,10 +21,6 @@ const immer = (config) => (set, get, api) =>
     api
   );
 
-const createNewSolver = (state) => {};
-
-const updateSolver = (state) => {};
-
 const store = (set, get) => ({
   isValid: false,
   solverWorker: null,

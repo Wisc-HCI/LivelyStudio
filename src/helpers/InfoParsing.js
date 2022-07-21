@@ -40,7 +40,7 @@ export function shape2item(shape, isCollision) {
         case 'Mesh':
             item.shape = shape.filename;
             item.scale = { x: shape.x, y: shape.y, z: shape.z };
-            item.color = undefined;
+            item.color = {r:200,g:200,b:200,a:0.5};
             break;
         default:
             item.shape = 'box'
