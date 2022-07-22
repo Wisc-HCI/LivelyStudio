@@ -1,7 +1,7 @@
 import create from "zustand";
 import produce from "immer";
 import { SceneSlice } from "robot-scene";
-import { ProgrammingSlice } from "simple-vp";
+import { ProgrammingSlice, instanceTemplateFromSpec } from "simple-vp";
 import { programSpec } from "./programSpec";
 import { subscribeWithSelector } from "zustand/middleware";
 import { DEFAULTS } from "./defaults";
@@ -116,12 +116,13 @@ useStore.subscribe(
   {equalityFn: shallow}
 )
 
-useStore.subscribe(state=>state.items,console.log)
+useStore.subscribe(state=>state.programData,console.log)
 
 
 // Finally, set the program based on the spec and solver instance
 const solverWorker = new SolverWorker();
 const solverWorkerInstance = Comlink.wrap(solverWorker);
 useStore.setState({ programSpec, solverWorker: solverWorkerInstance });
+// useStore.setState({programData: {'s':instanceTemplateFromSpec('stateType',programSpec.objectTypes.stateType,false)}})
 
 export default useStore;
