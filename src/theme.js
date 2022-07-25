@@ -5,7 +5,7 @@ export const getTheme = (primaryColor) => ({
     global: {
       colors: {
         brand: primaryColor,
-        background: "#000000",
+        // background: "#000000",
         control: primaryColor,
       },
       font: {

@@ -1,4 +1,4 @@
-import { Grommet, Grid, Box } from "grommet";
+import { Grommet, Grid, Box, Layer } from "grommet";
 import { getTheme } from "./theme";
 import { Scene } from "robot-scene";
 import { Environment } from "simple-vp";
@@ -12,12 +12,17 @@ import { Menu } from "./Menu";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import MeshLookupTable from "./Meshes";
 // import { FiSettings } from "react-icons/fi";
+import { appWindow } from "@tauri-apps/api/window";
+import { DEFAULTS } from "./defaults";
 
 function App() {
   const primaryColor = "#c5050c";
   const theme = getTheme(primaryColor);
   const [editorRef, editorBounds] = useMeasure();
-  const [mode, setMode] = useState("default");
+  const urdf = useStore((state) => state.urdf);
+  const [mode, setMode] = useState(
+    urdf === DEFAULTS.urdf ? "setup" : "default"
+  );
 
   const muiTheme = createTheme({
     palette: {
@@ -39,57 +44,58 @@ function App() {
   // console.log('rerender')
 
   return (
-      <ThemeProvider theme={muiTheme}>
-        <Grommet full theme={theme}>
-          <Box fill direction="row">
-            <Box
-              flex
-              background="#44444477"
-              pad="xxsmall"
-              style={{ overflow: "hidden" }}
-            >
-              <Scene
-                // displayTfs={true}
-                displayGrid={true}
-                isPolar={false}
-                backgroundColor="#1e1e1e"
-                planeColor="#141414"
-                highlightColor={primaryColor}
-                plane={0}
-                fov={50}
-                store={useStore}
-                meshLookup={MeshLookupTable}
-                // onPointerMissed={clearFocus}
-                // paused={paused}
-              />
-            </Box>
-            <Box flex background="#44444477" direction="column">
-              <Box align="center" pad="small" justify="between" direction="row">
-                <Menu mode={mode} setMode={setMode} />
-              </Box>
-              {mode === "default" ? (
-                <Box
-                  ref={editorRef}
-                  align="center"
-                  justify="center"
-                  animation="fadeIn"
-                  height="100%"
-                >
-                  <Environment
-                    store={useStore}
-                    highlightColor={primaryColor}
-                    height={editorBounds.height - 5}
-                    width={editorBounds.width - 5}
-                    snapToGrid={false}
-                  />
-                </Box>
-              ) : (
-                <URDF />
-              )}
-            </Box>
+    <ThemeProvider theme={muiTheme}>
+      <Grommet full theme={theme}>
+        <Box width="100vw" height="100vh" direction="row">
+          <Box
+            flex
+            background="#111"
+            // pad="xxsmall"
+            style={{ overflow: "hidden" }}
+          >
+            <Scene
+              // displayTfs={true}
+              displayGrid={true}
+              isPolar={false}
+              backgroundColor="#1e1e1e"
+              planeColor="#141414"
+              highlightColor={primaryColor}
+              plane={0}
+              fov={50}
+              store={useStore}
+              meshLookup={MeshLookupTable}
+              // onPointerMissed={clearFocus}
+              // paused={paused}
+            />
           </Box>
-        </Grommet>
-      </ThemeProvider>
+
+          <Box flex background="#111" direction="column">
+            {/* <Box align="center" pad="small" justify="between" direction="row" style={{boxShadow:'2px 2px 1px 1px #11111155'}}> */}
+              <Menu mode={mode} setMode={setMode} />
+            {/* </Box> */}
+            {mode === "default" ? (
+              <Box
+                ref={editorRef}
+                align="center"
+                justify="center"
+                animation="fadeIn"
+                height="100%"
+              >
+                <Environment
+                  store={useStore}
+                  highlightColor={primaryColor}
+                  height={editorBounds.height - 5}
+                  width={editorBounds.width - 5}
+                  snapToGrid={false}
+                />
+              </Box>
+            ) : (
+              <URDF />
+            )}
+          </Box>
+        </Box>
+      </Grommet>
+    </ThemeProvider>
   );
 }
 
