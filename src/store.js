@@ -5,10 +5,23 @@ import { ProgrammingSlice, instanceTemplateFromSpec } from "simple-vp";
 import { programSpec } from "./programSpec";
 import { subscribeWithSelector } from "zustand/middleware";
 import { DEFAULTS } from "./defaults";
-import * as Comlink from 'comlink';
-import SolverWorker from './solver-worker?worker';
+import * as Comlink from "comlink";
+import SolverWorker from "./solver-worker?worker";
 import { shape2item, state2tfs } from "./helpers/InfoParsing";
-import shallow from 'zustand/shallow'
+import shallow from "zustand/shallow";
+import { invoke } from "@tauri-apps/api/tauri";
+import init from "puppeteer-rust";
+
+// async function test() {
+//   let retrieved = 0;
+//   retrieved = await invoke('retrieve');
+//   console.log(retrieved);
+//   await invoke('increment');
+//   retrieved = await invoke('retrieve');
+//   console.log(retrieved);
+// }
+
+// test();
 
 const immer = (config) => (set, get, api) =>
   config(
@@ -25,10 +38,14 @@ const store = (set, get) => ({
   isValid: false,
   solverWorker: null,
   urdf: DEFAULTS.urdf,
-  setUrdf: (urdf) => set({urdf}),
+  setUrdf: (urdf) => set({ urdf }),
   rootBounds: [
-    { value: 0.0, delta: 0.0 }, { value: 0.0, delta: 0.0 }, { value: 0.0, delta: 0.0 }, // Translational
-    { value: 0.0, delta: 0.0 }, { value: 0.0, delta: 0.0 }, { value: 0.0, delta: 0.0 }  // Rotational
+    { value: 0.0, delta: 0.0 },
+    { value: 0.0, delta: 0.0 },
+    { value: 0.0, delta: 0.0 }, // Translational
+    { value: 0.0, delta: 0.0 },
+    { value: 0.0, delta: 0.0 },
+    { value: 0.0, delta: 0.0 }, // Rotational
   ],
   persistentShapes: [],
   objectives: [],
@@ -57,27 +74,39 @@ const store = (set, get) => ({
     },
   },
   ...ProgrammingSlice(set, get), // default programming slice for simple-vp,
-  setTfs: (tfstate) => set(state=>{
-    const tfs = state2tfs(tfstate)
-    // console.log(tfs)
-    state.tfs = tfs
-  })
+  setTfs: (tfstate) =>
+    set((state) => {
+      const tfs = state2tfs(tfstate);
+      console.log(tfs)
+      state.tfs = tfs;
+    }),
 });
 
 const immerStore = immer(store);
 
 const useStore = create(subscribeWithSelector(immerStore));
 
+const setTfs = useStore.getState().setTfs;
+
+// setInterval(async ()=>{
+//   const state = await invoke('solve');
+//   console.log('state',state)
+//   if (state) {
+//     setTfs(state);
+//   }
+// }, 500)
+
 const setTfProxy = Comlink.proxy(useStore.getState().setTfs);
 
-useStore.subscribe((state)=>state.solverWorker,
-  async v=>{
-    console.log('change in worker instance',v)
-    const isValid = await v.urdf;
+useStore.subscribe(
+  (state) => state.solverWorker,
+  async (v) => {
+    console.log("change in worker instance", v);
+    // const isValid = await v.urdf;
     // console.log(isValid)
-    await v.setStateSetter(setTfProxy)
+    await v.setStateSetter(setTfProxy);
   }
-)
+);
 
 // Selector functions take a specific element of a state
 // Need to access state.programData which contains all the blocks that have been added
@@ -85,13 +114,18 @@ useStore.subscribe((state)=>state.solverWorker,
 // Handle cascading listeners to update the solver
 useStore.subscribe(
   (state) => state.urdf,
-  async (v) => {
-    console.log("creating a new solver due to change in urdf");
+  async (urdf) => {
+    const result = await invoke("update_urdf", { urdf });
     const worker = useStore.getState().solverWorker;
-
-    const {isValid,links,joints} = await worker.setUrdf(v,setTfProxy);
-    // console.log({isValid,links,joints})
-    useStore.setState({isValid,links,joints});
+    if (result) {
+      const initialState = await invoke("solve");
+      setTfs(initialState);
+      useStore.setState({ links: result.links, joints: result.joints, isValid: true });
+      worker.startSolver(setTfProxy);
+    } else {
+      useStore.setState({ links: [], joints: [], isValid: false });
+      worker.stopSolver();
+    }
   }
 );
 
@@ -99,28 +133,33 @@ useStore.subscribe(
   (state) => state.links,
   (links) => {
     let robotMeshes = {};
-    links.forEach(link=>{
-      link.visuals.forEach((visual,i) => {
-        robotMeshes[`visual-${link.name}-${i}`] = shape2item(visual,false)
-      })
-      link.collisions.forEach((collision,i) => {
-        robotMeshes[`collision-${link.name}-${i}`] = shape2item(collision,true)
-      })
-    })
-    useStore.setState({robotMeshes})
+    links.forEach((link) => {
+      link.visuals.forEach((visual, i) => {
+        robotMeshes[`visual-${link.name}-${i}`] = shape2item(visual, false);
+      });
+      link.collisions.forEach((collision, i) => {
+        robotMeshes[`collision-${link.name}-${i}`] = shape2item(
+          collision,
+          true
+        );
+      });
+    });
+    useStore.setState({ robotMeshes });
   }
-)
+);
 
 useStore.subscribe(
-  (state) => ({robotMeshes:state.robotMeshes,feedbackMeshes:state.feedbackMeshes}),
-  ({robotMeshes,feedbackMeshes})=>{
-    useStore.setState({items:{...robotMeshes,...feedbackMeshes}})
+  (state) => ({
+    robotMeshes: state.robotMeshes,
+    feedbackMeshes: state.feedbackMeshes,
+  }),
+  ({ robotMeshes, feedbackMeshes }) => {
+    useStore.setState({ items: { ...robotMeshes, ...feedbackMeshes } });
   },
-  {equalityFn: shallow}
-)
+  { equalityFn: shallow }
+);
 
-useStore.subscribe(state=>state.programData,console.log)
-
+useStore.subscribe((state) => state.programData, console.log);
 
 // Finally, set the program based on the spec and solver instance
 const solverWorker = new SolverWorker();
