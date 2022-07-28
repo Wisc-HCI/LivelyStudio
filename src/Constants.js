@@ -53,6 +53,68 @@ export const behaviorPropertyDrawerLiveliness = [
     "originOrientationLivelinessBehaviorProperty"
 ]
 
+//All Behavior Properties
+export const allBehaviorProperties = [
+    "collisionAvoidanceBehaviorProperty",
+    "jointLimitsBehaviorProperty",
+    "velocityMinimizationBehaviorProperty",
+    "originVelocityMinimizationBehaviorProperty",
+    "accelerationMinimizationBehaviorProperty",
+    "originAccelerationMinimizationBehaviorProperty",
+    "jerkMinimizationBehaviorProperty",
+    "originJerkMinimizationBehaviorProperty",
+    "smoothnessMacroBehaviorProperty",
+    "positionBoundingBehaviorProperty",
+    "orientationBoundingBehaviorProperty",
+    "jointBoundingBehaviorProperty",
+    "positionMatchBehaviorProperty",
+    "orientationMatchBehaviorProperty",
+    "jointMatchBehaviorProperty",
+    "originPositionMatchBehaviorProperty",
+    "distanceMatchBehaviorProperty",
+    "originOrientationMatchBehaviorProperty",
+    "positionMirroringBehaviorProperty",
+    "orientationMirroringBehaviorProperty",
+    "jointMirroringBehaviorProperty",
+    "gravityBehaviorProperty",
+    "positionLivelinessBehaviorProperty",
+    "orientationLivelinessBehaviorProperty",
+    "jointLivelinessBehaviorProperty",
+    "relativeMotionLivelinessBehaviorProperty",
+    "originPositionLivelinessBehaviorProperty",
+    "originOrientationLivelinessBehaviorProperty"
+]
 
+//Behavior Properties Look-up Table
+export const behaviorPropertyLookup = {
+    "collisionAvoidanceBehaviorProperty": "CollisionAvoidance",
+    "jointLimitsBehaviorProperty": "JointLimits",
+    "velocityMinimizationBehaviorProperty": "VelocityMinimization",
+    "originVelocityMinimizationBehaviorProperty": "OriginVelocityMinimization",
+    "accelerationMinimizationBehaviorProperty": "AccelerationMinimization",
+    "originAccelerationMinimizationBehaviorProperty": "OriginAccelerationMinimization",
+    "jerkMinimizationBehaviorProperty": "JerkMinimization",
+    "originJerkMinimizationBehaviorProperty": "OriginJerkMinimization",
+    "smoothnessMacroBehaviorProperty": "SmoothnessMacro",
+    "positionBoundingBehaviorProperty": "PositionBounding",
+    "orientationBoundingBehaviorProperty": "OrientationBounding",
+    "jointBoundingBehaviorProperty": "JointBounding",
+    "positionMatchBehaviorProperty": "PositionMatch",
+    "orientationMatchBehaviorProperty": "OrientationMatch",
+    "jointMatchBehaviorProperty": "JointMatch",
+    "originPositionMatchBehaviorProperty": "OriginPositionMatch",
+    "distanceMatchBehaviorProperty": "DistanceMatch",
+    "originOrientationMatchBehaviorProperty": "OriginOrientationMatch",
+    "positionMirroringBehaviorProperty": "PositionMirroring",
+    "orientationMirroringBehaviorProperty": "OrientationMirroring",
+    "jointMirroringBehaviorProperty": "JointMirroring",
+    "gravityBehaviorProperty": "Gravity",
+    "positionLivelinessBehaviorProperty": "PositionLiveliness",
+    "orientationLivelinessBehaviorProperty": "OrientationLiveliness",
+    "jointLivelinessBehaviorProperty": "JointLiveliness",
+    "relativeMotionLivelinessBehaviorProperty": "RelativeMotionLiveliness",
+    "originPositionLivelinessBehaviorProperty": "OriginPositionLiveliness",
+    "originOrientationLivelinessBehaviorProperty": "OriginOrientationLiveliness"
+}
 
 
