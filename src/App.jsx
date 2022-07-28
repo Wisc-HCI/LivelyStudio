@@ -1,8 +1,6 @@
-import { Grommet, Grid, Box } from "grommet";
+import { Grommet, Grid, Box, Layer } from "grommet";
 import { getTheme } from "./theme";
-import {
-  Scene
-} from "robot-scene";
+import { Scene } from "robot-scene";
 import { Environment } from "simple-vp";
 import useStore from "./store";
 import useMeasure from "react-use-measure";
@@ -14,12 +12,17 @@ import { Menu } from "./Menu";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import MeshLookupTable from "./Meshes";
 // import { FiSettings } from "react-icons/fi";
+import { appWindow } from "@tauri-apps/api/window";
+import { DEFAULTS } from "./defaults";
 
 function App() {
   const primaryColor = "#c5050c";
   const theme = getTheme(primaryColor);
   const [editorRef, editorBounds] = useMeasure();
-  const [mode, setMode] = useState("default");
+  const urdf = useStore((state) => state.urdf);
+  const [mode, setMode] = useState(
+    urdf === DEFAULTS.urdf ? "setup" : "default"
+  );
 
   const muiTheme = createTheme({
     palette: {
@@ -43,36 +46,33 @@ function App() {
   return (
     <ThemeProvider theme={muiTheme}>
       <Grommet full theme={theme}>
-        <Box fill direction="row" style={{ position: "fixed" }}>
+        <Box width="100vw" height="100vh" direction="row">
           <Box
             flex
-            background="#44444477"
-            pad="xxsmall"
+            background="#111"
+            // pad="xxsmall"
             style={{ overflow: "hidden" }}
           >
             <Scene
-                  // displayTfs={true}
-                  displayGrid={true}
-                  isPolar={false}
-                  backgroundColor="#1e1e1e"
-                  planeColor="#141414"
-                  highlightColor={primaryColor}
-                  plane={0}
-                  fov={50}
-                  store={useStore}
-                  meshLookup={MeshLookupTable}
-                  // onPointerMissed={clearFocus}
-                  // paused={paused}
-                />
+              // displayTfs={true}
+              displayGrid={true}
+              isPolar={false}
+              backgroundColor="#1e1e1e"
+              planeColor="#141414"
+              highlightColor={primaryColor}
+              plane={0}
+              fov={50}
+              store={useStore}
+              meshLookup={MeshLookupTable}
+              // onPointerMissed={clearFocus}
+              // paused={paused}
+            />
           </Box>
-          <Box flex background="#44444477" direction="column">
-            <Box align="center" pad="small" justify="between" direction="row">
-              <Menu mode={mode} setMode={setMode} />
 
-              {/* <Button color="pop" variant="outlined">
-                {mode === "default" ? "Setup" : "Return"}
-              </Button> */}
-            </Box>
+          <Box flex background="#111" direction="column">
+            {/* <Box align="center" pad="small" justify="between" direction="row" style={{boxShadow:'2px 2px 1px 1px #11111155'}}> */}
+              <Menu mode={mode} setMode={setMode} />
+            {/* </Box> */}
             {mode === "default" ? (
               <Box
                 ref={editorRef}
@@ -94,22 +94,6 @@ function App() {
             )}
           </Box>
         </Box>
-        {/* <Grid
-        fill
-        rows={["xxsmall", "flex"]}
-        columns={["flex", "flex"]}
-        gap="xsmall"
-        areas={[
-          { name: "header", start: [0, 0], end: [1, 0] },
-          { name: "sim", start: [0, 1], end: [0, 1] },
-          { name: "editor", start: [1, 1], end: [1, 1] },
-        ]}
-      >
-        <Box gridArea="header" background="#9b0000" direction='row' justify='between' align='center' pad='small'>
-          Puppeteer
-          
-        
-      </Grid> */}
       </Grommet>
     </ThemeProvider>
   );

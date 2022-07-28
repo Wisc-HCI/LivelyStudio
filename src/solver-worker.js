@@ -40,11 +40,11 @@ const obj = {
     // }
     this.process = setInterval(() => {
       if (this.solver && !this.running) {
-        console.log("solving");
+        // console.log("solving");
         this.running = true;
         const time = Date.now() / 1000;
         let state = this.solver.solve(this.goals, this.weights, time, []);
-        console.log(state)
+        // console.log(state)
         stateSetter(state);
         this.running = false;
       }
@@ -77,7 +77,7 @@ const obj = {
         this.links = this.solver.links;
         this.joints = this.solver.joints;
         this.startSolver(stateSetter);
-        console.log("started solver loop");
+        // console.log("started solver loop");
       } catch {
         console.log("failed to parse");
         this.solver = null;
