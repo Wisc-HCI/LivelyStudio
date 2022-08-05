@@ -71,7 +71,12 @@ const defaultWeight = {
   default: 1
 }
 
-//Name, weight, link
+const defaultTranslation = [1.0, 1.0, 1.0]
+const defaultRotation = [0.0, 0.0, 0.0, 0.0]
+const defaultScalar = 1
+const defaultSize = [1.0, 1.0, 1.0]
+
+//Name, weight, link, translation
 const positionMatchBehaviorData = {
   name: 'Position Match Behavior',
   instanceBlock: {
@@ -82,56 +87,18 @@ const positionMatchBehaviorData = {
     link: {
       name: "Link",
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
-      options: [/* We will generate these based on the robot */],
-      default: '', // This will probably just be the first option.
+      options: [],
+      default: '',
+    },
+    goal: {
+      name: "Translation",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Translation: defaultTranslation }
     }
-    /* 
-    There will be other properties that will need to be specified. 
-    See struct information in files like src/objectives/core/base.rs for more detail on what needs to be included. 
-    For now, you can ignore 'name' and 'weight' fields, but generally look at the 'new()' 
-    methods in those files, and you should see the initialization fields.
-    For example, the PositionMatchObjective (src/objectives/core/matching.rs)
-    looks like this:
-
-    #[repr(C)]
-    #[derive(Serialize,Deserialize,Clone,Debug,Default)]
-    pub struct PositionMatchObjective {
-      pub name: String,
-      pub weight: f64,
-      pub link: String,
-      // Goal Value
-      #[serde(skip)]
-      pub goal: Vector3<f64>
-    }
-
-    impl PositionMatchObjective {
-
-      pub fn new(name: String, weight: f64, link: String) -> Self {
-          Self { name, weight, link, goal: vector![0.0,0.0,0.0] }
-      }
-
-      pub fn call(
-        &self,
-        _v: &Vars,
-        state: &State,
-        _is_core: bool,
-      ) -> f64 {
-        // Get the link transform from frames
-        let link_translation = state.get_link_transform(&self.link).translation.vector;
-
-        let x_val = (link_translation - self.goal).norm();
-
-        return self.weight * groove_loss(x_val, 0., 2, 0.1, 10.0, 2)
-      }
-    }
-
-    The 'new' method in the "impl" block takes 3 inputs, 'name', 'weight', and 'link'.
-    So we really only need to add 'link' for this one.
-    */
   }
 }
 
-//Name, weight, link
+//Name, weight, link, rotation
 const orientationMatchBehaviorData = {
   name: 'Orientation Match Behavior',
   instanceBlock: {
@@ -144,11 +111,16 @@ const orientationMatchBehaviorData = {
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',
+    },
+    goal: {
+      name: "Rotation",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Rotation: defaultRotation }
     }
   }
 }
 
-//Name, weight, link, frequency
+//Name, weight, link, frequency, size
 const positionLivelinessBehaviorData = {
   name: 'Position Liveliness Behavior',
   instanceBlock: {
@@ -163,10 +135,15 @@ const positionLivelinessBehaviorData = {
       default: '',
     },
     frequency: defaultFrequency,
+    goal: {
+      name: "Size",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Size: defaultSize }
+    }
   }
 }
 
-//Name, weight, link, frequency
+//Name, weight, link, frequency, size
 const orientationLivelinessBehaviorData = {
   name: 'Orientation Liveliness Behavior',
   instanceBlock: {
@@ -181,10 +158,15 @@ const orientationLivelinessBehaviorData = {
       default: '',
     },
     frequency: defaultFrequency,
+    goal: {
+      name: "Size",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Size: defaultSize }
+    }
   }
 }
 
-//Name, weight, link1, link2
+//Name, weight, link1, link2, translation
 const positionMirroringBehaviorData = {
   name: 'Position Mirroring Behavior',
   instanceBlock: {
@@ -203,11 +185,16 @@ const positionMirroringBehaviorData = {
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',
+    },
+    goal: {
+      name: "Translation",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Translation: defaultTranslation }
     }
   }
 }
 
-//Name, weight, link1, link2
+//Name, weight, link1, link2, rotation
 const orientationMirroringBehaviorData = {
   name: 'Orientation Mirroring Behavior',
   instanceBlock: {
@@ -226,11 +213,16 @@ const orientationMirroringBehaviorData = {
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',
+    },
+    goal: {
+      name: "Rotation",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Rotation: defaultRotation }
     }
   }
 }
 
-//Name, weight, link
+//Name, weight, link, elipse
 const positionBoundingBehaviorData = {
   name: 'Position Bounding Behavior',
   instanceBlock: {
@@ -243,6 +235,17 @@ const positionBoundingBehaviorData = {
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',
+    },
+    goal: {
+      name: "Elipse",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: {
+        Ellipse: {
+          pose: { translation: defaultTranslation, rotation: defaultRotation },
+          size: defaultSize
+        }
+      }
+
     }
   }
 }
@@ -264,7 +267,7 @@ const orientationBoundingBehaviorData = {
   }
 }
 
-//Name, weight, joint
+//Name, weight, joint, scalar
 const jointMatchBehaviorData = {
   name: 'Joint Match Behavior',
   instanceBlock: {
@@ -277,11 +280,16 @@ const jointMatchBehaviorData = {
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',
+    },
+    goal: {
+      name: "Scalar",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Scalar: defaultScalar }
     }
   }
 }
 
-//Name, weight, link, frequency
+//Name, weight, link, frequency, scalar
 const jointLivelinessBehaviorData = {
   name: 'Joint Liveliness Behavior',
   instanceBlock: {
@@ -296,10 +304,15 @@ const jointLivelinessBehaviorData = {
       default: '',
     },
     frequency: defaultFrequency,
+    goal: {
+      name: "Scalar",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Scalar: defaultScalar }
+    }
   }
 }
 
-//Name, weight, joint1, joint2
+//Name, weight, joint1, joint2, scalar
 const jointMirroringBehaviorData = {
   name: 'Joint Mirroring Behavior',
   instanceBlock: {
@@ -318,6 +331,11 @@ const jointMirroringBehaviorData = {
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',
+    },
+    goal: {
+      name: "Scalar",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Scalar: defaultScalar }
     }
   }
 }
@@ -333,7 +351,7 @@ const jointLimitsBehaviorData = {
   }
 }
 
-//Name, weight, joint
+//Name, weight, joint, scalar range
 const jointBoundingBehaviorData = {
   name: 'Joint Bounding Behavior',
   instanceBlock: {
@@ -346,6 +364,11 @@ const jointBoundingBehaviorData = {
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',
+    },
+    goal: {
+      name: "Scalar Range",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: {ScalarRange: {value:0.0, delta:0.4} }
     }
   }
 }
@@ -427,7 +450,7 @@ const originJerkMinimizationBehaviorData = {
   }
 }
 
-//Name, weight, link 1, link 2, frequency
+//Name, weight, link 1, link 2, frequency, scalar
 const relativeMotionLivelinessBehaviorData = {
   name: 'Relative Motion Liveliness Behavior',
   instanceBlock: {
@@ -448,10 +471,15 @@ const relativeMotionLivelinessBehaviorData = {
       default: '',
     },
     frequency: defaultFrequency,
+    goal: {
+      name: "Scalar",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Scalar: defaultScalar }
+    }
   }
 }
 
-//Name, weight, frequency
+//Name, weight, frequency, size
 const originPositionLivelinessBehaviorData = {
   name: 'Origin Position Liveliness Behavior',
   instanceBlock: {
@@ -460,10 +488,15 @@ const originPositionLivelinessBehaviorData = {
   },
   properties: {
     frequency: defaultFrequency,
+    goal: {
+      name: "Size",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Size: defaultSize }
+    }
   }
 }
 
-//Name, weight, frequency
+//Name, weight, frequency, size
 const originOrientationLivelinessBehaviorData = {
   name: 'Origin Orientation Liveliness Behavior',
   instanceBlock: {
@@ -472,10 +505,15 @@ const originOrientationLivelinessBehaviorData = {
   },
   properties: {
     frequency: defaultFrequency,
+    goal: {
+      name: "Size",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Size: defaultSize }
+    }
   }
 }
 
-//Name, weight
+//Name, weight, translation
 const originPositionMatchBehaviorData = {
   name: 'Origin Position Match Behavior',
   instanceBlock: {
@@ -483,10 +521,15 @@ const originPositionMatchBehaviorData = {
     color: behaviorPropertyColorMatching
   },
   properties: {
+    goal: {
+      name: "Translation",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Translation: defaultTranslation }
+    }
   }
 }
 
-//Name, weight
+//Name, weight, rotation
 const originOrientationMatchBehaviorData = {
   name: 'Origin Orientation Match Behavior',
   instanceBlock: {
@@ -494,6 +537,11 @@ const originOrientationMatchBehaviorData = {
     color: behaviorPropertyColorMatching
   },
   properties: {
+    goal: {
+      name: "Rotation",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Rotation: defaultRotation }
+    }
   }
 }
 
@@ -525,7 +573,7 @@ const smoothnessMacroBehaviorData = {
   }
 }
 
-//Name, weight, link1, link2
+//Name, weight, link1, link2, scalar
 const distanceMatchBehaviorData = {
   name: 'Distance Match Behavior',
   instanceBlock: {
@@ -544,6 +592,11 @@ const distanceMatchBehaviorData = {
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',
+    },
+    goal: {
+      name: "Scalar",
+      type: SIMPLE_PROPERTY_TYPES.IGNORED,
+      default: { Scalar: defaultScalar }
     }
   }
 }

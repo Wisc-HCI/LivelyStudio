@@ -96,13 +96,13 @@ function removeDup(objectList) {
       }
       //The current comparison is not equivalent to any others, so it must be unique
       if (j == 0) {
-        uniqueObjects.push(objectList[i])
+        uniqueObjects.unshift(objectList[i])
       }
     }
   }
   //If only objective in list so it must be unique
   if (objectList.length != 0) {
-    uniqueObjects.push(objectList[0])
+    uniqueObjects.unshift(objectList[0])
   }
   return uniqueObjects
 }
@@ -189,6 +189,9 @@ useStore.subscribe(
         if (tempBP.properties.frequency !== undefined) {
           tempObjective.frequency = tempBP.properties.frequency
         }
+        if (tempBP.properties.goal !== undefined) {
+          tempObjective.goal = tempBP.properties.goal
+        }
 
         //Add the objective to its state
         tempObjList.push(tempObjective)
@@ -230,33 +233,52 @@ useStore.subscribe(
         break
       }
       //Iterate through each unique objective
+      goalDict[key] = []
       for (let objIndex = 0; objIndex < allUniqueObjectives.length; objIndex++) {
-        goalDict[key] = {}
+        let subGoal = {}
         //Add meaningful weight and data to states containing the current objective
         if ((allUniqueObjectives[objIndex].stateIDs).includes(key)){
-          goalDict[key]["index"] = objIndex
-          goalDict[key]["weight"] = allUniqueObjectives[objIndex].weight
-          //TODO: This is were we will also need to add vectors or other goal data
+          subGoal["index"] = objIndex
+          subGoal["weight"] = allUniqueObjectives[objIndex].weight
+          //Add goal data if present
+          if (allUniqueObjectives[objIndex].goal != undefined){
+            subGoal["goal"] = allUniqueObjectives[objIndex].goal
+          }
+          goalDict[key].push(subGoal)
         }
         //Add weight of zero to states not containing the current objective
         else{
-          goalDict[key]["index"] = objIndex
-          goalDict[key]["weight"] = 0
+          subGoal["index"] = objIndex
+          subGoal["weight"] = 0
+          goalDict[key].push(subGoal)
         }
       }
     }
 
     //console.log(objectiveDict)
-    console.log(goalDict)
+    console.log("Objectives Dictionary: ", objectiveDict)
+    console.log("All Unique Objectives: ", allUniqueObjectives)
+    console.log("Goal Dictionary: ", goalDict)
   }
 )
 
-//Questions:
-//Can a single state have the same behavior property more than once (with the same links, joints, 
-//etc.), for example, two gravity objectives?
+//Next Steps:
+//Done
+
+//Changes made:
+//Fixed issue with order of objectives
+//Fixed issue with only some goals being added to goalDict
+//Added goal fields to BP properties in programSpec
+//Piped goal data to goalDict
+
+//Updates/Questions:
+//If we want to add weights based on order, we should implement those weights before goalDict
+//The Elipse and ScalarRange documentation is missing a bracket at the end of the JS example
+//When should we add weights to properties in programSpec?
+//Rotation bounding is an objective mentioned in the LivelyTK documentation, but it's not used?
+//There are many BPs that do not have goals within the LivelyTK documentation. Is that correct?
 
 //-------------------------------------------------------------------------------------------------
-
 
 // Handle cascading listeners to update the solver
 useStore.subscribe(
