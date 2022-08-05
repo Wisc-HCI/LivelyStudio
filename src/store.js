@@ -33,6 +33,7 @@ const store = (set, get) => ({
   ],
   persistentShapes: [],
   objectives: [],
+  currentState: "",
   goals: [],
   weights: [],
   links: [],
@@ -80,89 +81,181 @@ useStore.subscribe((state) => state.solverWorker,
   }
 )
 
-//Making new subscriber to track unique objectives------------------------------------------------------
+//Remove duplicates function-----------------------------------------------------------------------
+function removeDup(objectList) {
+  //Remove duplicates from each state's list of objectives
+  let uniqueObjects = [];
+  let i;
+  let j;
+  //Compare each item against those before it
+  for (i = objectList.length - 1; i >= 1; i--) {
+    for (j = i - 1; j >= 0; j--) {
+      //If the compared objectives are the same, move on to the next objective
+      if (JSON.stringify(objectList[i]) == JSON.stringify(objectList[j])) {
+        break;
+      }
+      //The current comparison is not equivalent to any others, so it must be unique
+      if (j == 0) {
+        uniqueObjects.push(objectList[i])
+      }
+    }
+  }
+  //If only objective in list so it must be unique
+  if (objectList.length != 0) {
+    uniqueObjects.push(objectList[0])
+  }
+  return uniqueObjects
+}
+
+//Making new subscriber to track unique objectives-------------------------------------------------
 useStore.subscribe(
   (state) => state.programData,
   (v) => {
 
+    //GOALS: 
+    //Create a dictionary of lists containing unique objectives in each state
+    //Create a list of all unique objectives in all states
+    //Create a set of goals 
+
+    //Instantiate variables
+    let stateList = [];
+    let stateBPsDict = {};
+    let stateObjDict = {};
+    let objectiveDict = {};
+
     //Creates a list of objects (one object for each node in programData)
     const unfilteredList = Object.values(v);
 
-    //Removes any nodes that are not behavior properties
-    const filteredList = unfilteredList.filter((item) => allBehaviorProperties.includes(item.type));
+    //Use unfilteredList to make a list of states and a list of behavior properties
+    for (let k = 0; k < unfilteredList.length; k++) {
+      //States
+      if (unfilteredList[k].type == "stateType") {
+        stateList.push(unfilteredList[k]);
+      }
+      //Behavior properties
+      else if (allBehaviorProperties.includes(unfilteredList[k].type)) {
+        stateBPsDict[unfilteredList[k].id] = unfilteredList[k];
+      }
+    }
 
-    // Map that set into objectives
-    const behaviorProperties = filteredList.map((item) => {
-      let objective = {
-        type: behaviorPropertyLookup[item.type],
-        name: '',
-        weight: 1
-      }
-      //Add additional properties if they exist for a given objective
-      if (item.properties.link !== undefined) {
-        objective.link = item.properties.link
-      }
-      if (item.properties.link1 !== undefined) {
-        objective.link1 = item.properties.link1
-      }
-      if (item.properties.link2 !== undefined) {
-        objective.link2 = item.properties.link2
-      }
-      if (item.properties.joint !== undefined) {
-        objective.joint = item.properties.joint
-      }
-      if (item.properties.joint1 !== undefined) {
-        objective.joint1 = item.properties.joint1
-      }
-      if (item.properties.joint2 !== undefined) {
-        objective.joint2 = item.properties.joint2
-      }
-      if (item.properties.frequency !== undefined) {
-        objective.frequency = item.properties.frequency
-      }
-      return objective
-    });
+    //Add state ID and their children (BPs) IDs to state/goal structure
+    for (let k = 0; k < stateList.length; k++) {
+      stateObjDict[stateList[k].id] = stateList[k].properties.children
+    }
 
-    //Remove duplicates (Lodash would not work comparing a list of dictionaries)
-    let uniqueBPs = [];
-    let i;
-    let j;
+    //Replace all child (BPs) IDs with objectives within state/goal structure
+    //Iterate through each state
+    for (let stateKey in stateObjDict) {
+      objectiveDict[stateKey] = []
 
-    for (i = behaviorProperties.length - 1; i >= 1; i--) {
-      for (j = i - 1; j >= 0; j--) {
-        //If the compared objectives are the same, move on to the next objective
-        if (JSON.stringify(behaviorProperties[i]) == JSON.stringify(behaviorProperties[j])) {
-          break;
+      //Skip remainder if there are no BPs in the current state
+      if (stateObjDict.length == 0) {
+        break
+      }
+
+      //Iterate through each list of BP IDs
+      let tempObjList = [];
+      for (let l = 0; l < stateObjDict[stateKey].length; l++) {
+        let tempBPID = stateObjDict[stateKey][l]
+        let tempBP = stateBPsDict[tempBPID]
+
+        //Convert BP objects to objectives
+        let tempObjective = {
+          type: behaviorPropertyLookup[tempBP.type],
+          name: '',
+          weight: 1,
+          stateIDs: []
         }
-        //The current comparison is not equivalent to any others, so it must be unique
-        if (j == 0) {
-          uniqueBPs.push(behaviorProperties[i])
+
+        //Add additional properties if they exist for a given objective
+        if (tempBP.properties.link !== undefined) {
+          tempObjective.link = tempBP.properties.link
+        }
+        if (tempBP.properties.link1 !== undefined) {
+          tempObjective.link1 = tempBP.properties.link1
+        }
+        if (tempBP.properties.link2 !== undefined) {
+          tempObjective.link2 = tempBP.properties.link2
+        }
+        if (tempBP.properties.joint !== undefined) {
+          tempObjective.joint = tempBP.properties.joint
+        }
+        if (tempBP.properties.joint1 !== undefined) {
+          tempObjective.joint1 = tempBP.properties.joint1
+        }
+        if (tempBP.properties.joint2 !== undefined) {
+          tempObjective.joint2 = tempBP.properties.joint2
+        }
+        if (tempBP.properties.frequency !== undefined) {
+          tempObjective.frequency = tempBP.properties.frequency
+        }
+
+        //Add the objective to its state
+        tempObjList.push(tempObjective)
+      }
+
+      //Remove duplicate objectives for each state
+      let uniqueObjectives = removeDup(tempObjList)
+
+      //Add unique objectives to state/goal structure
+      objectiveDict[stateKey].push(uniqueObjectives)
+    }
+
+    //Creating a unique set of all objectives in the UI
+    let allStateObjectives = (Object.values(objectiveDict)).flat(2)
+    let allUniqueObjectives = removeDup(allStateObjectives)
+
+    //Determine states in which each unique objective is included
+    //Iterate through each uniqueObjective
+    for (let x = 0; x < allUniqueObjectives.length; x++) {
+      //Iterate through each state in objectiveDict
+      for (let key in objectiveDict) {
+        //Check if the current objective is present in the current state
+        if ((JSON.stringify(objectiveDict[key])).includes(allUniqueObjectives[x].type)) {
+          //If so, save that stateID to that objective in allUniqueObjectives
+          allUniqueObjectives[x].stateIDs.push(key)
         }
       }
     }
-    //Final objective in list so it must be unique
-    if (behaviorProperties.length != 0) {
-      uniqueBPs.push(behaviorProperties[0])
+
+    //Add unique objectives list to store
+    store.objectives = allUniqueObjectives
+
+    //Create a set of goals for each state
+    let goalDict = {}
+    //Iterate through each state
+    for (let key in objectiveDict) {
+      //Skip remainder if there are no objectives in the current state
+      if (allUniqueObjectives.length == 0) {
+        break
+      }
+      //Iterate through each unique objective
+      for (let objIndex = 0; objIndex < allUniqueObjectives.length; objIndex++) {
+        goalDict[key] = {}
+        //Add meaningful weight and data to states containing the current objective
+        if ((allUniqueObjectives[objIndex].stateIDs).includes(key)){
+          goalDict[key]["index"] = objIndex
+          goalDict[key]["weight"] = allUniqueObjectives[objIndex].weight
+          //TODO: This is were we will also need to add vectors or other goal data
+        }
+        //Add weight of zero to states not containing the current objective
+        else{
+          goalDict[key]["index"] = objIndex
+          goalDict[key]["weight"] = 0
+        }
+      }
     }
 
-    //Printing output
-    console.log(uniqueBPs);
+    //console.log(objectiveDict)
+    console.log(goalDict)
   }
 )
 
-//Next Steps (Dakota Notes):
-//Figure out what the current set of goals are, which depends on which state is selected
-//  --> Create a new variable within store called "currentState" which will store the ID of whichever 
-//      state node is currently selected
+//Questions:
+//Can a single state have the same behavior property more than once (with the same links, joints, 
+//etc.), for example, two gravity objectives?
 
-//In store, we need to track the currently slected block (state) and if that changes, then goals would change,
-//which would then presumably cause the robot to move
-//  --> Based on the "currentState", we can access programData and define a unique set of behavioral properties
-//      and determine the relevant goals (we could create a lookup table in constants using the BPs as keys)
-
-//We also need to generate a function that can generate the goal values what will be sent to livelyTK
-//  --> I'm not familiar with what the goal values actually are (are they the weights and other such values?)
-//-------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 
 
 // Handle cascading listeners to update the solver

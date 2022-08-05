@@ -49,7 +49,7 @@ export const Menu = ({ mode, setMode }) => {
         >
           <IconButton
             size="small"
-            disabled={mode === "setup" && marker !== null}
+            //disabled={mode === "setup" && marker !== null}
             color="pop"
             onClick={() => setMode(mode === "default" ? "setup" : "default")}
           >

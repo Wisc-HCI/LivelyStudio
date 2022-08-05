@@ -66,6 +66,11 @@ const defaultFrequency = {
   default: 1,
 }
 
+const defaultWeight = {
+  name: "Weight",
+  default: 1
+}
+
 //Name, weight, link
 const positionMatchBehaviorData = {
   name: 'Position Match Behavior',
