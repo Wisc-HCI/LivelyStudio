@@ -91,6 +91,7 @@ impl LivelyHandler {
           None,
           None,
           None,
+          None
         );
         let links = solver.robot_model.links.clone();
         let joints = solver.robot_model.joints.clone();
@@ -215,7 +216,7 @@ fn main() {
     let loop_runner = Arc::clone(&runner);
     loop {
       loop_runner.0.lock().unwrap().solve();
-      sleep(Duration::from_millis(10))
+      sleep(Duration::from_millis(1))
     };
   });
 
