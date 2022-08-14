@@ -358,5 +358,6 @@ useStore.subscribe(
 // const solverWorkerInstance = Comlink.wrap(solverWorker);
 // useStore.setState({ programSpec, solverWorker: solverWorkerInstance });
 // useStore.setState({programData: {'s':instanceTemplateFromSpec('stateType',programSpec.objectTypes.stateType,false)}})
+useStore.setState({ programSpec });
 
 export default useStore;

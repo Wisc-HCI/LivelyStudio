@@ -5,6 +5,8 @@
 // mod plugin_lively_tk;
 use lively_tk_lib::lively_tk::Solver;
 use lively_tk_lib::objectives::objective::*;
+use lively_tk_lib::objectives::core::matching::*;
+use lively_tk_lib::objectives::core::base::*;
 use lively_tk_lib::utils::goals::*;
 use lively_tk_lib::utils::info::*;
 use lively_tk_lib::utils::shapes::*;
@@ -16,6 +18,8 @@ use std::{
   thread::{sleep, spawn},
   time::{Instant,Duration},
 };
+use tauri::{Manager, Window};
+use nalgebra::geometry::{Translation3, Isometry3, UnitQuaternion};
 use std::sync::Arc;
 use urdf_rs::read_from_string;
 
@@ -46,9 +50,21 @@ impl LivelyHandler {
       urdf: "<xml></xml>".into(),
       solver: None,
       last_solved_state: None,
-      objectives: vec![],
-      goals: vec![],
-      weights: vec![],
+      objectives: vec![
+        // Objective::CollisionAvoidance(CollisionAvoidanceObjective::new("Collision Avoid".to_string(),10.0)),
+        // Objective::PositionMatch(PositionMatchObjective::new("Default Position".to_string(),50.0,"wrist_3_link".to_string())),
+        // Objective::OrientationMatch(OrientationMatchObjective::new("Default Orientation".to_string(),30.0,"wrist_3_link".to_string()))
+      ],
+      goals: vec![
+        // None,
+        // Some(Goal::Translation(Translation3::new(0.1,0.1,0.1))),
+        // Some(Goal::Rotation(UnitQuaternion::identity()))
+      ],
+      weights: vec![
+        // Some(10.0),
+        // Some(50.0),
+        // Some(30.0)
+        ],
       robot_info: None,
       root_bounds: None,
       shapes: vec![],
@@ -62,17 +78,19 @@ impl LivelyHandler {
     let time = elapsed_time.as_secs_f64();
     match &mut self.solver {
       Some(solver) => {
-        println!("Solver Valid, solving...");
+        // println!("Solver Valid, solving...");
+        // let instant = Instant::now();
         let new_state = solver.solve(
           Some(self.goals.clone()),
           Some(self.weights.clone()),
           time,
-          Some(self.shape_updates.clone()),
+          None,
         );
+        // println!("{:?}",instant.elapsed());
         self.last_solved_state = Some(new_state)
       }
       None => {
-        println!("Solver Invalid, skipping...")
+        // println!("Solver Invalid, skipping...")
       }
     }
     self.shape_updates = vec![];
@@ -82,6 +100,8 @@ impl LivelyHandler {
   pub fn update_solver(&mut self) {
     match read_from_string(&self.urdf.as_str()) {
       Ok(_) => {
+        // println!("Creating new solver...");
+        // let instant = Instant::now();
         let solver = Solver::new(
           self.urdf.clone(),
           self.objectives.clone(),
@@ -93,6 +113,7 @@ impl LivelyHandler {
           None,
           None
         );
+        // println!("Created in {:?}",instant.elapsed());
         let links = solver.robot_model.links.clone();
         let joints = solver.robot_model.joints.clone();
         self.solver = Some(solver);
@@ -210,21 +231,25 @@ impl Runner {
 fn main() {
 
   let runner = Arc::new(Runner::new());
-  let tauri_runner = Arc::clone(&runner);
-
-  spawn(move || {
-    let loop_runner = Arc::clone(&runner);
-    loop {
-      loop_runner.0.lock().unwrap().solve();
-      sleep(Duration::from_millis(1))
-    };
-  });
-
-  
+  let managed_runner = Arc::clone(&runner);
 
   tauri::Builder::default()
     // .plugin(plugin_lively_tk::init())
-    .manage(tauri_runner)
+    .setup(|app| {
+      let main_window = app.get_window("main").unwrap();
+      spawn(move || {
+        let loop_runner = Arc::clone(&runner);
+        loop {
+          let instant = Instant::now();
+          let solution = loop_runner.0.lock().unwrap().solve();
+          println!("{:?}",instant.elapsed());
+          main_window.emit("solution-calculated",solution).unwrap();
+          sleep(Duration::from_millis(4));
+        };
+      });
+      Ok(())
+    })
+    .manage(managed_runner)
     .invoke_handler(tauri::generate_handler![
       solve,
       update_urdf,
