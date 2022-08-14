@@ -5,23 +5,12 @@ import { ProgrammingSlice, instanceTemplateFromSpec } from "simple-vp";
 import { programSpec } from "./programSpec";
 import { subscribeWithSelector } from "zustand/middleware";
 import { DEFAULTS } from "./defaults";
-import * as Comlink from "comlink";
-import SolverWorker from "./solver-worker?worker";
 import { shape2item, state2tfs } from "./helpers/InfoParsing";
 import shallow from "zustand/shallow";
 import { invoke } from "@tauri-apps/api/tauri";
-import init from "puppeteer-rust";
-
-// async function test() {
-//   let retrieved = 0;
-//   retrieved = await invoke('retrieve');
-//   console.log(retrieved);
-//   await invoke('increment');
-//   retrieved = await invoke('retrieve');
-//   console.log(retrieved);
-// }
-
-// test();
+import {listen} from '@tauri-apps/api/event';
+import { allBehaviorProperties, behaviorPropertyLookup } from './Constants'
+// import init from "puppeteer-rust";
 
 const immer = (config) => (set, get, api) =>
   config(
@@ -49,6 +38,7 @@ const store = (set, get) => ({
   ],
   persistentShapes: [],
   objectives: [],
+  currentState: "",
   goals: [],
   weights: [],
   links: [],
@@ -74,12 +64,11 @@ const store = (set, get) => ({
     },
   },
   ...ProgrammingSlice(set, get), // default programming slice for simple-vp,
-  setTfs: (tfstate) =>
-    set((state) => {
-      const tfs = state2tfs(tfstate);
-      console.log(tfs)
-      state.tfs = tfs;
-    }),
+  setTfs: (tfstate) => set(state => {
+    const tfs = state2tfs(tfstate)
+    // console.log(tfs)
+    state.tfs = tfs
+  })
 });
 
 const immerStore = immer(store);
@@ -88,40 +77,245 @@ const useStore = create(subscribeWithSelector(immerStore));
 
 const setTfs = useStore.getState().setTfs;
 
+const unlisten = await listen('solution-calculated',(event)=>{
+  if (event.payload) {
+    setTfs(event.payload)
+  }
+})
+
 // setInterval(async ()=>{
 //   const state = await invoke('solve');
 //   console.log('state',state)
 //   if (state) {
 //     setTfs(state);
 //   }
-// }, 500)
+// }, 20)
 
-const setTfProxy = Comlink.proxy(useStore.getState().setTfs);
+// const setTfProxy = Comlink.proxy(useStore.getState().setTfs);
 
-useStore.subscribe(
-  (state) => state.solverWorker,
-  async (v) => {
-    console.log("change in worker instance", v);
+// useStore.subscribe(
+//   (state) => state.solverWorker,
+//   async (v) => {
+//     console.log("change in worker instance", v);
     // const isValid = await v.urdf;
-    // console.log(isValid)
-    await v.setStateSetter(setTfProxy);
-  }
-);
+// useStore.subscribe((state) => state.solverWorker,
+//   async v => {
+//     console.log('change in worker instance', v)
+//     const isValid = await v.urdf;
+//     // console.log(isValid)
+//     await v.setStateSetter(setTfProxy);
+//   }
+// );
 
-// Selector functions take a specific element of a state
-// Need to access state.programData which contains all the blocks that have been added
+//Remove duplicates function-----------------------------------------------------------------------
+function removeDup(objectList) {
+  //Remove duplicates from each state's list of objectives
+  let uniqueObjects = [];
+  let i;
+  let j;
+  //Compare each item against those before it
+  for (i = objectList.length - 1; i >= 1; i--) {
+    for (j = i - 1; j >= 0; j--) {
+      //If the compared objectives are the same, move on to the next objective
+      if (JSON.stringify(objectList[i]) == JSON.stringify(objectList[j])) {
+        break;
+      }
+      //The current comparison is not equivalent to any others, so it must be unique
+      if (j == 0) {
+        uniqueObjects.unshift(objectList[i])
+      }
+    }
+  }
+  //If only objective in list so it must be unique
+  if (objectList.length != 0) {
+    uniqueObjects.unshift(objectList[0])
+  }
+  return uniqueObjects
+}
+
+//Making new subscriber to track unique objectives-------------------------------------------------
+useStore.subscribe(
+  (state) => state.programData,
+  (v) => {
+
+    //GOALS: 
+    //Create a dictionary of lists containing unique objectives in each state
+    //Create a list of all unique objectives in all states
+    //Create a set of goals 
+
+    //Instantiate variables
+    let stateList = [];
+    let stateBPsDict = {};
+    let stateObjDict = {};
+    let objectiveDict = {};
+
+    //Creates a list of objects (one object for each node in programData)
+    const unfilteredList = Object.values(v);
+
+    //Use unfilteredList to make a list of states and a list of behavior properties
+    for (let k = 0; k < unfilteredList.length; k++) {
+      //States
+      if (unfilteredList[k].type == "stateType") {
+        stateList.push(unfilteredList[k]);
+      }
+      //Behavior properties
+      else if (allBehaviorProperties.includes(unfilteredList[k].type)) {
+        stateBPsDict[unfilteredList[k].id] = unfilteredList[k];
+      }
+    }
+
+    //Add state ID and their children (BPs) IDs to state/goal structure
+    for (let k = 0; k < stateList.length; k++) {
+      stateObjDict[stateList[k].id] = stateList[k].properties.children
+    }
+
+    //Replace all child (BPs) IDs with objectives within state/goal structure
+    //Iterate through each state
+    for (let stateKey in stateObjDict) {
+      objectiveDict[stateKey] = []
+
+      //Skip remainder if there are no BPs in the current state
+      if (stateObjDict.length == 0) {
+        break
+      }
+
+      //Iterate through each list of BP IDs
+      let tempObjList = [];
+      for (let l = 0; l < stateObjDict[stateKey].length; l++) {
+        let tempBPID = stateObjDict[stateKey][l]
+        let tempBP = stateBPsDict[tempBPID]
+
+        //Convert BP objects to objectives
+        let tempObjective = {
+          type: behaviorPropertyLookup[tempBP.type],
+          name: '',
+          weight: 1,
+          stateIDs: []
+        }
+
+        //Add additional properties if they exist for a given objective
+        if (tempBP.properties.link !== undefined) {
+          tempObjective.link = tempBP.properties.link
+        }
+        if (tempBP.properties.link1 !== undefined) {
+          tempObjective.link1 = tempBP.properties.link1
+        }
+        if (tempBP.properties.link2 !== undefined) {
+          tempObjective.link2 = tempBP.properties.link2
+        }
+        if (tempBP.properties.joint !== undefined) {
+          tempObjective.joint = tempBP.properties.joint
+        }
+        if (tempBP.properties.joint1 !== undefined) {
+          tempObjective.joint1 = tempBP.properties.joint1
+        }
+        if (tempBP.properties.joint2 !== undefined) {
+          tempObjective.joint2 = tempBP.properties.joint2
+        }
+        if (tempBP.properties.frequency !== undefined) {
+          tempObjective.frequency = tempBP.properties.frequency
+        }
+        if (tempBP.properties.goal !== undefined) {
+          tempObjective.goal = tempBP.properties.goal
+        }
+
+        //Add the objective to its state
+        tempObjList.push(tempObjective)
+      }
+
+      //Remove duplicate objectives for each state
+      let uniqueObjectives = removeDup(tempObjList)
+
+      //Add unique objectives to state/goal structure
+      objectiveDict[stateKey].push(uniqueObjectives)
+    }
+
+    //Creating a unique set of all objectives in the UI
+    let allStateObjectives = (Object.values(objectiveDict)).flat(2)
+    let allUniqueObjectives = removeDup(allStateObjectives)
+
+    //Determine states in which each unique objective is included
+    //Iterate through each uniqueObjective
+    for (let x = 0; x < allUniqueObjectives.length; x++) {
+      //Iterate through each state in objectiveDict
+      for (let key in objectiveDict) {
+        //Check if the current objective is present in the current state
+        if ((JSON.stringify(objectiveDict[key])).includes(allUniqueObjectives[x].type)) {
+          //If so, save that stateID to that objective in allUniqueObjectives
+          allUniqueObjectives[x].stateIDs.push(key)
+        }
+      }
+    }
+
+    //Add unique objectives list to store
+    store.objectives = allUniqueObjectives
+
+    //Create a set of goals for each state
+    let goalDict = {}
+    //Iterate through each state
+    for (let key in objectiveDict) {
+      //Skip remainder if there are no objectives in the current state
+      if (allUniqueObjectives.length == 0) {
+        break
+      }
+      //Iterate through each unique objective
+      goalDict[key] = []
+      for (let objIndex = 0; objIndex < allUniqueObjectives.length; objIndex++) {
+        let subGoal = {}
+        //Add meaningful weight and data to states containing the current objective
+        if ((allUniqueObjectives[objIndex].stateIDs).includes(key)){
+          subGoal["index"] = objIndex
+          subGoal["weight"] = allUniqueObjectives[objIndex].weight
+          //Add goal data if present
+          if (allUniqueObjectives[objIndex].goal != undefined){
+            subGoal["goal"] = allUniqueObjectives[objIndex].goal
+          }
+          goalDict[key].push(subGoal)
+        }
+        //Add weight of zero to states not containing the current objective
+        else{
+          subGoal["index"] = objIndex
+          subGoal["weight"] = 0
+          goalDict[key].push(subGoal)
+        }
+      }
+    }
+
+    //console.log(objectiveDict)
+    console.log("Objectives Dictionary: ", objectiveDict)
+    console.log("All Unique Objectives: ", allUniqueObjectives)
+    console.log("Goal Dictionary: ", goalDict)
+  }
+)
+
+//Next Steps:
+//Done
+
+//Changes made:
+//Fixed issue with order of objectives
+//Fixed issue with only some goals being added to goalDict
+//Added goal fields to BP properties in programSpec
+//Piped goal data to goalDict
+
+//Updates/Questions:
+//If we want to add weights based on order, we should implement those weights before goalDict
+//The Elipse and ScalarRange documentation is missing a bracket at the end of the JS example
+//When should we add weights to properties in programSpec?
+//Rotation bounding is an objective mentioned in the LivelyTK documentation, but it's not used?
+//There are many BPs that do not have goals within the LivelyTK documentation. Is that correct?
+
+//-------------------------------------------------------------------------------------------------
 
 // Handle cascading listeners to update the solver
 useStore.subscribe(
   (state) => state.urdf,
   async (urdf) => {
     const result = await invoke("update_urdf", { urdf });
-    const worker = useStore.getState().solverWorker;
+    // const worker = useStore.getState().solverWorker;
     if (result) {
       const initialState = await invoke("solve");
       setTfs(initialState);
       useStore.setState({ links: result.links, joints: result.joints, isValid: true });
-      worker.startSolver(setTfProxy);
     } else {
       useStore.setState({ links: [], joints: [], isValid: false });
       worker.stopSolver();
@@ -159,12 +353,10 @@ useStore.subscribe(
   { equalityFn: shallow }
 );
 
-useStore.subscribe((state) => state.programData, console.log);
-
 // Finally, set the program based on the spec and solver instance
-const solverWorker = new SolverWorker();
-const solverWorkerInstance = Comlink.wrap(solverWorker);
-useStore.setState({ programSpec, solverWorker: solverWorkerInstance });
+// const solverWorker = new SolverWorker();
+// const solverWorkerInstance = Comlink.wrap(solverWorker);
+// useStore.setState({ programSpec, solverWorker: solverWorkerInstance });
 // useStore.setState({programData: {'s':instanceTemplateFromSpec('stateType',programSpec.objectTypes.stateType,false)}})
 
 export default useStore;

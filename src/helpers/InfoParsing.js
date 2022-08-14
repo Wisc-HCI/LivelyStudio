@@ -54,15 +54,15 @@ export function state2tfs(state) {
         tfs[pair[0]] = {
             frame: 'world',
             position: { 
-                x: pair[1].translation[0], 
-                y: pair[1].translation[1], 
-                z: pair[1].translation[2] 
+                x: pair[1].world.translation[0], 
+                y: pair[1].world.translation[1], 
+                z: pair[1].world.translation[2] 
             },
             rotation: { 
-                w: pair[1].rotation[3], 
-                x: pair[1].rotation[0], 
-                y: pair[1].rotation[1], 
-                z: pair[1].rotation[2] 
+                w: pair[1].world.rotation[3], 
+                x: pair[1].world.rotation[0], 
+                y: pair[1].world.rotation[1], 
+                z: pair[1].world.rotation[2] 
             },
             scale: {
                 x: 1,
