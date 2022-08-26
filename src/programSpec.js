@@ -32,6 +32,7 @@ const behaviorPropertyTemplate = {
   // },
   instanceBlock: {
     onCanvas: false,
+    // minified: true,
     // color: "#bdb655",
     // icon: FiGrid,
     extras: [
@@ -54,7 +55,7 @@ const behaviorPropertyTemplate = {
 }
 
 //Defining Behavioral Properties------------------------------------------------------------------------
-const defaultFrequency = {
+const DEFAULT_FREQUENCY = {
   name: "Frequency",
   type: SIMPLE_PROPERTY_TYPES.NUMBER,
   min: 0,
@@ -66,15 +67,39 @@ const defaultFrequency = {
   default: 1,
 }
 
-const defaultWeight = {
-  name: "Weight",
-  default: 1
+const DEFAULT_TRANSLATION = {
+  name: "Translation",
+  type: SIMPLE_PROPERTY_TYPES.VECTOR3,
+  default: [0.0, 0.0, 0.0],
+  min: [0.0,0.0,0.0],
+  step: 0.01
 }
 
-const defaultTranslation = [1.0, 1.0, 1.0]
-const defaultRotation = [0.0, 0.0, 0.0, 0.0]
-const defaultScalar = 1
-const defaultSize = [1.0, 1.0, 1.0]
+const DEFAULT_ROTATION = {
+  name: "Rotation",
+  type: SIMPLE_PROPERTY_TYPES.VECTOR3,
+  default: [0.0, 0.0, 0.0],
+  min: [-360.0,-360.0,-360.0],
+  min: [360.0,360.0,360.0],
+  step: 1
+}
+
+const DEFAULT_SIZE = {
+  name: "Size",
+  type: SIMPLE_PROPERTY_TYPES.VECTOR3,
+  default: [0.0, 0.0, 0.0],
+  min: [0.0,0.0,0.0],
+  step: 0.01
+}
+
+const DEFAULT_SCALAR = {
+  name: "Value",
+  type: SIMPLE_PROPERTY_TYPES.NUMBER,
+  default: 0.0,
+  step: 0.01
+}
+
+
 
 //Name, weight, link, translation
 const positionMatchBehaviorData = {
@@ -90,11 +115,7 @@ const positionMatchBehaviorData = {
       options: [],
       default: '',
     },
-    goal: {
-      name: "Translation",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Translation: defaultTranslation }
-    }
+    translation: DEFAULT_TRANSLATION
   }
 }
 
@@ -112,11 +133,7 @@ const orientationMatchBehaviorData = {
       options: [],
       default: '',
     },
-    goal: {
-      name: "Rotation",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Rotation: defaultRotation }
-    }
+    rotation: DEFAULT_ROTATION
   }
 }
 
@@ -134,12 +151,8 @@ const positionLivelinessBehaviorData = {
       options: [],
       default: '',
     },
-    frequency: defaultFrequency,
-    goal: {
-      name: "Size",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Size: defaultSize }
-    }
+    frequency: DEFAULT_FREQUENCY,
+    size: DEFAULT_SIZE
   }
 }
 
@@ -157,12 +170,8 @@ const orientationLivelinessBehaviorData = {
       options: [],
       default: '',
     },
-    frequency: defaultFrequency,
-    goal: {
-      name: "Size",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Size: defaultSize }
-    }
+    frequency: DEFAULT_FREQUENCY,
+    size: DEFAULT_SIZE
   }
 }
 
@@ -186,11 +195,7 @@ const positionMirroringBehaviorData = {
       options: [],
       default: '',
     },
-    goal: {
-      name: "Translation",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Translation: defaultTranslation }
-    }
+    translation: {...DEFAULT_TRANSLATION,name:'Offset'}
   }
 }
 
@@ -214,11 +219,7 @@ const orientationMirroringBehaviorData = {
       options: [],
       default: '',
     },
-    goal: {
-      name: "Rotation",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Rotation: defaultRotation }
-    }
+    rotation: {...DEFAULT_ROTATION,name:'Offset'}
   }
 }
 
@@ -236,17 +237,9 @@ const positionBoundingBehaviorData = {
       options: [],
       default: '',
     },
-    goal: {
-      name: "Elipse",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: {
-        Ellipse: {
-          pose: { translation: defaultTranslation, rotation: defaultRotation },
-          size: defaultSize
-        }
-      }
-
-    }
+    translation: {...DEFAULT_TRANSLATION,name:'Ellipse Translation'},
+    rotation: {...DEFAULT_ROTATION,name:'Ellipse Rotation'},
+    size: {...DEFAULT_SIZE,name:'Ellipse Size'}
   }
 }
 
@@ -263,7 +256,9 @@ const orientationBoundingBehaviorData = {
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',
-    }
+    },
+    rotation: {...DEFAULT_ROTATION,name:'Rotation Center'},
+    scalar: {...DEFAULT_SCALAR,name:'Rotation Offset'}
   }
 }
 
@@ -275,17 +270,13 @@ const jointMatchBehaviorData = {
     color: behaviorPropertyColorMatching
   },
   properties: {
-    link: {
-      name: "Joiint",
+    joint: {
+      name: "Joint",
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',
     },
-    goal: {
-      name: "Scalar",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Scalar: defaultScalar }
-    }
+    scalar: DEFAULT_SCALAR
   }
 }
 
@@ -303,12 +294,8 @@ const jointLivelinessBehaviorData = {
       options: [],
       default: '',
     },
-    frequency: defaultFrequency,
-    goal: {
-      name: "Scalar",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Scalar: defaultScalar }
-    }
+    frequency: DEFAULT_FREQUENCY,
+    scalar: {...DEFAULT_SCALAR,name:'Amplitude'}
   }
 }
 
@@ -332,11 +319,7 @@ const jointMirroringBehaviorData = {
       options: [],
       default: '',
     },
-    goal: {
-      name: "Scalar",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Scalar: defaultScalar }
-    }
+    scalar: {...DEFAULT_SCALAR,name:'Offset'}
   }
 }
 
@@ -359,17 +342,14 @@ const jointBoundingBehaviorData = {
     color: behaviorPropertyColorBounding
   },
   properties: {
-    link: {
+    joint: {
       name: "Joint",
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',
     },
-    goal: {
-      name: "Scalar Range",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: {ScalarRange: {value:0.0, delta:0.4} }
-    }
+    scalar: DEFAULT_SCALAR,
+    delta: {...DEFAULT_SCALAR,name:'Delta'}
   }
 }
 
@@ -470,80 +450,11 @@ const relativeMotionLivelinessBehaviorData = {
       options: [],
       default: '',
     },
-    frequency: defaultFrequency,
-    goal: {
-      name: "Scalar",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Scalar: defaultScalar }
-    }
+    frequency: DEFAULT_FREQUENCY,
+    scalar: {...DEFAULT_SCALAR,name:'Amplitude'}
   }
 }
 
-//Name, weight, frequency, size
-const originPositionLivelinessBehaviorData = {
-  name: 'Origin Position Liveliness Behavior',
-  instanceBlock: {
-    icon: FiGrid,
-    color: behaviorPropertyColorLiveliness
-  },
-  properties: {
-    frequency: defaultFrequency,
-    goal: {
-      name: "Size",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Size: defaultSize }
-    }
-  }
-}
-
-//Name, weight, frequency, size
-const originOrientationLivelinessBehaviorData = {
-  name: 'Origin Orientation Liveliness Behavior',
-  instanceBlock: {
-    icon: FiGrid,
-    color: behaviorPropertyColorLiveliness
-  },
-  properties: {
-    frequency: defaultFrequency,
-    goal: {
-      name: "Size",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Size: defaultSize }
-    }
-  }
-}
-
-//Name, weight, translation
-const originPositionMatchBehaviorData = {
-  name: 'Origin Position Match Behavior',
-  instanceBlock: {
-    icon: FiGrid,
-    color: behaviorPropertyColorMatching
-  },
-  properties: {
-    goal: {
-      name: "Translation",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Translation: defaultTranslation }
-    }
-  }
-}
-
-//Name, weight, rotation
-const originOrientationMatchBehaviorData = {
-  name: 'Origin Orientation Match Behavior',
-  instanceBlock: {
-    icon: FiGrid,
-    color: behaviorPropertyColorMatching
-  },
-  properties: {
-    goal: {
-      name: "Rotation",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Rotation: defaultRotation }
-    }
-  }
-}
 
 //Name, weight, link
 const gravityBehaviorData = {
@@ -593,11 +504,7 @@ const distanceMatchBehaviorData = {
       options: [],
       default: '',
     },
-    goal: {
-      name: "Scalar",
-      type: SIMPLE_PROPERTY_TYPES.IGNORED,
-      default: { Scalar: defaultScalar }
-    }
+    scalar: {...DEFAULT_SCALAR,name:'Distance'}
   }
 }
 //---------------------------------------------------------------------------------------------------
@@ -945,10 +852,6 @@ export const programSpec = {
     originAccelerationMinimizationBehaviorProperty: merge(originAccelerationMinimizationBehaviorData, behaviorPropertyTemplate),
     originJerkMinimizationBehaviorProperty: merge(originJerkMinimizationBehaviorData, behaviorPropertyTemplate),
     relativeMotionLivelinessBehaviorProperty: merge(relativeMotionLivelinessBehaviorData, behaviorPropertyTemplate),
-    originPositionLivelinessBehaviorProperty: merge(originPositionLivelinessBehaviorData, behaviorPropertyTemplate),
-    originOrientationLivelinessBehaviorProperty: merge(originOrientationLivelinessBehaviorData, behaviorPropertyTemplate),
-    originPositionMatchBehaviorProperty: merge(originPositionMatchBehaviorData, behaviorPropertyTemplate),
-    originOrientationMatchBehaviorProperty: merge(originOrientationMatchBehaviorData, behaviorPropertyTemplate),
     gravityBehaviorProperty: merge(gravityBehaviorData, behaviorPropertyTemplate),
     smoothnessMacroBehaviorProperty: merge(smoothnessMacroBehaviorData, behaviorPropertyTemplate),
     distanceMatchBehaviorProperty: merge(distanceMatchBehaviorData, behaviorPropertyTemplate),

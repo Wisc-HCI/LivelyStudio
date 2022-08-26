@@ -6,6 +6,8 @@ export const behaviorPropertyColorMirroring = "#03fcad"
 export const behaviorPropertyColorForces = "#a35bde"
 export const behaviorPropertyColorLiveliness = "#ff0055"
 
+export const STATE_TYPES = ['stateType','powerOnType','powerOffType'];
+
 //Drawer items
 export const behaviorPropertyDrawerBase = [
     "collisionAvoidanceBehaviorProperty",
@@ -29,9 +31,7 @@ export const behaviorPropertyDrawerMatching = [
     "positionMatchBehaviorProperty",
     "orientationMatchBehaviorProperty",
     "jointMatchBehaviorProperty",
-    "originPositionMatchBehaviorProperty",
-    "distanceMatchBehaviorProperty",
-    "originOrientationMatchBehaviorProperty"
+    "distanceMatchBehaviorProperty"
 ]
 
 export const behaviorPropertyDrawerMirroring = [
@@ -48,9 +48,7 @@ export const behaviorPropertyDrawerLiveliness = [
     "positionLivelinessBehaviorProperty",
     "orientationLivelinessBehaviorProperty",
     "jointLivelinessBehaviorProperty",
-    "relativeMotionLivelinessBehaviorProperty",
-    "originPositionLivelinessBehaviorProperty",
-    "originOrientationLivelinessBehaviorProperty"
+    "relativeMotionLivelinessBehaviorProperty"
 ]
 
 //All Behavior Properties
@@ -70,9 +68,7 @@ export const allBehaviorProperties = [
     "positionMatchBehaviorProperty",
     "orientationMatchBehaviorProperty",
     "jointMatchBehaviorProperty",
-    "originPositionMatchBehaviorProperty",
     "distanceMatchBehaviorProperty",
-    "originOrientationMatchBehaviorProperty",
     "positionMirroringBehaviorProperty",
     "orientationMirroringBehaviorProperty",
     "jointMirroringBehaviorProperty",
@@ -80,9 +76,7 @@ export const allBehaviorProperties = [
     "positionLivelinessBehaviorProperty",
     "orientationLivelinessBehaviorProperty",
     "jointLivelinessBehaviorProperty",
-    "relativeMotionLivelinessBehaviorProperty",
-    "originPositionLivelinessBehaviorProperty",
-    "originOrientationLivelinessBehaviorProperty"
+    "relativeMotionLivelinessBehaviorProperty"
 ]
 
 //Behavior Properties Look-up Table
@@ -102,9 +96,7 @@ export const behaviorPropertyLookup = {
     "positionMatchBehaviorProperty": "PositionMatch",
     "orientationMatchBehaviorProperty": "OrientationMatch",
     "jointMatchBehaviorProperty": "JointMatch",
-    "originPositionMatchBehaviorProperty": "OriginPositionMatch",
     "distanceMatchBehaviorProperty": "DistanceMatch",
-    "originOrientationMatchBehaviorProperty": "OriginOrientationMatch",
     "positionMirroringBehaviorProperty": "PositionMirroring",
     "orientationMirroringBehaviorProperty": "OrientationMirroring",
     "jointMirroringBehaviorProperty": "JointMirroring",
@@ -112,9 +104,7 @@ export const behaviorPropertyLookup = {
     "positionLivelinessBehaviorProperty": "PositionLiveliness",
     "orientationLivelinessBehaviorProperty": "OrientationLiveliness",
     "jointLivelinessBehaviorProperty": "JointLiveliness",
-    "relativeMotionLivelinessBehaviorProperty": "RelativeMotionLiveliness",
-    "originPositionLivelinessBehaviorProperty": "OriginPositionLiveliness",
-    "originOrientationLivelinessBehaviorProperty": "OriginOrientationLiveliness"
+    "relativeMotionLivelinessBehaviorProperty": "RelativeMotionLiveliness"
 }
 
 

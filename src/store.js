@@ -1,29 +1,51 @@
 import create from "zustand";
-import produce from "immer";
+// import produce from "immer";
 import { SceneSlice } from "robot-scene";
 import { ProgrammingSlice, instanceTemplateFromSpec } from "simple-vp";
 import { programSpec } from "./programSpec";
 import { subscribeWithSelector } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 import { DEFAULTS } from "./defaults";
 import { shape2item, state2tfs } from "./helpers/InfoParsing";
 import shallow from "zustand/shallow";
 import { invoke } from "@tauri-apps/api/tauri";
-import {listen} from '@tauri-apps/api/event';
-import { allBehaviorProperties, behaviorPropertyLookup } from './Constants'
+import { listen } from "@tauri-apps/api/event";
+import {
+  allBehaviorProperties,
+  behaviorPropertyLookup,
+  STATE_TYPES,
+} from "./Constants";
+import { mapValues, pickBy, pick } from "lodash";
 // import init from "puppeteer-rust";
 
-const immer = (config) => (set, get, api) =>
-  config(
-    (partial, replace) => {
-      const nextState =
-        typeof partial === "function" ? produce(partial) : partial;
-      return set(nextState, replace);
-    },
-    get,
-    api
-  );
+// const immer = (config) => (set, get, api) =>
+//   config(
+//     (partial, replace) => {
+//       const nextState =
+//         typeof partial === "function" ? produce(partial) : partial;
+//       return set(nextState, replace);
+//     },
+//     get,
+//     api
+//   );
 
 const store = (set, get) => ({
+  currentState: null,
+  initiateTransition: (fromNode, toNode) =>
+    set((state) => {
+      // Should do checking to see whether this is a valid transition,
+      // and do any relevant interpolations.
+      // For now just immediately transition
+      state.programData[toNode].selected = true;
+      state.programData[fromNode].selected = false;
+      try {
+        state.goals = state.goalDict[toNode].map((g) => g.goal);
+        state.weights = state.goalDict[toNode].map((g) => g.weight);
+      } catch {
+
+      }
+      state.currentState = toNode;
+    }),
   isValid: false,
   solverWorker: null,
   urdf: DEFAULTS.urdf,
@@ -64,11 +86,12 @@ const store = (set, get) => ({
     },
   },
   ...ProgrammingSlice(set, get), // default programming slice for simple-vp,
-  setTfs: (tfstate) => set(state => {
-    const tfs = state2tfs(tfstate)
-    // console.log(tfs)
-    state.tfs = tfs
-  })
+  setTfs: (tfstate) =>
+    set((state) => {
+      const tfs = state2tfs(tfstate);
+      // console.log(tfs)
+      state.tfs = tfs;
+    }),
 });
 
 const immerStore = immer(store);
@@ -77,35 +100,11 @@ const useStore = create(subscribeWithSelector(immerStore));
 
 const setTfs = useStore.getState().setTfs;
 
-const unlisten = await listen('solution-calculated',(event)=>{
+const unlisten = await listen("solution-calculated", (event) => {
   if (event.payload) {
-    setTfs(event.payload)
+    setTfs(event.payload);
   }
-})
-
-// setInterval(async ()=>{
-//   const state = await invoke('solve');
-//   console.log('state',state)
-//   if (state) {
-//     setTfs(state);
-//   }
-// }, 20)
-
-// const setTfProxy = Comlink.proxy(useStore.getState().setTfs);
-
-// useStore.subscribe(
-//   (state) => state.solverWorker,
-//   async (v) => {
-//     console.log("change in worker instance", v);
-    // const isValid = await v.urdf;
-// useStore.subscribe((state) => state.solverWorker,
-//   async v => {
-//     console.log('change in worker instance', v)
-//     const isValid = await v.urdf;
-//     // console.log(isValid)
-//     await v.setStateSetter(setTfProxy);
-//   }
-// );
+});
 
 //Remove duplicates function-----------------------------------------------------------------------
 function removeDup(objectList) {
@@ -122,26 +121,51 @@ function removeDup(objectList) {
       }
       //The current comparison is not equivalent to any others, so it must be unique
       if (j == 0) {
-        uniqueObjects.unshift(objectList[i])
+        uniqueObjects.unshift(objectList[i]);
       }
     }
   }
   //If only objective in list so it must be unique
   if (objectList.length != 0) {
-    uniqueObjects.unshift(objectList[0])
+    uniqueObjects.unshift(objectList[0]);
   }
-  return uniqueObjects
+  return uniqueObjects;
 }
+
+const initiateTransition = useStore.getState().initiateTransition;
+
+useStore.subscribe(
+  (state) =>
+    mapValues(
+      pickBy(state.programData, (d) => STATE_TYPES.includes(d.type)),
+      (d) => d.selected
+    ),
+  (currentSelected, pastSelected) => {
+    let fromNode = null;
+    let toNode = null;
+    Object.keys(currentSelected).some((key) => {
+      if (currentSelected[key] && pastSelected[key]) {
+        fromNode = key;
+      } else if (currentSelected[key] && !pastSelected[key]) {
+        toNode = key;
+      }
+      return toNode && fromNode;
+    });
+    if (toNode && fromNode) {
+      initiateTransition(fromNode, toNode);
+    }
+  },
+  { equalityFn: shallow }
+);
 
 //Making new subscriber to track unique objectives-------------------------------------------------
 useStore.subscribe(
   (state) => state.programData,
   (v) => {
-
-    //GOALS: 
+    //GOALS:
     //Create a dictionary of lists containing unique objectives in each state
     //Create a list of all unique objectives in all states
-    //Create a set of goals 
+    //Create a set of goals
 
     //Instantiate variables
     let stateList = [];
@@ -166,73 +190,73 @@ useStore.subscribe(
 
     //Add state ID and their children (BPs) IDs to state/goal structure
     for (let k = 0; k < stateList.length; k++) {
-      stateObjDict[stateList[k].id] = stateList[k].properties.children
+      stateObjDict[stateList[k].id] = stateList[k].properties.children;
     }
 
     //Replace all child (BPs) IDs with objectives within state/goal structure
     //Iterate through each state
     for (let stateKey in stateObjDict) {
-      objectiveDict[stateKey] = []
+      objectiveDict[stateKey] = [];
 
       //Skip remainder if there are no BPs in the current state
       if (stateObjDict.length == 0) {
-        break
+        break;
       }
 
       //Iterate through each list of BP IDs
       let tempObjList = [];
       for (let l = 0; l < stateObjDict[stateKey].length; l++) {
-        let tempBPID = stateObjDict[stateKey][l]
-        let tempBP = stateBPsDict[tempBPID]
+        let tempBPID = stateObjDict[stateKey][l];
+        let tempBP = stateBPsDict[tempBPID];
 
         //Convert BP objects to objectives
         let tempObjective = {
           type: behaviorPropertyLookup[tempBP.type],
-          name: '',
+          name: "",
           weight: 1,
-          stateIDs: []
-        }
+          stateIDs: [],
+        };
 
         //Add additional properties if they exist for a given objective
         if (tempBP.properties.link !== undefined) {
-          tempObjective.link = tempBP.properties.link
+          tempObjective.link = tempBP.properties.link;
         }
         if (tempBP.properties.link1 !== undefined) {
-          tempObjective.link1 = tempBP.properties.link1
+          tempObjective.link1 = tempBP.properties.link1;
         }
         if (tempBP.properties.link2 !== undefined) {
-          tempObjective.link2 = tempBP.properties.link2
+          tempObjective.link2 = tempBP.properties.link2;
         }
         if (tempBP.properties.joint !== undefined) {
-          tempObjective.joint = tempBP.properties.joint
+          tempObjective.joint = tempBP.properties.joint;
         }
         if (tempBP.properties.joint1 !== undefined) {
-          tempObjective.joint1 = tempBP.properties.joint1
+          tempObjective.joint1 = tempBP.properties.joint1;
         }
         if (tempBP.properties.joint2 !== undefined) {
-          tempObjective.joint2 = tempBP.properties.joint2
+          tempObjective.joint2 = tempBP.properties.joint2;
         }
         if (tempBP.properties.frequency !== undefined) {
-          tempObjective.frequency = tempBP.properties.frequency
+          tempObjective.frequency = tempBP.properties.frequency;
         }
         if (tempBP.properties.goal !== undefined) {
-          tempObjective.goal = tempBP.properties.goal
+          tempObjective.goal = tempBP.properties.goal;
         }
 
         //Add the objective to its state
-        tempObjList.push(tempObjective)
+        tempObjList.push(tempObjective);
       }
 
       //Remove duplicate objectives for each state
-      let uniqueObjectives = removeDup(tempObjList)
+      let uniqueObjectives = removeDup(tempObjList);
 
       //Add unique objectives to state/goal structure
-      objectiveDict[stateKey].push(uniqueObjectives)
+      objectiveDict[stateKey].push(uniqueObjectives);
     }
 
     //Creating a unique set of all objectives in the UI
-    let allStateObjectives = (Object.values(objectiveDict)).flat(2)
-    let allUniqueObjectives = removeDup(allStateObjectives)
+    let allStateObjectives = Object.values(objectiveDict).flat(2);
+    let allUniqueObjectives = removeDup(allStateObjectives);
 
     //Determine states in which each unique objective is included
     //Iterate through each uniqueObjective
@@ -240,53 +264,68 @@ useStore.subscribe(
       //Iterate through each state in objectiveDict
       for (let key in objectiveDict) {
         //Check if the current objective is present in the current state
-        if ((JSON.stringify(objectiveDict[key])).includes(allUniqueObjectives[x].type)) {
+        if (
+          JSON.stringify(objectiveDict[key]).includes(
+            allUniqueObjectives[x].type
+          )
+        ) {
           //If so, save that stateID to that objective in allUniqueObjectives
-          allUniqueObjectives[x].stateIDs.push(key)
+          allUniqueObjectives[x].stateIDs.push(key);
         }
       }
     }
 
     //Add unique objectives list to store
-    store.objectives = allUniqueObjectives
+    // store.objectives = allUniqueObjectives;
 
     //Create a set of goals for each state
-    let goalDict = {}
+    let goalDict = {};
     //Iterate through each state
     for (let key in objectiveDict) {
       //Skip remainder if there are no objectives in the current state
       if (allUniqueObjectives.length == 0) {
-        break
+        break;
       }
       //Iterate through each unique objective
-      goalDict[key] = []
-      for (let objIndex = 0; objIndex < allUniqueObjectives.length; objIndex++) {
-        let subGoal = {}
+      goalDict[key] = [];
+      for (
+        let objIndex = 0;
+        objIndex < allUniqueObjectives.length;
+        objIndex++
+      ) {
+        let subGoal = {};
         //Add meaningful weight and data to states containing the current objective
-        if ((allUniqueObjectives[objIndex].stateIDs).includes(key)){
-          subGoal["index"] = objIndex
-          subGoal["weight"] = allUniqueObjectives[objIndex].weight
+        if (allUniqueObjectives[objIndex].stateIDs.includes(key)) {
+          subGoal["index"] = objIndex;
+          subGoal["weight"] = allUniqueObjectives[objIndex].weight;
           //Add goal data if present
-          if (allUniqueObjectives[objIndex].goal != undefined){
-            subGoal["goal"] = allUniqueObjectives[objIndex].goal
+          if (allUniqueObjectives[objIndex].goal != undefined) {
+            subGoal["goal"] = allUniqueObjectives[objIndex].goal;
           }
-          goalDict[key].push(subGoal)
+          goalDict[key].push(subGoal);
         }
         //Add weight of zero to states not containing the current objective
-        else{
-          subGoal["index"] = objIndex
-          subGoal["weight"] = 0
-          goalDict[key].push(subGoal)
+        else {
+          subGoal["index"] = objIndex;
+          subGoal["weight"] = 0;
+          goalDict[key].push(subGoal);
         }
       }
     }
 
     //console.log(objectiveDict)
-    console.log("Objectives Dictionary: ", objectiveDict)
-    console.log("All Unique Objectives: ", allUniqueObjectives)
-    console.log("Goal Dictionary: ", goalDict)
-  }
-)
+    // console.log("Objectives Dictionary: ", objectiveDict);
+    // console.log("All Unique Objectives: ", allUniqueObjectives);
+    // console.log("Goal Dictionary: ", goalDict);
+
+    useStore.setState({
+      objectiveDict,
+      allUniqueObjectives,
+      goalDict,
+    });
+  },
+  { equalityFn: shallow }
+);
 
 //Next Steps:
 //Done
@@ -315,12 +354,17 @@ useStore.subscribe(
     if (result) {
       const initialState = await invoke("solve");
       setTfs(initialState);
-      useStore.setState({ links: result.links, joints: result.joints, isValid: true });
+      useStore.setState({
+        links: result.links,
+        joints: result.joints,
+        isValid: true,
+      });
     } else {
       useStore.setState({ links: [], joints: [], isValid: false });
       worker.stopSolver();
     }
-  }
+  },
+  { equalityFn: shallow }
 );
 
 useStore.subscribe(
@@ -339,7 +383,8 @@ useStore.subscribe(
       });
     });
     useStore.setState({ robotMeshes });
-  }
+  },
+  { equalityFn: shallow }
 );
 
 useStore.subscribe(
@@ -353,11 +398,39 @@ useStore.subscribe(
   { equalityFn: shallow }
 );
 
+useStore.subscribe(
+  (state) => pick(state, ["currentState", "goals", "weights", "objectives"]),
+  (c, _) => {
+    console.log("updating urdf");
+    console.log(pick(c, ["currentState", "goals", "weights", "objectives"]));
+  },
+  { equalityFn: shallow }
+);
+
 // Finally, set the program based on the spec and solver instance
 // const solverWorker = new SolverWorker();
 // const solverWorkerInstance = Comlink.wrap(solverWorker);
 // useStore.setState({ programSpec, solverWorker: solverWorkerInstance });
 // useStore.setState({programData: {'s':instanceTemplateFromSpec('stateType',programSpec.objectTypes.stateType,false)}})
-useStore.setState({ programSpec });
+useStore.setState({
+  programSpec,
+  currentState: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
+  programData: {
+    "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a": {
+      argumentBlockData: [],
+      canDelete: false,
+      canEdit: true,
+      dataType: "INSTANCE",
+      editing: undefined,
+      id: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
+      name: "PowerOn",
+      position: { x: 100, y: 0 },
+      properties: {},
+      refData: null,
+      selected: true,
+      type: "powerOnType",
+    },
+  },
+});
 
 export default useStore;

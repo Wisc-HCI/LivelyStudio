@@ -16,7 +16,7 @@ import { appWindow } from "@tauri-apps/api/window";
 import { DEFAULTS } from "./defaults";
 
 function App() {
-  const primaryColor = "#c5050c";
+  const primaryColor = "#FEDE00";
   const theme = getTheme(primaryColor);
   const [editorRef, editorBounds] = useMeasure();
   const urdf = useStore((state) => state.urdf);
