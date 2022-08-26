@@ -288,8 +288,8 @@ const jointLivelinessBehaviorData = {
     color: behaviorPropertyColorLiveliness
   },
   properties: {
-    link: {
-      name: "Link",
+    joint: {
+      name: "Joint",
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
       default: '',

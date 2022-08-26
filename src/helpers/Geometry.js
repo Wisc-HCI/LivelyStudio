@@ -98,7 +98,7 @@ const _AXES2TUPLE = {
     if (parity !== 0) {
       q[j] *= -1.0;
     }
-    console.log("the q is : " , q);
+    // console.log("the q is : " , q);
     return q;
   };
   

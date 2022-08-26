@@ -64,12 +64,13 @@ export const bp2lik = (bp) => {
       },
     };
   } else if (["JointBounding"].includes(objective.type)) {
-    goal = {ScalarRange: {value:bp.properties.value,delta:bp.properties.delta}}
+    goal = {ScalarRange: {value:bp.properties.scalar,delta:bp.properties.delta}}
   }
 
   // Handle Logic around Objectives
   ['link','link1','link2','joint','joint1','joint2','frequency'].forEach(property=>{
-    if (bp.properties[property]) {
+    // console.log(bp.properties)
+    if (bp.properties[property]!==undefined) {
         objective[property] = bp.properties[property]
     }
   })

@@ -1,7 +1,7 @@
 import create from "zustand";
 // import produce from "immer";
 import { SceneSlice } from "robot-scene";
-import { ProgrammingSlice, instanceTemplateFromSpec } from "simple-vp";
+import { ProgrammingSlice } from "simple-vp";
 import { programSpec } from "./programSpec";
 import { subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -16,6 +16,7 @@ import {
   STATE_TYPES,
 } from "./Constants";
 import { mapValues, pickBy, pick } from "lodash";
+import { bp2lik } from "./helpers/Conversion";
 // import init from "puppeteer-rust";
 
 // const immer = (config) => (set, get, api) =>
@@ -434,3 +435,5 @@ useStore.setState({
 });
 
 export default useStore;
+
+// Object.keys(programSpec.objectTypes).filter(o=>allBehaviorProperties.includes(o)).forEach(bp=>console.log(bp,bp2lik(instanceTemplateFromSpec(bp,programSpec.objectTypes[bp],false))))
