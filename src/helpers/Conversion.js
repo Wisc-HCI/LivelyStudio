@@ -9,7 +9,7 @@ const DEG_2_RAD = Math.PI / 180;
 
 export const bp2lik = (bp) => {
   let goal = null;
-  let objective = { type: behaviorPropertyLookup[bp.type], weight: 0 };
+  let objective = { type: behaviorPropertyLookup[bp.type], weight: 0, name:behaviorPropertyLookup[bp.type] };
   // let weight = 0;
 
   if (behaviorPropertyDrawerBase.includes(bp.type)) {

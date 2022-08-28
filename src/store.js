@@ -15,8 +15,10 @@ import {
   behaviorPropertyLookup,
   STATE_TYPES,
 } from "./Constants";
-import { mapValues, pickBy, pick } from "lodash";
+import { mapValues, pickBy, pick, uniqWith, isEqual, last, cloneDeep } from "lodash";
 import { bp2lik } from "./helpers/Conversion";
+import { indexOf } from "./helpers/Comparison";
+import { useState } from "react";
 // import init from "puppeteer-rust";
 
 // const immer = (config) => (set, get, api) =>
@@ -32,19 +34,16 @@ import { bp2lik } from "./helpers/Conversion";
 
 const store = (set, get) => ({
   currentState: null,
+  stateGoals:{},
+  stateWeights:{},
   initiateTransition: (fromNode, toNode) =>
     set((state) => {
       // Should do checking to see whether this is a valid transition,
       // and do any relevant interpolations.
       // For now just immediately transition
-      state.programData[toNode].selected = true;
+      console.log(`initiating transition ${fromNode} -> ${toNode}`);
       state.programData[fromNode].selected = false;
-      try {
-        state.goals = state.goalDict[toNode].map((g) => g.goal);
-        state.weights = state.goalDict[toNode].map((g) => g.weight);
-      } catch {
-
-      }
+      state.programData[toNode].selected = true;
       state.currentState = toNode;
     }),
   isValid: false,
@@ -61,7 +60,6 @@ const store = (set, get) => ({
   ],
   persistentShapes: [],
   objectives: [],
-  currentState: "",
   goals: [],
   weights: [],
   links: [],
@@ -108,30 +106,30 @@ const unlisten = await listen("solution-calculated", (event) => {
 });
 
 //Remove duplicates function-----------------------------------------------------------------------
-function removeDup(objectList) {
-  //Remove duplicates from each state's list of objectives
-  let uniqueObjects = [];
-  let i;
-  let j;
-  //Compare each item against those before it
-  for (i = objectList.length - 1; i >= 1; i--) {
-    for (j = i - 1; j >= 0; j--) {
-      //If the compared objectives are the same, move on to the next objective
-      if (JSON.stringify(objectList[i]) == JSON.stringify(objectList[j])) {
-        break;
-      }
-      //The current comparison is not equivalent to any others, so it must be unique
-      if (j == 0) {
-        uniqueObjects.unshift(objectList[i]);
-      }
-    }
-  }
-  //If only objective in list so it must be unique
-  if (objectList.length != 0) {
-    uniqueObjects.unshift(objectList[0]);
-  }
-  return uniqueObjects;
-}
+// function removeDup(objectList) {
+//   //Remove duplicates from each state's list of objectives
+//   let uniqueObjects = [];
+//   let i;
+//   let j;
+//   //Compare each item against those before it
+//   for (i = objectList.length - 1; i >= 1; i--) {
+//     for (j = i - 1; j >= 0; j--) {
+//       //If the compared objectives are the same, move on to the next objective
+//       if (JSON.stringify(objectList[i]) == JSON.stringify(objectList[j])) {
+//         break;
+//       }
+//       //The current comparison is not equivalent to any others, so it must be unique
+//       if (j == 0) {
+//         uniqueObjects.unshift(objectList[i]);
+//       }
+//     }
+//   }
+//   //If only objective in list so it must be unique
+//   if (objectList.length != 0) {
+//     uniqueObjects.unshift(objectList[0]);
+//   }
+//   return uniqueObjects;
+// }
 
 const initiateTransition = useStore.getState().initiateTransition;
 
@@ -161,172 +159,232 @@ useStore.subscribe(
 
 //Making new subscriber to track unique objectives-------------------------------------------------
 useStore.subscribe(
-  (state) => state.programData,
-  (v) => {
-    //GOALS:
-    //Create a dictionary of lists containing unique objectives in each state
-    //Create a list of all unique objectives in all states
-    //Create a set of goals
+  (state) =>
+    mapValues(state.programData, (v) => ({
+      type: v.type,
+      properties: v.properties,
+      id: v.id,
+    })),
+  (programData) => {
+    // let behaviorProperties = [];
+    // let states = [];
 
-    //Instantiate variables
-    let stateList = [];
-    let stateBPsDict = {};
-    let stateObjDict = {};
-    let objectiveDict = {};
+    const behaviorProperties = pickBy(programData, (d) =>
+      allBehaviorProperties.includes(d.type)
+    );
+    const states = pickBy(programData, (d) => d.type === "stateType");
+    const likValues = mapValues(behaviorProperties, bp2lik);
+    const objectives = Object.values(likValues).map((v) => v.objective);
+    const uniqueObjectives = uniqWith(objectives, isEqual);
 
-    //Creates a list of objects (one object for each node in programData)
-    const unfilteredList = Object.values(v);
-
-    //Use unfilteredList to make a list of states and a list of behavior properties
-    for (let k = 0; k < unfilteredList.length; k++) {
-      //States
-      if (unfilteredList[k].type == "stateType") {
-        stateList.push(unfilteredList[k]);
-      }
-      //Behavior properties
-      else if (allBehaviorProperties.includes(unfilteredList[k].type)) {
-        stateBPsDict[unfilteredList[k].id] = unfilteredList[k];
-      }
-    }
-
-    //Add state ID and their children (BPs) IDs to state/goal structure
-    for (let k = 0; k < stateList.length; k++) {
-      stateObjDict[stateList[k].id] = stateList[k].properties.children;
-    }
-
-    //Replace all child (BPs) IDs with objectives within state/goal structure
-    //Iterate through each state
-    for (let stateKey in stateObjDict) {
-      objectiveDict[stateKey] = [];
-
-      //Skip remainder if there are no BPs in the current state
-      if (stateObjDict.length == 0) {
-        break;
-      }
-
-      //Iterate through each list of BP IDs
-      let tempObjList = [];
-      for (let l = 0; l < stateObjDict[stateKey].length; l++) {
-        let tempBPID = stateObjDict[stateKey][l];
-        let tempBP = stateBPsDict[tempBPID];
-
-        //Convert BP objects to objectives
-        let tempObjective = {
-          type: behaviorPropertyLookup[tempBP.type],
-          name: "",
-          weight: 1,
-          stateIDs: [],
-        };
-
-        //Add additional properties if they exist for a given objective
-        if (tempBP.properties.link !== undefined) {
-          tempObjective.link = tempBP.properties.link;
+    // Generate a lookup of state goals that can be sent to livelytk
+    const stateGoals = mapValues(states, (state) => {
+      const stateLikValues = state.properties.children.map(
+        (bp) => likValues[bp]
+      );
+      const stateObjectives = stateLikValues.map((v) => v.objective);
+      return uniqueObjectives.map((uniqueObjective) => {
+        const objIndex = indexOf(stateObjectives, uniqueObjective);
+        if (objIndex >= 0) {
+          return stateLikValues[objIndex].goal;
+        } else {
+          return null;
         }
-        if (tempBP.properties.link1 !== undefined) {
-          tempObjective.link1 = tempBP.properties.link1;
-        }
-        if (tempBP.properties.link2 !== undefined) {
-          tempObjective.link2 = tempBP.properties.link2;
-        }
-        if (tempBP.properties.joint !== undefined) {
-          tempObjective.joint = tempBP.properties.joint;
-        }
-        if (tempBP.properties.joint1 !== undefined) {
-          tempObjective.joint1 = tempBP.properties.joint1;
-        }
-        if (tempBP.properties.joint2 !== undefined) {
-          tempObjective.joint2 = tempBP.properties.joint2;
-        }
-        if (tempBP.properties.frequency !== undefined) {
-          tempObjective.frequency = tempBP.properties.frequency;
-        }
-        if (tempBP.properties.goal !== undefined) {
-          tempObjective.goal = tempBP.properties.goal;
-        }
+      });
+    });
 
-        //Add the objective to its state
-        tempObjList.push(tempObjective);
-      }
-
-      //Remove duplicate objectives for each state
-      let uniqueObjectives = removeDup(tempObjList);
-
-      //Add unique objectives to state/goal structure
-      objectiveDict[stateKey].push(uniqueObjectives);
-    }
-
-    //Creating a unique set of all objectives in the UI
-    let allStateObjectives = Object.values(objectiveDict).flat(2);
-    let allUniqueObjectives = removeDup(allStateObjectives);
-
-    //Determine states in which each unique objective is included
-    //Iterate through each uniqueObjective
-    for (let x = 0; x < allUniqueObjectives.length; x++) {
-      //Iterate through each state in objectiveDict
-      for (let key in objectiveDict) {
-        //Check if the current objective is present in the current state
-        if (
-          JSON.stringify(objectiveDict[key]).includes(
-            allUniqueObjectives[x].type
-          )
-        ) {
-          //If so, save that stateID to that objective in allUniqueObjectives
-          allUniqueObjectives[x].stateIDs.push(key);
+    // Generate a lookup of state weights that can be sent to livelytk
+    const stateWeights = mapValues(states, (state) => {
+      const stateLikValues = state.properties.children.map(
+        (bp) => likValues[bp]
+      );
+      const stateObjectives = stateLikValues.map((v) => v.objective);
+      return uniqueObjectives.map((uniqueObjective) => {
+        const objIndex = indexOf(stateObjectives, uniqueObjective);
+        if (objIndex >= 0) {
+          return 50 / Math.pow(Math.E, objIndex / stateObjectives.length);
+        } else {
+          return 0;
         }
-      }
-    }
-
-    //Add unique objectives list to store
-    // store.objectives = allUniqueObjectives;
-
-    //Create a set of goals for each state
-    let goalDict = {};
-    //Iterate through each state
-    for (let key in objectiveDict) {
-      //Skip remainder if there are no objectives in the current state
-      if (allUniqueObjectives.length == 0) {
-        break;
-      }
-      //Iterate through each unique objective
-      goalDict[key] = [];
-      for (
-        let objIndex = 0;
-        objIndex < allUniqueObjectives.length;
-        objIndex++
-      ) {
-        let subGoal = {};
-        //Add meaningful weight and data to states containing the current objective
-        if (allUniqueObjectives[objIndex].stateIDs.includes(key)) {
-          subGoal["index"] = objIndex;
-          subGoal["weight"] = allUniqueObjectives[objIndex].weight;
-          //Add goal data if present
-          if (allUniqueObjectives[objIndex].goal != undefined) {
-            subGoal["goal"] = allUniqueObjectives[objIndex].goal;
-          }
-          goalDict[key].push(subGoal);
-        }
-        //Add weight of zero to states not containing the current objective
-        else {
-          subGoal["index"] = objIndex;
-          subGoal["weight"] = 0;
-          goalDict[key].push(subGoal);
-        }
-      }
-    }
-
-    //console.log(objectiveDict)
-    // console.log("Objectives Dictionary: ", objectiveDict);
-    // console.log("All Unique Objectives: ", allUniqueObjectives);
-    // console.log("Goal Dictionary: ", goalDict);
+      });
+    });
 
     useStore.setState({
-      objectiveDict,
-      allUniqueObjectives,
-      goalDict,
+      objectives: uniqueObjectives,
+      stateGoals,
+      stateWeights,
     });
+    // console.log('uniqueObjectives',{uniqueObjectives,stateGoals,stateWeights})
   },
-  { equalityFn: shallow }
+  { equalityFn: isEqual }
 );
+// useStore.subscribe(
+//   (state) => state.programData,
+//   (v) => {
+//     //GOALS:
+//     //Create a dictionary of lists containing unique objectives in each state
+//     //Create a list of all unique objectives in all states
+//     //Create a set of goals
+
+//     //Instantiate variables
+//     let stateList = [];
+//     let stateBPsDict = {};
+//     let stateObjDict = {};
+//     let objectiveDict = {};
+
+//     //Creates a list of objects (one object for each node in programData)
+//     const unfilteredList = Object.values(v);
+
+//     //Use unfilteredList to make a list of states and a list of behavior properties
+//     for (let k = 0; k < unfilteredList.length; k++) {
+//       //States
+//       if (unfilteredList[k].type == "stateType") {
+//         stateList.push(unfilteredList[k]);
+//       }
+//       //Behavior properties
+//       else if (allBehaviorProperties.includes(unfilteredList[k].type)) {
+//         stateBPsDict[unfilteredList[k].id] = unfilteredList[k];
+//       }
+//     }
+
+//     //Add state ID and their children (BPs) IDs to state/goal structure
+//     for (let k = 0; k < stateList.length; k++) {
+//       stateObjDict[stateList[k].id] = stateList[k].properties.children;
+//     }
+
+//     //Replace all child (BPs) IDs with objectives within state/goal structure
+//     //Iterate through each state
+//     for (let stateKey in stateObjDict) {
+//       objectiveDict[stateKey] = [];
+
+//       //Skip remainder if there are no BPs in the current state
+//       if (stateObjDict.length == 0) {
+//         break;
+//       }
+
+//       //Iterate through each list of BP IDs
+//       let tempObjList = [];
+//       for (let l = 0; l < stateObjDict[stateKey].length; l++) {
+//         let tempBPID = stateObjDict[stateKey][l];
+//         let tempBP = stateBPsDict[tempBPID];
+
+//         //Convert BP objects to objectives
+//         let tempObjective = {
+//           type: behaviorPropertyLookup[tempBP.type],
+//           name: "",
+//           weight: 1,
+//           stateIDs: [],
+//         };
+
+//         //Add additional properties if they exist for a given objective
+//         if (tempBP.properties.link !== undefined) {
+//           tempObjective.link = tempBP.properties.link;
+//         }
+//         if (tempBP.properties.link1 !== undefined) {
+//           tempObjective.link1 = tempBP.properties.link1;
+//         }
+//         if (tempBP.properties.link2 !== undefined) {
+//           tempObjective.link2 = tempBP.properties.link2;
+//         }
+//         if (tempBP.properties.joint !== undefined) {
+//           tempObjective.joint = tempBP.properties.joint;
+//         }
+//         if (tempBP.properties.joint1 !== undefined) {
+//           tempObjective.joint1 = tempBP.properties.joint1;
+//         }
+//         if (tempBP.properties.joint2 !== undefined) {
+//           tempObjective.joint2 = tempBP.properties.joint2;
+//         }
+//         if (tempBP.properties.frequency !== undefined) {
+//           tempObjective.frequency = tempBP.properties.frequency;
+//         }
+//         if (tempBP.properties.goal !== undefined) {
+//           tempObjective.goal = tempBP.properties.goal;
+//         }
+
+//         //Add the objective to its state
+//         tempObjList.push(tempObjective);
+//       }
+
+//       //Remove duplicate objectives for each state
+//       let uniqueObjectives = removeDup(tempObjList);
+
+//       //Add unique objectives to state/goal structure
+//       objectiveDict[stateKey].push(uniqueObjectives);
+//     }
+
+//     //Creating a unique set of all objectives in the UI
+//     let allStateObjectives = Object.values(objectiveDict).flat(2);
+//     let allUniqueObjectives = removeDup(allStateObjectives);
+
+//     //Determine states in which each unique objective is included
+//     //Iterate through each uniqueObjective
+//     for (let x = 0; x < allUniqueObjectives.length; x++) {
+//       //Iterate through each state in objectiveDict
+//       for (let key in objectiveDict) {
+//         //Check if the current objective is present in the current state
+//         if (
+//           JSON.stringify(objectiveDict[key]).includes(
+//             allUniqueObjectives[x].type
+//           )
+//         ) {
+//           //If so, save that stateID to that objective in allUniqueObjectives
+//           allUniqueObjectives[x].stateIDs.push(key);
+//         }
+//       }
+//     }
+
+//     //Add unique objectives list to store
+//     // store.objectives = allUniqueObjectives;
+
+//     //Create a set of goals for each state
+//     let goalDict = {};
+//     //Iterate through each state
+//     for (let key in objectiveDict) {
+//       //Skip remainder if there are no objectives in the current state
+//       if (allUniqueObjectives.length == 0) {
+//         break;
+//       }
+//       //Iterate through each unique objective
+//       goalDict[key] = [];
+//       for (
+//         let objIndex = 0;
+//         objIndex < allUniqueObjectives.length;
+//         objIndex++
+//       ) {
+//         let subGoal = {};
+//         //Add meaningful weight and data to states containing the current objective
+//         if (allUniqueObjectives[objIndex].stateIDs.includes(key)) {
+//           subGoal["index"] = objIndex;
+//           subGoal["weight"] = allUniqueObjectives[objIndex].weight;
+//           //Add goal data if present
+//           if (allUniqueObjectives[objIndex].goal != undefined) {
+//             subGoal["goal"] = allUniqueObjectives[objIndex].goal;
+//           }
+//           goalDict[key].push(subGoal);
+//         }
+//         //Add weight of zero to states not containing the current objective
+//         else {
+//           subGoal["index"] = objIndex;
+//           subGoal["weight"] = 0;
+//           goalDict[key].push(subGoal);
+//         }
+//       }
+//     }
+
+//     //console.log(objectiveDict)
+//     // console.log("Objectives Dictionary: ", objectiveDict);
+//     // console.log("All Unique Objectives: ", allUniqueObjectives);
+//     // console.log("Goal Dictionary: ", goalDict);
+
+//     useStore.setState({
+//       objectiveDict,
+//       allUniqueObjectives,
+//       goalDict,
+//     });
+//   },
+//   { equalityFn: shallow }
+// );
 
 //Next Steps:
 //Done
@@ -347,6 +405,7 @@ useStore.subscribe(
 //-------------------------------------------------------------------------------------------------
 
 // Handle cascading listeners to update the solver
+
 useStore.subscribe(
   (state) => state.urdf,
   async (urdf) => {
@@ -362,7 +421,6 @@ useStore.subscribe(
       });
     } else {
       useStore.setState({ links: [], joints: [], isValid: false });
-      worker.stopSolver();
     }
   },
   { equalityFn: shallow }
@@ -389,6 +447,38 @@ useStore.subscribe(
 );
 
 useStore.subscribe(
+  state=>({links:state.links,joints:state.joints}),
+  ({links,joints}) => {
+    const objectTypes = useStore.getState().programSpec.objectTypes;
+    const jointOptions = joints.map(j=>({label:j.name,value:j.name}));
+    const linkOptions = links.map(l=>({label:l.name,value:l.name}));
+    // console.log(objectTypes)
+    const newObjectTypes = mapValues(objectTypes,(objectType,key)=>{
+      let newObjectType = cloneDeep(objectType);
+      if (allBehaviorProperties.includes(key)) {
+        ['link','link1','link2'].forEach((prop)=>{
+          if (newObjectType?.properties[prop] !== undefined) {
+            newObjectType.properties[prop].options = linkOptions;
+            newObjectType.properties[prop].default = last(linkOptions).value || ''
+          }
+        });
+        ['joint','joint1','joint2'].forEach((prop)=>{
+          if (newObjectType?.properties[prop] !== undefined) {
+            newObjectType.properties[prop].options = jointOptions;
+            newObjectType.properties[prop].default = last(jointOptions).value || ''
+          }
+        });
+      }
+      console.log('new',newObjectType)
+      return newObjectType;
+    });
+    console.log(newObjectTypes)
+    useStore.setState(state=>({programSpec:{...state.programSpec,objectTypes:newObjectTypes}}))
+  },
+  { equalityFn: shallow }
+)
+
+useStore.subscribe(
   (state) => ({
     robotMeshes: state.robotMeshes,
     feedbackMeshes: state.feedbackMeshes,
@@ -400,9 +490,28 @@ useStore.subscribe(
 );
 
 useStore.subscribe(
+  (state) => ({
+    currentState: state.currentState,
+    goals: state.stateGoals[state.currentState],
+    weights: state.stateWeights[state.currentState],
+    objectives: state.objectives,
+  }),
+  (newValues) => {
+    if (newValues.goals && newValues.weights) {
+      useStore.setState({ goals: newValues.goals, weights: newValues.weights });
+      invoke("update_objectives_and_goals_and_weights", {
+        objectives: newValues.objectives,
+        goals: newValues.goals,
+        weights: newValues.weights,
+      });
+    }
+  },
+  { equalityFn: shallow }
+);
+
+useStore.subscribe(
   (state) => pick(state, ["currentState", "goals", "weights", "objectives"]),
   (c, _) => {
-    console.log("updating urdf");
     console.log(pick(c, ["currentState", "goals", "weights", "objectives"]));
   },
   { equalityFn: shallow }
