@@ -70,21 +70,12 @@ const store = (set, get) => ({
   ...SceneSlice(set, get), // default robot-scene slice
   robotMeshes: {},
   feedbackMeshes: {},
-  items: {
-    box: {
-      shape: "cube",
-      name: "Opacity",
+  texts: {
+    onload: {
+      value: "Configure URDF to Begin",
       frame: "world",
-      position: { x: 0, y: 0, z: 0 },
-      rotation: { w: 1, x: 0, y: 0, z: 0 },
-      color: {
-        r: 10,
-        g: 10,
-        b: 10,
-        a: (time) => Math.sin(time / 1000) / 2 + 0.5,
-      },
-      scale: { x: 0.5, y: 0.5, z: 0.5 },
-      highlighted: false,
+      position: { x: 0, y: 0, z: (time) => 0.25*Math.sin(time / 2000) + 0.5 },
+      color: { r: 255, g: 255, b: 255, a: 1 },
     },
   },
   ...ProgrammingSlice(set, get), // default programming slice for simple-vp,
@@ -490,7 +481,7 @@ useStore.subscribe(
     feedbackMeshes: state.feedbackMeshes,
   }),
   ({ robotMeshes, feedbackMeshes }) => {
-    useStore.setState({ items: { ...robotMeshes, ...feedbackMeshes } });
+    useStore.setState({ items: { ...robotMeshes, ...feedbackMeshes }, texts: {} });
   },
   { equalityFn: shallow }
 );

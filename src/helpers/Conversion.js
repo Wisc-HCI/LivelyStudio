@@ -3,6 +3,7 @@ import {
   behaviorPropertyDrawerBase,
 } from "../Constants";
 import { quaternionFromEuler } from "./Geometry";
+import { toNumber } from 'lodash';
 
 // const RAD_2_DEG = 180 / Math.PI;
 const DEG_2_RAD = Math.PI / 180;
@@ -71,9 +72,21 @@ export const bp2lik = (bp) => {
   ['link','link1','link2','joint','joint1','joint2','frequency'].forEach(property=>{
     // console.log(bp.properties)
     if (bp.properties[property]!==undefined) {
-        objective[property] = bp.properties[property]
+        if (property === 'frequency') {
+            objective[property] = toNumber(bp.properties[property])
+        } else {
+            objective[property] = bp.properties[property]
+        }
+        
     }
   })
 
   return { goal, objective };
 };
+
+// export const bp2vis = (bp) => {
+//     switch (behaviorPropertyLookup[bp.type]) {
+//         case 'PositionBounding':
+//             return 
+//     }
+// }
