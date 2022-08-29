@@ -3,7 +3,7 @@ import React from "react";
 // import useStore from "../store";
 import { Box } from "grommet";
 import { Alert, IconButton, Badge, AppBar, Toolbar, Typography } from "@mui/material";
-import { DropMenu } from "./Elements/DropMenu";
+import { DropMenu, RootSettings } from "./Elements/DropMenu";
 import useStore from "./store";
 import { FiThumbsUp, FiSettings, FiGrid } from "react-icons/fi";
 import { DEFAULTS } from "./defaults";
@@ -31,15 +31,18 @@ export const Menu = ({ mode, setMode }) => {
         {mode=== 'setup' ? "Setup" : "Editor"}
       </Typography>
         {mode === "setup" && (
-          <DropMenu
-            size="xsmall"
-            label="Defaults"
-            onSelect={(v) => setUrdf(DefaultRobots[v])}
-            options={[
-              { value: "ur3", label: "UR3" },
-              { value: "panda", label: "Panda" },
-            ]}
-          />
+          <>
+            <DropMenu
+              size="xsmall"
+              label="Defaults"
+              onSelect={(v) => setUrdf(DefaultRobots[v])}
+              options={[
+                { value: "ur3", label: "UR3" },
+                { value: "panda", label: "Panda" },
+              ]}
+            />
+            <RootSettings/>
+          </>
         )}
         <Badge
           invisible={marker === null}

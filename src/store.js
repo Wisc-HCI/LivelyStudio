@@ -58,6 +58,9 @@ const store = (set, get) => ({
     { value: 0.0, delta: 0.0 },
     { value: 0.0, delta: 0.0 }, // Rotational
   ],
+  setRootBound: (value,idx,isValue) => set(state=>{
+    state.rootBounds[idx][isValue?'value':'delta'] = Number(value);
+  }),
   persistentShapes: [],
   objectives: [],
   goals: [],
@@ -409,7 +412,10 @@ useStore.subscribe(
 useStore.subscribe(
   (state) => state.urdf,
   async (urdf) => {
+    const rootBounds = useStore.getState().rootBounds;
     const result = await invoke("update_urdf", { urdf });
+    // console.log(rootBounds.map(b=>(b.value,b.delta)))
+    await invoke('update_root_bounds',{rootBounds:rootBounds.map(b=>([b.value,b.delta]))});
     // const worker = useStore.getState().solverWorker;
     if (result) {
       const initialState = await invoke("solve");
@@ -516,6 +522,12 @@ useStore.subscribe(
   },
   { equalityFn: shallow }
 );
+
+useStore.subscribe(
+  (state) => state.rootBounds,
+  (rootBounds) => invoke('update_root_bounds',{rootBounds:rootBounds.map(b=>([b.value,b.delta]))}),
+  { equalityFn: shallow }
+)
 
 // Finally, set the program based on the spec and solver instance
 // const solverWorker = new SolverWorker();
