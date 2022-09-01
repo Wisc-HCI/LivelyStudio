@@ -3,7 +3,7 @@ import create from "zustand";
 import { SceneSlice } from "robot-scene";
 import { ProgrammingSlice } from "simple-vp";
 import { programSpec } from "./programSpec";
-import { subscribeWithSelector } from "zustand/middleware";
+import { subscribeWithSelector, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { DEFAULTS } from "./defaults";
 import { shape2item, state2tfs } from "./helpers/InfoParsing";
@@ -15,10 +15,10 @@ import {
   behaviorPropertyLookup,
   STATE_TYPES,
 } from "./Constants";
-import { mapValues, pickBy, pick, uniqWith, isEqual, last, cloneDeep } from "lodash";
-import { bp2lik } from "./helpers/Conversion";
+import { mapValues, pickBy, pick, uniqWith, isEqual, last, cloneDeep, fromPairs, findKey} from "lodash";
+import { bp2lik, bp2vis } from "./helpers/Conversion";
 import { indexOf } from "./helpers/Comparison";
-import { useState } from "react";
+// import { Timer } from "./Timer";
 // import init from "puppeteer-rust";
 
 // const immer = (config) => (set, get, api) =>
@@ -32,7 +32,17 @@ import { useState } from "react";
 //     api
 //   );
 
+const DEFAULT_OBJECTIVE = {type:'SmoothnessMacro',name:'SmoothnessMacro',weight:10}
+
 const store = (set, get) => ({
+  loaded: true,
+  setLoaded: (loaded) => {
+    // console.log('new loaded',loaded);
+    set({loaded});
+    // console.log('new loaded test',get().loaded);
+  },
+  showCollision: false,
+  setShowCollision: (showCollision) => set({showCollision}),
   currentState: null,
   stateGoals:{},
   stateWeights:{},
@@ -45,9 +55,19 @@ const store = (set, get) => ({
       state.programData[fromNode].selected = false;
       state.programData[toNode].selected = true;
       state.currentState = toNode;
+
+      // Create feedback meshes
+      // state.feedbackMeshes = {};
+      // if (state.programData[toNode]?.type === 'stateType') {
+      //   state.programData[toNode].properties.children.forEach(bpId=>{
+      //     const goalFeedback = bp2vis(state.programData[toNode]);
+      //     if (goalFeedback) {
+      //       state.feedbackMeshes[bpId] = goalFeedback;
+      //     }
+      //   })
+      // }
     }),
   isValid: false,
-  solverWorker: null,
   urdf: DEFAULTS.urdf,
   setUrdf: (urdf) => set({ urdf }),
   rootBounds: [
@@ -62,9 +82,9 @@ const store = (set, get) => ({
     state.rootBounds[idx][isValue?'value':'delta'] = Number(value);
   }),
   persistentShapes: [],
-  objectives: [],
-  goals: [],
-  weights: [],
+  objectives: {},
+  goals: {},
+  weights: {},
   links: [],
   joints: [],
   ...SceneSlice(set, get), // default robot-scene slice
@@ -79,15 +99,93 @@ const store = (set, get) => ({
     },
   },
   ...ProgrammingSlice(set, get), // default programming slice for simple-vp,
+  programSpec,
   setTfs: (tfstate) =>
     set((state) => {
       const tfs = state2tfs(tfstate);
-      // console.log(tfs)
+      // console.log("setting tfs")
       state.tfs = tfs;
     }),
+  setDefault: () => set({
+    loaded:true,
+    programSpec,
+    currentState: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
+    programData: {
+      "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a": {
+        argumentBlockData: [],
+        canDelete: false,
+        canEdit: true,
+        dataType: "INSTANCE",
+        editing: undefined,
+        id: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
+        name: "PowerOn",
+        position: { x: 100, y: 0 },
+        properties: {},
+        refData: null,
+        selected: true,
+        type: "powerOnType",
+      },
+    },
+  }),
+  updateProgramSpec: (links,joints) => set(state=>{
+      console.log('updating programSpec');
+      const objectTypes = programSpec.objectTypes;
+      const jointOptions = joints.map(j=>({label:j.name,value:j.name}));
+      const linkOptions = links.map(l=>({label:l.name,value:l.name}));
+      // console.log(objectTypes)
+      state.programSpec.objectTypes = mapValues(objectTypes,(objectType,key)=>{
+        let newObjectType = cloneDeep(objectType);
+        if (allBehaviorProperties.includes(key)) {
+          ['link','link1','link2'].forEach((prop)=>{
+            if (newObjectType?.properties[prop] !== undefined) {
+              newObjectType.properties[prop].options = linkOptions;
+              newObjectType.properties[prop].default = last(linkOptions).value || ''
+            }
+          });
+          ['joint','joint1','joint2'].forEach((prop)=>{
+            if (newObjectType?.properties[prop] !== undefined) {
+              newObjectType.properties[prop].options = jointOptions;
+              newObjectType.properties[prop].default = last(jointOptions).value || ''
+            }
+          });
+        }
+        // console.log('new',newObjectType)
+        return newObjectType;
+      });
+      // set({loaded:true,programSpec:{drawers:programSpec.drawers,objectTypes:newObjectTypes}})
+  })
 });
 
 const immerStore = immer(store);
+
+// const persistStore = persist(immerStore,{
+//   name:'puppeteer-store',
+//   partialize: (state) => ({
+//     ...state,
+//     loaded: false,
+//     programSpec: {objectTypes:mapValues(state.programSpec.objectTypes,(objectType)=>({properties:objectType.properties}))}
+//   }),
+//   deserialize: (string) => {
+//     console.log("INCOMING", JSON.parse(string))
+//     console.log('MERGED',merge({state:{programSpec,clock:new Timer()}},JSON.parse(string)))
+//     return merge({state:{programSpec,clock:new Timer()}},JSON.parse(string))
+//   },
+//   onRehydrateStorage: (state) => {
+//     console.log("hydration starts");
+//     // optional
+//     return (state, error) => {
+//       // if (error) {
+//       //   console.log("An error happened during hydration. Reloading with Default", error);
+//       //   state.setDefault();
+//       // } else {
+//       //   console.log("hydration finished");
+//       //   state.updateProgramSpec(state.links,state.joints)
+//       // }
+//       console.log('rehydrated state',state);
+//       setTimeout(()=>state.setLoaded(true),50)
+//     };
+//   },
+// })
 
 const useStore = create(subscribeWithSelector(immerStore));
 
@@ -99,34 +197,9 @@ const unlisten = await listen("solution-calculated", (event) => {
   }
 });
 
-//Remove duplicates function-----------------------------------------------------------------------
-// function removeDup(objectList) {
-//   //Remove duplicates from each state's list of objectives
-//   let uniqueObjects = [];
-//   let i;
-//   let j;
-//   //Compare each item against those before it
-//   for (i = objectList.length - 1; i >= 1; i--) {
-//     for (j = i - 1; j >= 0; j--) {
-//       //If the compared objectives are the same, move on to the next objective
-//       if (JSON.stringify(objectList[i]) == JSON.stringify(objectList[j])) {
-//         break;
-//       }
-//       //The current comparison is not equivalent to any others, so it must be unique
-//       if (j == 0) {
-//         uniqueObjects.unshift(objectList[i]);
-//       }
-//     }
-//   }
-//   //If only objective in list so it must be unique
-//   if (objectList.length != 0) {
-//     uniqueObjects.unshift(objectList[0]);
-//   }
-//   return uniqueObjects;
-// }
-
 const initiateTransition = useStore.getState().initiateTransition;
 
+// Handle Transitioning between states
 useStore.subscribe(
   (state) =>
     mapValues(
@@ -166,45 +239,44 @@ useStore.subscribe(
     const behaviorProperties = pickBy(programData, (d) =>
       allBehaviorProperties.includes(d.type)
     );
-    const states = pickBy(programData, (d) => d.type === "stateType");
-    const likValues = mapValues(behaviorProperties, bp2lik);
-    const objectives = Object.values(likValues).map((v) => v.objective);
-    const uniqueObjectives = uniqWith(objectives, isEqual);
+    const states = pickBy(programData, (d) => STATE_TYPES.includes(d.type));
+    const likValues = {default:{objective:DEFAULT_OBJECTIVE,goal:null},...mapValues(behaviorProperties, bp2lik)};
+    // Creates a new object with only unique values;
+    const objectives = mapValues(fromPairs(uniqWith(Object.entries(likValues),([_k1,v1],[_k2,v2])=>isEqual(v1.objective,v2.objective))),v=>v.objective);
 
     // Generate a lookup of state goals that can be sent to livelytk
     const stateGoals = mapValues(states, (state) => {
-      const stateLikValues = state.properties.children.map(
-        (bp) => likValues[bp]
-      );
-      const stateObjectives = stateLikValues.map((v) => v.objective);
-      return uniqueObjectives.map((uniqueObjective) => {
-        const objIndex = indexOf(stateObjectives, uniqueObjective);
-        if (objIndex >= 0) {
-          return stateLikValues[objIndex].goal;
-        } else {
-          return null;
+      let currentStateGoals = {};
+      state.properties?.children?.forEach(key=>{
+        const childData = bp2lik(programData[key]);
+        if (!childData.goal) return;
+        let matchedObjKey = findKey(objectives,objective=>isEqual(objective,childData.objective));
+        if (matchedObjKey) {
+          currentStateGoals[matchedObjKey] = childData.goal;
         }
-      });
+      })
+      return currentStateGoals;
     });
 
     // Generate a lookup of state weights that can be sent to livelytk
     const stateWeights = mapValues(states, (state) => {
-      const stateLikValues = state.properties.children.map(
-        (bp) => likValues[bp]
-      );
-      const stateObjectives = stateLikValues.map((v) => v.objective);
-      return uniqueObjectives.map((uniqueObjective) => {
-        const objIndex = indexOf(stateObjectives, uniqueObjective);
-        if (objIndex >= 0) {
-          return 50 / Math.pow(Math.E, objIndex / stateObjectives.length);
+      let currentStateWeights = {};
+      state.properties?.children?.forEach((key,idx)=>{
+        const childData = bp2lik(programData[key]);
+        let matchedObjKey = findKey(objectives,objective=>isEqual(objective,childData.objective));
+        if (matchedObjKey) {
+          currentStateWeights[matchedObjKey] = 50 / Math.pow(Math.E, idx / state.properties.children.length);;
         } else {
-          return 0;
+          return 0
         }
-      });
+      })
+      return currentStateWeights;
     });
 
+    console.log('stateInfo',{objectives,stateGoals,stateWeights})
+
     useStore.setState({
-      objectives: uniqueObjectives,
+      objectives,
       stateGoals,
       stateWeights,
     });
@@ -212,194 +284,8 @@ useStore.subscribe(
   },
   { equalityFn: isEqual }
 );
-// useStore.subscribe(
-//   (state) => state.programData,
-//   (v) => {
-//     //GOALS:
-//     //Create a dictionary of lists containing unique objectives in each state
-//     //Create a list of all unique objectives in all states
-//     //Create a set of goals
 
-//     //Instantiate variables
-//     let stateList = [];
-//     let stateBPsDict = {};
-//     let stateObjDict = {};
-//     let objectiveDict = {};
-
-//     //Creates a list of objects (one object for each node in programData)
-//     const unfilteredList = Object.values(v);
-
-//     //Use unfilteredList to make a list of states and a list of behavior properties
-//     for (let k = 0; k < unfilteredList.length; k++) {
-//       //States
-//       if (unfilteredList[k].type == "stateType") {
-//         stateList.push(unfilteredList[k]);
-//       }
-//       //Behavior properties
-//       else if (allBehaviorProperties.includes(unfilteredList[k].type)) {
-//         stateBPsDict[unfilteredList[k].id] = unfilteredList[k];
-//       }
-//     }
-
-//     //Add state ID and their children (BPs) IDs to state/goal structure
-//     for (let k = 0; k < stateList.length; k++) {
-//       stateObjDict[stateList[k].id] = stateList[k].properties.children;
-//     }
-
-//     //Replace all child (BPs) IDs with objectives within state/goal structure
-//     //Iterate through each state
-//     for (let stateKey in stateObjDict) {
-//       objectiveDict[stateKey] = [];
-
-//       //Skip remainder if there are no BPs in the current state
-//       if (stateObjDict.length == 0) {
-//         break;
-//       }
-
-//       //Iterate through each list of BP IDs
-//       let tempObjList = [];
-//       for (let l = 0; l < stateObjDict[stateKey].length; l++) {
-//         let tempBPID = stateObjDict[stateKey][l];
-//         let tempBP = stateBPsDict[tempBPID];
-
-//         //Convert BP objects to objectives
-//         let tempObjective = {
-//           type: behaviorPropertyLookup[tempBP.type],
-//           name: "",
-//           weight: 1,
-//           stateIDs: [],
-//         };
-
-//         //Add additional properties if they exist for a given objective
-//         if (tempBP.properties.link !== undefined) {
-//           tempObjective.link = tempBP.properties.link;
-//         }
-//         if (tempBP.properties.link1 !== undefined) {
-//           tempObjective.link1 = tempBP.properties.link1;
-//         }
-//         if (tempBP.properties.link2 !== undefined) {
-//           tempObjective.link2 = tempBP.properties.link2;
-//         }
-//         if (tempBP.properties.joint !== undefined) {
-//           tempObjective.joint = tempBP.properties.joint;
-//         }
-//         if (tempBP.properties.joint1 !== undefined) {
-//           tempObjective.joint1 = tempBP.properties.joint1;
-//         }
-//         if (tempBP.properties.joint2 !== undefined) {
-//           tempObjective.joint2 = tempBP.properties.joint2;
-//         }
-//         if (tempBP.properties.frequency !== undefined) {
-//           tempObjective.frequency = tempBP.properties.frequency;
-//         }
-//         if (tempBP.properties.goal !== undefined) {
-//           tempObjective.goal = tempBP.properties.goal;
-//         }
-
-//         //Add the objective to its state
-//         tempObjList.push(tempObjective);
-//       }
-
-//       //Remove duplicate objectives for each state
-//       let uniqueObjectives = removeDup(tempObjList);
-
-//       //Add unique objectives to state/goal structure
-//       objectiveDict[stateKey].push(uniqueObjectives);
-//     }
-
-//     //Creating a unique set of all objectives in the UI
-//     let allStateObjectives = Object.values(objectiveDict).flat(2);
-//     let allUniqueObjectives = removeDup(allStateObjectives);
-
-//     //Determine states in which each unique objective is included
-//     //Iterate through each uniqueObjective
-//     for (let x = 0; x < allUniqueObjectives.length; x++) {
-//       //Iterate through each state in objectiveDict
-//       for (let key in objectiveDict) {
-//         //Check if the current objective is present in the current state
-//         if (
-//           JSON.stringify(objectiveDict[key]).includes(
-//             allUniqueObjectives[x].type
-//           )
-//         ) {
-//           //If so, save that stateID to that objective in allUniqueObjectives
-//           allUniqueObjectives[x].stateIDs.push(key);
-//         }
-//       }
-//     }
-
-//     //Add unique objectives list to store
-//     // store.objectives = allUniqueObjectives;
-
-//     //Create a set of goals for each state
-//     let goalDict = {};
-//     //Iterate through each state
-//     for (let key in objectiveDict) {
-//       //Skip remainder if there are no objectives in the current state
-//       if (allUniqueObjectives.length == 0) {
-//         break;
-//       }
-//       //Iterate through each unique objective
-//       goalDict[key] = [];
-//       for (
-//         let objIndex = 0;
-//         objIndex < allUniqueObjectives.length;
-//         objIndex++
-//       ) {
-//         let subGoal = {};
-//         //Add meaningful weight and data to states containing the current objective
-//         if (allUniqueObjectives[objIndex].stateIDs.includes(key)) {
-//           subGoal["index"] = objIndex;
-//           subGoal["weight"] = allUniqueObjectives[objIndex].weight;
-//           //Add goal data if present
-//           if (allUniqueObjectives[objIndex].goal != undefined) {
-//             subGoal["goal"] = allUniqueObjectives[objIndex].goal;
-//           }
-//           goalDict[key].push(subGoal);
-//         }
-//         //Add weight of zero to states not containing the current objective
-//         else {
-//           subGoal["index"] = objIndex;
-//           subGoal["weight"] = 0;
-//           goalDict[key].push(subGoal);
-//         }
-//       }
-//     }
-
-//     //console.log(objectiveDict)
-//     // console.log("Objectives Dictionary: ", objectiveDict);
-//     // console.log("All Unique Objectives: ", allUniqueObjectives);
-//     // console.log("Goal Dictionary: ", goalDict);
-
-//     useStore.setState({
-//       objectiveDict,
-//       allUniqueObjectives,
-//       goalDict,
-//     });
-//   },
-//   { equalityFn: shallow }
-// );
-
-//Next Steps:
-//Done
-
-//Changes made:
-//Fixed issue with order of objectives
-//Fixed issue with only some goals being added to goalDict
-//Added goal fields to BP properties in programSpec
-//Piped goal data to goalDict
-
-//Updates/Questions:
-//If we want to add weights based on order, we should implement those weights before goalDict
-//The Elipse and ScalarRange documentation is missing a bracket at the end of the JS example
-//When should we add weights to properties in programSpec?
-//Rotation bounding is an objective mentioned in the LivelyTK documentation, but it's not used?
-//There are many BPs that do not have goals within the LivelyTK documentation. Is that correct?
-
-//-------------------------------------------------------------------------------------------------
-
-// Handle cascading listeners to update the solver
-
+// Handle updating the urdf
 useStore.subscribe(
   (state) => state.urdf,
   async (urdf) => {
@@ -423,58 +309,37 @@ useStore.subscribe(
   { equalityFn: shallow }
 );
 
+// Handle updating robot meshes when links change
 useStore.subscribe(
-  (state) => state.links,
-  (links) => {
+  (state) => ({links:state.links,showCollision:state.showCollision}),
+  ({links,showCollision}) => {
     let robotMeshes = {};
     links.forEach((link) => {
       link.visuals.forEach((visual, i) => {
         robotMeshes[`visual-${link.name}-${i}`] = shape2item(visual, false);
       });
-      link.collisions.forEach((collision, i) => {
-        robotMeshes[`collision-${link.name}-${i}`] = shape2item(
-          collision,
-          true
-        );
-      });
+      if (showCollision) {
+        link.collisions.forEach((collision, i) => {
+          robotMeshes[`collision-${link.name}-${i}`] = shape2item(
+            collision,
+            true
+          );
+        });
+      }
     });
     useStore.setState({ robotMeshes });
   },
   { equalityFn: shallow }
 );
 
+// Update the program spec when links/joints change
 useStore.subscribe(
   state=>({links:state.links,joints:state.joints}),
-  ({links,joints}) => {
-    const objectTypes = useStore.getState().programSpec.objectTypes;
-    const jointOptions = joints.map(j=>({label:j.name,value:j.name}));
-    const linkOptions = links.map(l=>({label:l.name,value:l.name}));
-    // console.log(objectTypes)
-    const newObjectTypes = mapValues(objectTypes,(objectType,key)=>{
-      let newObjectType = cloneDeep(objectType);
-      if (allBehaviorProperties.includes(key)) {
-        ['link','link1','link2'].forEach((prop)=>{
-          if (newObjectType?.properties[prop] !== undefined) {
-            newObjectType.properties[prop].options = linkOptions;
-            newObjectType.properties[prop].default = last(linkOptions).value || ''
-          }
-        });
-        ['joint','joint1','joint2'].forEach((prop)=>{
-          if (newObjectType?.properties[prop] !== undefined) {
-            newObjectType.properties[prop].options = jointOptions;
-            newObjectType.properties[prop].default = last(jointOptions).value || ''
-          }
-        });
-      }
-      console.log('new',newObjectType)
-      return newObjectType;
-    });
-    console.log(newObjectTypes)
-    useStore.setState(state=>({programSpec:{...state.programSpec,objectTypes:newObjectTypes}}))
-  },
+  ({links,joints}) => useStore.getState().updateProgramSpec(links,joints),
   { equalityFn: shallow }
 )
 
+// Merge feedback/robot meshes when either updates
 useStore.subscribe(
   (state) => ({
     robotMeshes: state.robotMeshes,
@@ -486,26 +351,83 @@ useStore.subscribe(
   { equalityFn: shallow }
 );
 
+// When the goals/weights change, assign them to the new overarching target
 useStore.subscribe(
   (state) => ({
-    currentState: state.currentState,
+    // currentState: state.currentState,
     goals: state.stateGoals[state.currentState],
     weights: state.stateWeights[state.currentState],
-    objectives: state.objectives,
+    // objectives: state.objectives,
   }),
   (newValues) => {
+    // console.log('new goals/weights')
     if (newValues.goals && newValues.weights) {
-      useStore.setState({ goals: newValues.goals, weights: newValues.weights });
-      invoke("update_objectives_and_goals_and_weights", {
-        objectives: newValues.objectives,
-        goals: newValues.goals,
-        weights: newValues.weights,
+      useStore.setState({ 
+        goals: newValues.goals, weights: newValues.weights, 
+        // goals:newValues.goals, weights:newValues.weights // We will remove this when the function below is finished
       });
     }
   },
   { equalityFn: shallow }
 );
 
+// useStore.subscribe(
+//   (state) => ({
+//     goals: state.goals,
+//     weights: state.weights,
+//     nextGoals: state.nextGoals,
+//     nextWeights: state.nextWeights
+//   }),
+//   (newValues) => {
+//     if (newValues.nextGoals && newValues.nextWeights) {
+//       console.log('new goals/weights to interp',{newValues});
+//       // Do interpolation here
+//       // useStore.setState({ goals: interpolatedGoals, weights: interpolatedWeights });
+//       // useStore.setState({ goals: nextGoals, weights: nextWeights });
+//     }
+//   },
+//   { equalityFn: shallow }
+// );
+
+// Listen for changes to goals, weights, objectives and send them to the backend
+useStore.subscribe(
+  (state) => ({
+    goals: state.goals,
+    weights: state.weights,
+    objectives: state.objectives,
+  }),
+  (newValues,pastValues) => {
+    console.log('new values to invoke');
+    if (newValues.goals && newValues.weights && newValues.objectives === pastValues.objectives) {
+      console.log('Updating solver goals/weights', {goals:newValues.goals,weights:newValues.weights})
+      // useStore.setState({ goals: newValues.goals, weights: newValues.weights });
+      invoke("update_goals_and_weights", {
+        goals: newValues.goals,
+        weights: newValues.weights,
+      });
+    } else if (newValues.goals && newValues.weights && newValues.objectives !== pastValues.objectives) {
+      console.log('Updating solver props',newValues)
+      // useStore.setState({ goals: newValues.goals, weights: newValues.weights });
+      invoke("update_objectives_and_goals_and_weights", {
+        objectives: newValues.objectives,
+        goals: newValues.goals,
+        weights: newValues.weights,
+      });
+    } else if (newValues.stateType !== 'stateType') {
+      console.log('Ignoring because not stateType')
+    }
+  },
+  { equalityFn: shallow }
+);
+
+// Update root bounds
+useStore.subscribe(
+  (state) => state.rootBounds,
+  (rootBounds) => invoke('update_root_bounds',{rootBounds:rootBounds.map(b=>([b.value,b.delta]))}),
+  { equalityFn: shallow }
+)
+
+// Log current values
 useStore.subscribe(
   (state) => pick(state, ["currentState", "goals", "weights", "objectives"]),
   (c, _) => {
@@ -514,18 +436,13 @@ useStore.subscribe(
   { equalityFn: shallow }
 );
 
-useStore.subscribe(
-  (state) => state.rootBounds,
-  (rootBounds) => invoke('update_root_bounds',{rootBounds:rootBounds.map(b=>([b.value,b.delta]))}),
-  { equalityFn: shallow }
-)
-
 // Finally, set the program based on the spec and solver instance
 // const solverWorker = new SolverWorker();
 // const solverWorkerInstance = Comlink.wrap(solverWorker);
 // useStore.setState({ programSpec, solverWorker: solverWorkerInstance });
 // useStore.setState({programData: {'s':instanceTemplateFromSpec('stateType',programSpec.objectTypes.stateType,false)}})
 useStore.setState({
+  loaded:true,
   programSpec,
   currentState: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
   programData: {

@@ -14,8 +14,11 @@ import MeshLookupTable from "./Meshes";
 // import { FiSettings } from "react-icons/fi";
 import { appWindow } from "@tauri-apps/api/window";
 import { DEFAULTS } from "./defaults";
+import { Backdrop, CircularProgress } from "@mui/material";
+import shallow from "zustand/shallow";
 
 function App() {
+  const loaded = useStore((state) => state.loaded, shallow);
   const primaryColor = "#FEDE00";
   const theme = getTheme(primaryColor);
   const [editorRef, editorBounds] = useMeasure();
@@ -47,52 +50,63 @@ function App() {
     <ThemeProvider theme={muiTheme}>
       <Grommet full theme={theme}>
         <Box width="100vw" height="100vh" direction="row">
-          <Box
-            flex
-            background="#111"
-            // pad="xxsmall"
-            style={{ overflow: "hidden" }}
-          >
-            <Scene
-              // displayTfs={true}
-              displayGrid={true}
-              isPolar={false}
-              backgroundColor="#1e1e1e"
-              planeColor="#141414"
-              highlightColor={primaryColor}
-              plane={0}
-              fov={50}
-              store={useStore}
-              meshLookup={MeshLookupTable}
-              // onPointerMissed={clearFocus}
-              // paused={paused}
-            />
-          </Box>
-
-          <Box flex background="#111" direction="column">
-            {/* <Box align="center" pad="small" justify="between" direction="row" style={{boxShadow:'2px 2px 1px 1px #11111155'}}> */}
-              <Menu mode={mode} setMode={setMode} />
-            {/* </Box> */}
-            {mode === "default" ? (
+          {loaded ? (
+            <>
               <Box
-                ref={editorRef}
-                align="center"
-                justify="center"
-                animation="fadeIn"
-                height="100%"
+                flex
+                background="#111"
+                // pad="xxsmall"
+                style={{ overflow: "hidden" }}
               >
-                <Environment
-                  store={useStore}
+                <Scene
+                  // displayTfs={true}
+                  displayGrid={true}
+                  isPolar={false}
+                  backgroundColor="#1e1e1e"
+                  planeColor="#141414"
                   highlightColor={primaryColor}
-                  height={editorBounds.height - 5}
-                  width={editorBounds.width - 5}
-                  snapToGrid={false}
+                  plane={0}
+                  fov={50}
+                  store={useStore}
+                  meshLookup={MeshLookupTable}
+                  // onPointerMissed={clearFocus}
+                  // paused={paused}
                 />
               </Box>
-            ) : (
-              <URDF />
-            )}
-          </Box>
+
+              <Box flex background="#111" direction="column">
+                {/* <Box align="center" pad="small" justify="between" direction="row" style={{boxShadow:'2px 2px 1px 1px #11111155'}}> */}
+                <Menu mode={mode} setMode={setMode} />
+                {/* </Box> */}
+                {mode === "default" ? (
+                  <Box
+                    ref={editorRef}
+                    align="center"
+                    justify="center"
+                    animation="fadeIn"
+                    height="100%"
+                  >
+                    <Environment
+                      store={useStore}
+                      highlightColor={primaryColor}
+                      height={editorBounds.height - 5}
+                      width={editorBounds.width - 5}
+                      snapToGrid={false}
+                    />
+                  </Box>
+                ) : (
+                  <URDF />
+                )}
+              </Box>
+            </>
+          ) : (
+            <Backdrop
+              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
+          )}
         </Box>
       </Grommet>
     </ThemeProvider>

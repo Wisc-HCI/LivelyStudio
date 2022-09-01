@@ -5,15 +5,18 @@ import { Box } from "grommet";
 import { Alert, IconButton, Badge, AppBar, Toolbar, Typography } from "@mui/material";
 import { DropMenu, RootSettings } from "./Elements/DropMenu";
 import useStore from "./store";
-import { FiThumbsUp, FiSettings, FiGrid } from "react-icons/fi";
+import { FiThumbsUp, FiSettings, FiGrid, FiEye, FiCodepen } from "react-icons/fi";
 import { DEFAULTS } from "./defaults";
 import DefaultRobots from "./DefaultRobots";
+import shallow from "zustand/shallow";
 // import { StatusInfo, StatusGood, StatusWarning, FormDown } from 'grommet-icons';
 
 export const Menu = ({ mode, setMode }) => {
-  const urdf = useStore((state) => state.urdf);
-  const setUrdf = useStore((state) => state.setUrdf);
-  const isValid = useStore((state) => state.isValid);
+  const urdf = useStore((state) => state.urdf,shallow);
+  const setUrdf = useStore((state) => state.setUrdf,shallow);
+  const isValid = useStore((state) => state.isValid,shallow);
+  const showCollision = useStore(state=>state.showCollision,shallow);
+  const setShowCollision = useStore(state=>state.setShowCollision,shallow);
   const marker = urdf === DEFAULTS.urdf ? "warning" : !isValid ? "error" : null;
 
   return (
@@ -44,6 +47,20 @@ export const Menu = ({ mode, setMode }) => {
             <RootSettings/>
           </>
         )}
+        <Badge
+          invisible={!showCollision}
+          color='error'
+          variant="dot"
+          overlap="circular"
+        >
+          <IconButton
+            size="small"
+            color="pop"
+            onClick={() => setShowCollision(!showCollision)}
+          >
+            <FiCodepen/>
+          </IconButton>
+        </Badge>
         <Badge
           invisible={marker === null}
           color={marker ? marker : "pop"}

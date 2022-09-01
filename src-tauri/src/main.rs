@@ -5,8 +5,6 @@
 // mod plugin_lively_tk;
 use lively_tk_lib::lively_tk::Solver;
 use lively_tk_lib::objectives::objective::*;
-use lively_tk_lib::objectives::core::matching::*;
-use lively_tk_lib::objectives::core::base::*;
 use lively_tk_lib::utils::goals::*;
 use lively_tk_lib::utils::info::*;
 use lively_tk_lib::utils::shapes::*;
@@ -18,19 +16,20 @@ use std::{
   thread::{sleep, spawn},
   time::{Instant,Duration},
 };
-use tauri::{Manager, Window};
-use nalgebra::geometry::{Translation3, Isometry3, UnitQuaternion};
+use tauri::Manager;
 use std::sync::Arc;
 use urdf_rs::read_from_string;
+
+struct Storage(Mutex<HashMap<String,String>>);
 
 // #[derive(Clone)]
 struct LivelyHandler {
   pub urdf: String,
   pub solver: Option<Solver>,
   pub last_solved_state: Option<State>,
-  pub objectives: Vec<Objective>,
-  pub goals: Vec<Option<Goal>>,
-  pub weights: Vec<Option<f64>>,
+  pub objectives: HashMap<String,Objective>,
+  pub goals: HashMap<String,Goal>,
+  pub weights: HashMap<String,f64>,
   pub robot_info: Option<RobotInfo>,
   pub root_bounds: Option<Vec<(f64, f64)>>,
   pub shapes: Vec<Shape>,
@@ -50,21 +49,9 @@ impl LivelyHandler {
       urdf: "<xml></xml>".into(),
       solver: None,
       last_solved_state: None,
-      objectives: vec![
-        // Objective::CollisionAvoidance(CollisionAvoidanceObjective::new("Collision Avoid".to_string(),10.0)),
-        // Objective::PositionMatch(PositionMatchObjective::new("Default Position".to_string(),50.0,"wrist_3_link".to_string())),
-        // Objective::OrientationMatch(OrientationMatchObjective::new("Default Orientation".to_string(),30.0,"wrist_3_link".to_string()))
-      ],
-      goals: vec![
-        // None,
-        // Some(Goal::Translation(Translation3::new(0.1,0.1,0.1))),
-        // Some(Goal::Rotation(UnitQuaternion::identity()))
-      ],
-      weights: vec![
-        // Some(10.0),
-        // Some(50.0),
-        // Some(30.0)
-        ],
+      objectives: HashMap::new(),
+      goals: HashMap::new(),
+      weights: HashMap::new(),
       robot_info: None,
       root_bounds: None,
       shapes: vec![],
@@ -74,15 +61,17 @@ impl LivelyHandler {
   }
 
   pub fn solve(&mut self) -> Option<State> {
+    // println!("Running solver");
     let elapsed_time = self.initial_time.elapsed();
     let time = elapsed_time.as_secs_f64();
+    // println!("Solving {:?} | {:?}",self.goals,self.weights);
     match &mut self.solver {
       Some(solver) => {
-        // println!("Solver Valid, solving...");
+        // println!("Solver Valid, solving with {:?} {:?}",self.goals,self.weights);
         // let instant = Instant::now();
         let new_state = solver.solve(
-          Some(self.goals.clone()),
-          Some(self.weights.clone()),
+          self.goals.clone(),
+          self.weights.clone(),
           time,
           None,
         );
@@ -94,15 +83,16 @@ impl LivelyHandler {
       }
     }
     self.shape_updates = vec![];
+    // println!("Running solver finished");
     return self.last_solved_state.clone();
   }
 
   pub fn update_solver(&mut self) {
     match read_from_string(&self.urdf.as_str()) {
       Ok(_) => {
-        // println!("Creating new solver...");
+        // println!("Creating new solver {:?} | {:?} | {:?}",self.objectives,self.goals,self.weights);
         // let instant = Instant::now();
-        let solver = Solver::new(
+        let mut solver = Solver::new(
           self.urdf.clone(),
           self.objectives.clone(),
           self.root_bounds.clone(),
@@ -113,6 +103,9 @@ impl LivelyHandler {
           None,
           None
         );
+        solver.compute_average_distance_table();
+        // println!("Created solver");
+        self.last_solved_state = Some(solver.get_current_state());
         // println!("Created in {:?}",instant.elapsed());
         let links = solver.robot_model.links.clone();
         let joints = solver.robot_model.joints.clone();
@@ -134,15 +127,19 @@ impl LivelyHandler {
   pub fn update_urdf(&mut self, urdf: String) -> Option<RobotInfo> {
     self.last_solved_state = None;
     self.urdf = urdf;
+    self.objectives = HashMap::new();
+    self.goals = HashMap::new();
+    self.weights = HashMap::new();
+    // println!("Updating urdf");
     self.update_solver();
     return self.robot_info.clone();
   }
 
   pub fn update_objectives_and_goals_and_weights(
     &mut self,
-    objectives: Vec<Objective>,
-    goals: Vec<Option<Goal>>,
-    weights: Vec<Option<f64>>,
+    objectives: HashMap<String,Objective>,
+    goals: HashMap<String,Goal>,
+    weights: HashMap<String,f64>,
   ) {
     self.objectives = objectives;
     self.goals = goals;
@@ -157,7 +154,7 @@ impl LivelyHandler {
     return self.robot_info.clone();
   }
 
-  pub fn update_goals_and_weights(&mut self, goals: Vec<Option<Goal>>, weights: Vec<Option<f64>>) {
+  pub fn update_goals_and_weights(&mut self, goals: HashMap<String,Goal>, weights: HashMap<String,f64>) {
     self.goals = goals;
     self.weights = weights;
     return;
@@ -165,6 +162,7 @@ impl LivelyHandler {
 
   pub fn update_root_bounds(&mut self, root_bounds: Vec<(f64, f64)>) {
     self.root_bounds = Some(root_bounds);
+    // println!("Updating root bounds");
     self.update_solver();
     return;
   }
@@ -196,9 +194,9 @@ fn update_root_bounds(state: tauri::State<Arc<Runner>>, root_bounds: Vec<(f64, f
 #[tauri::command]
 fn update_objectives_and_goals_and_weights(
   state: tauri::State<Arc<Runner>>,
-  objectives: Vec<Objective>,
-  goals: Vec<Option<Goal>>,
-  weights: Vec<Option<f64>>,
+  objectives: HashMap<String,Objective>,
+  goals: HashMap<String,Goal>,
+  weights: HashMap<String,f64>
 ) {
   state
     .0
@@ -211,8 +209,8 @@ fn update_objectives_and_goals_and_weights(
 #[tauri::command]
 fn update_goals_and_weights(
   state: tauri::State<Arc<Runner>>,
-  goals: Vec<Option<Goal>>,
-  weights: Vec<Option<f64>>,
+  goals: HashMap<String,Goal>,
+  weights: HashMap<String,f64>,
 ) {
   state
     .0
@@ -220,6 +218,27 @@ fn update_goals_and_weights(
     .unwrap()
     .update_goals_and_weights(goals, weights);
   return;
+}
+
+#[tauri::command]
+fn set_item(state: tauri::State<Storage>, key: String, value: String) {
+  println!("Setting item for {:?}", key);
+  state.0.lock().unwrap().insert(key,value);
+  return
+}
+
+#[tauri::command]
+fn get_item(state: tauri::State<Storage>, key: String) -> Option<String> {
+  // return state.0.lock().unwrap_or(None)//.get(&key).map(|result| result.clone());
+  println!("Getting item for {:?}", key);
+  return state.0.lock().unwrap().get(&key).map(|result| result.clone());
+}
+
+#[tauri::command]
+fn remove_item(state: tauri::State<Storage>, key: String) {
+  println!("Deleting item for {:?}", key);
+  state.0.lock().unwrap().remove(&key);
+  return
 }
 
 impl Runner {
@@ -240,9 +259,9 @@ fn main() {
       spawn(move || {
         let loop_runner = Arc::clone(&runner);
         loop {
-          let instant = Instant::now();
+          // let instant = Instant::now();
           let solution = loop_runner.0.lock().unwrap().solve();
-          println!("{:?}",instant.elapsed());
+          // println!("{:?}",instant.elapsed());
           main_window.emit("solution-calculated",solution).unwrap();
           sleep(Duration::from_millis(4));
         };
@@ -250,13 +269,17 @@ fn main() {
       Ok(())
     })
     .manage(managed_runner)
+    .manage(Storage(Mutex::new(HashMap::new())))
     .invoke_handler(tauri::generate_handler![
       solve,
       update_urdf,
       update_shapes,
       update_root_bounds,
       update_objectives_and_goals_and_weights,
-      update_goals_and_weights
+      update_goals_and_weights,
+      set_item,
+      get_item,
+      remove_item
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

@@ -35,6 +35,7 @@ const behaviorPropertyTemplate = {
     // minified: true,
     // color: "#bdb655",
     // icon: FiGrid,
+    hideNewPrefix: true,
     extras: [
       EXTRA_TYPES.LOCKED_INDICATOR,
       {
