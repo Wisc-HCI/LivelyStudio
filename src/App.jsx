@@ -10,12 +10,15 @@ import { Menu } from "./Menu";
 // import Button from "@mui/material/Button";
 // import { Icon, IconButton } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
 import MeshLookupTable from "./Meshes";
 // import { FiSettings } from "react-icons/fi";
 import { appWindow } from "@tauri-apps/api/window";
 import { DEFAULTS } from "./defaults";
 import { Backdrop, CircularProgress } from "@mui/material";
 import shallow from "zustand/shallow";
+import "react-reflex/styles.css";
+import './App.css';
 
 function App() {
   const loaded = useStore((state) => state.loaded, shallow);
@@ -51,9 +54,11 @@ function App() {
       <Grommet full theme={theme}>
         <Box width="100vw" height="100vh" direction="row">
           {loaded ? (
-            <>
+            <ReflexContainer orientation="vertical">
+              <ReflexElement>
               <Box
                 flex
+                fill
                 background="#111"
                 // pad="xxsmall"
                 style={{ overflow: "hidden" }}
@@ -73,8 +78,10 @@ function App() {
                   // paused={paused}
                 />
               </Box>
-
-              <Box flex background="#111" direction="column">
+              </ReflexElement>
+              <ReflexSplitter />
+              <ReflexElement>
+              <Box flex fill background="#111" direction="column">
                 {/* <Box align="center" pad="small" justify="between" direction="row" style={{boxShadow:'2px 2px 1px 1px #11111155'}}> */}
                 <Menu mode={mode} setMode={setMode} />
                 {/* </Box> */}
@@ -98,7 +105,8 @@ function App() {
                   <URDF />
                 )}
               </Box>
-            </>
+              </ReflexElement>
+            </ReflexContainer>
           ) : (
             <Backdrop
               sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

@@ -15,7 +15,17 @@ import {
   behaviorPropertyLookup,
   STATE_TYPES,
 } from "./Constants";
-import { mapValues, pickBy, pick, uniqWith, isEqual, last, cloneDeep, fromPairs, findKey} from "lodash";
+import {
+  mapValues,
+  pickBy,
+  pick,
+  uniqWith,
+  isEqual,
+  last,
+  cloneDeep,
+  fromPairs,
+  findKey,
+} from "lodash";
 import { bp2lik, bp2vis } from "./helpers/Conversion";
 import { indexOf } from "./helpers/Comparison";
 // import { Timer } from "./Timer";
@@ -32,20 +42,24 @@ import { indexOf } from "./helpers/Comparison";
 //     api
 //   );
 
-const DEFAULT_OBJECTIVE = {type:'SmoothnessMacro',name:'SmoothnessMacro',weight:10}
+const DEFAULT_OBJECTIVE = {
+  type: "SmoothnessMacro",
+  name: "SmoothnessMacro",
+  weight: 10,
+};
 
 const store = (set, get) => ({
   loaded: true,
   setLoaded: (loaded) => {
     // console.log('new loaded',loaded);
-    set({loaded});
+    set({ loaded });
     // console.log('new loaded test',get().loaded);
   },
   showCollision: false,
-  setShowCollision: (showCollision) => set({showCollision}),
+  setShowCollision: (showCollision) => set({ showCollision }),
   currentState: null,
-  stateGoals:{},
-  stateWeights:{},
+  stateGoals: {},
+  stateWeights: {},
   initiateTransition: (fromNode, toNode) =>
     set((state) => {
       // Should do checking to see whether this is a valid transition,
@@ -55,17 +69,6 @@ const store = (set, get) => ({
       state.programData[fromNode].selected = false;
       state.programData[toNode].selected = true;
       state.currentState = toNode;
-
-      // Create feedback meshes
-      // state.feedbackMeshes = {};
-      // if (state.programData[toNode]?.type === 'stateType') {
-      //   state.programData[toNode].properties.children.forEach(bpId=>{
-      //     const goalFeedback = bp2vis(state.programData[toNode]);
-      //     if (goalFeedback) {
-      //       state.feedbackMeshes[bpId] = goalFeedback;
-      //     }
-      //   })
-      // }
     }),
   isValid: false,
   urdf: DEFAULTS.urdf,
@@ -78,9 +81,10 @@ const store = (set, get) => ({
     { value: 0.0, delta: 0.0 },
     { value: 0.0, delta: 0.0 }, // Rotational
   ],
-  setRootBound: (value,idx,isValue) => set(state=>{
-    state.rootBounds[idx][isValue?'value':'delta'] = Number(value);
-  }),
+  setRootBound: (value, idx, isValue) =>
+    set((state) => {
+      state.rootBounds[idx][isValue ? "value" : "delta"] = Number(value);
+    }),
   persistentShapes: [],
   objectives: {},
   goals: {},
@@ -94,7 +98,7 @@ const store = (set, get) => ({
     onload: {
       value: "Configure URDF to Begin",
       frame: "world",
-      position: { x: 0, y: 0, z: (time) => 0.25*Math.sin(time / 2000) + 0.5 },
+      position: { x: 0, y: 0, z: (time) => 0.25 * Math.sin(time / 2000) + 0.5 },
       color: { r: 255, g: 255, b: 255, a: 1 },
     },
   },
@@ -106,54 +110,80 @@ const store = (set, get) => ({
       // console.log("setting tfs")
       state.tfs = tfs;
     }),
-  setDefault: () => set({
-    loaded:true,
-    programSpec,
-    currentState: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
-    programData: {
-      "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a": {
-        argumentBlockData: [],
-        canDelete: false,
-        canEdit: true,
-        dataType: "INSTANCE",
-        editing: undefined,
-        id: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
-        name: "PowerOn",
-        position: { x: 100, y: 0 },
-        properties: {},
-        refData: null,
-        selected: true,
-        type: "powerOnType",
+  setDefault: () =>
+    set({
+      loaded: true,
+      programSpec,
+      currentState: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
+      programData: {
+        "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a": {
+          argumentBlockData: [],
+          canDelete: false,
+          canEdit: true,
+          dataType: "INSTANCE",
+          editing: undefined,
+          id: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
+          name: "PowerOn",
+          position: { x: 100, y: 0 },
+          properties: {},
+          refData: null,
+          selected: true,
+          type: "powerOnType",
+        },
       },
-    },
-  }),
-  updateProgramSpec: (links,joints) => set(state=>{
-      console.log('updating programSpec');
+    }),
+  updateProgramSpec: (links, joints) =>
+    set((state) => {
+      console.log("updating programSpec");
       const objectTypes = programSpec.objectTypes;
-      const jointOptions = joints.map(j=>({label:j.name,value:j.name}));
-      const linkOptions = links.map(l=>({label:l.name,value:l.name}));
+      const jointOptions = joints.map((j) => ({
+        label: j.name,
+        value: j.name,
+      }));
+      const linkOptions = links.map((l) => ({ label: l.name, value: l.name }));
       // console.log(objectTypes)
-      state.programSpec.objectTypes = mapValues(objectTypes,(objectType,key)=>{
-        let newObjectType = cloneDeep(objectType);
-        if (allBehaviorProperties.includes(key)) {
-          ['link','link1','link2'].forEach((prop)=>{
-            if (newObjectType?.properties[prop] !== undefined) {
-              newObjectType.properties[prop].options = linkOptions;
-              newObjectType.properties[prop].default = last(linkOptions).value || ''
-            }
-          });
-          ['joint','joint1','joint2'].forEach((prop)=>{
-            if (newObjectType?.properties[prop] !== undefined) {
-              newObjectType.properties[prop].options = jointOptions;
-              newObjectType.properties[prop].default = last(jointOptions).value || ''
-            }
-          });
+      state.programSpec.objectTypes = mapValues(
+        objectTypes,
+        (objectType, key) => {
+          let newObjectType = cloneDeep(objectType);
+          if (allBehaviorProperties.includes(key)) {
+            ["link", "link1", "link2"].forEach((prop) => {
+              if (newObjectType?.properties[prop] !== undefined) {
+                newObjectType.properties[prop].options = linkOptions;
+                newObjectType.properties[prop].default =
+                  last(linkOptions).value || "";
+              }
+            });
+            ["joint", "joint1", "joint2"].forEach((prop) => {
+              if (newObjectType?.properties[prop] !== undefined) {
+                newObjectType.properties[prop].options = jointOptions;
+                newObjectType.properties[prop].default =
+                  last(jointOptions).value || "";
+              }
+            });
+          }
+          // console.log('new',newObjectType)
+          return newObjectType;
         }
-        // console.log('new',newObjectType)
-        return newObjectType;
-      });
+      );
       // set({loaded:true,programSpec:{drawers:programSpec.drawers,objectTypes:newObjectTypes}})
-  })
+    }),
+    onMove: (id, source, worldTransform, localTransform) => set(state => {
+      if (source === 'items') {
+        switch (behaviorPropertyLookup[state.programData[id].type]) {
+          case "PositionMatch":
+            state.programData[id].properties.translation = [worldTransform.position.x,worldTransform.position.y,worldTransform.position.z]
+        }
+      }
+      // console.log(localTransform)
+      // state.[source][id].position = {...localTransform.position};
+      // state[source][id].rotation = localTransform.quaternion;
+      // state[source][id].rotation.x = localTransform.quaternion.x;
+      // state[source][id].rotation.y = localTransform.quaternion.y;
+      // state[source][id].rotation.z = localTransform.quaternion.z;
+      // state[source][id].rotation.w = localTransform.quaternion.w;
+      // state[source][id].scale = {...localTransform.scale};
+  }),
 });
 
 const immerStore = immer(store);
@@ -224,6 +254,28 @@ useStore.subscribe(
   { equalityFn: shallow }
 );
 
+// Update feedback/input meshes when goals/state change
+useStore.subscribe(
+  (state) =>
+    state.programData[state.currentState]?.properties?.children?.map(
+      (child) => state.programData[child]
+    ) || [],
+  (activeBehaviorProperties) => {
+    // Create feedback meshes
+    let feedbackMeshes = {};
+    activeBehaviorProperties.forEach((bp) => {
+      const goalFeedback = bp2vis(bp);
+      if (goalFeedback) {
+        feedbackMeshes[bp.id] = goalFeedback;
+      }
+    });
+    console.log('feedbackMeshes',feedbackMeshes);
+    useStore.setState({ feedbackMeshes });
+    // console.log('',state.feedbackMeshes)
+  },
+  { equalityFn: shallow }
+);
+
 //Making new subscriber to track unique objectives-------------------------------------------------
 useStore.subscribe(
   (state) =>
@@ -240,40 +292,55 @@ useStore.subscribe(
       allBehaviorProperties.includes(d.type)
     );
     const states = pickBy(programData, (d) => STATE_TYPES.includes(d.type));
-    const likValues = {default:{objective:DEFAULT_OBJECTIVE,goal:null},...mapValues(behaviorProperties, bp2lik)};
+    const likValues = {
+      default: { objective: DEFAULT_OBJECTIVE, goal: null },
+      ...mapValues(behaviorProperties, bp2lik),
+    };
     // Creates a new object with only unique values;
-    const objectives = mapValues(fromPairs(uniqWith(Object.entries(likValues),([_k1,v1],[_k2,v2])=>isEqual(v1.objective,v2.objective))),v=>v.objective);
+    const objectives = mapValues(
+      fromPairs(
+        uniqWith(Object.entries(likValues), ([_k1, v1], [_k2, v2]) =>
+          isEqual(v1.objective, v2.objective)
+        )
+      ),
+      (v) => v.objective
+    );
 
     // Generate a lookup of state goals that can be sent to livelytk
     const stateGoals = mapValues(states, (state) => {
       let currentStateGoals = {};
-      state.properties?.children?.forEach(key=>{
+      state.properties?.children?.forEach((key) => {
         const childData = bp2lik(programData[key]);
         if (!childData.goal) return;
-        let matchedObjKey = findKey(objectives,objective=>isEqual(objective,childData.objective));
+        let matchedObjKey = findKey(objectives, (objective) =>
+          isEqual(objective, childData.objective)
+        );
         if (matchedObjKey) {
           currentStateGoals[matchedObjKey] = childData.goal;
         }
-      })
+      });
       return currentStateGoals;
     });
 
     // Generate a lookup of state weights that can be sent to livelytk
     const stateWeights = mapValues(states, (state) => {
       let currentStateWeights = {};
-      state.properties?.children?.forEach((key,idx)=>{
+      state.properties?.children?.forEach((key, idx) => {
         const childData = bp2lik(programData[key]);
-        let matchedObjKey = findKey(objectives,objective=>isEqual(objective,childData.objective));
+        let matchedObjKey = findKey(objectives, (objective) =>
+          isEqual(objective, childData.objective)
+        );
         if (matchedObjKey) {
-          currentStateWeights[matchedObjKey] = 50 / Math.pow(Math.E, idx / state.properties.children.length);;
+          currentStateWeights[matchedObjKey] =
+            50 / Math.pow(Math.E, idx / state.properties.children.length);
         } else {
-          return 0
+          return 0;
         }
-      })
+      });
       return currentStateWeights;
     });
 
-    console.log('stateInfo',{objectives,stateGoals,stateWeights})
+    console.log("stateInfo", { objectives, stateGoals, stateWeights });
 
     useStore.setState({
       objectives,
@@ -292,7 +359,9 @@ useStore.subscribe(
     const rootBounds = useStore.getState().rootBounds;
     const result = await invoke("update_urdf", { urdf });
     // console.log(rootBounds.map(b=>(b.value,b.delta)))
-    await invoke('update_root_bounds',{rootBounds:rootBounds.map(b=>([b.value,b.delta]))});
+    await invoke("update_root_bounds", {
+      rootBounds: rootBounds.map((b) => [b.value, b.delta]),
+    });
     // const worker = useStore.getState().solverWorker;
     if (result) {
       const initialState = await invoke("solve");
@@ -311,8 +380,8 @@ useStore.subscribe(
 
 // Handle updating robot meshes when links change
 useStore.subscribe(
-  (state) => ({links:state.links,showCollision:state.showCollision}),
-  ({links,showCollision}) => {
+  (state) => ({ links: state.links, showCollision: state.showCollision }),
+  ({ links, showCollision }) => {
     let robotMeshes = {};
     links.forEach((link) => {
       link.visuals.forEach((visual, i) => {
@@ -334,10 +403,10 @@ useStore.subscribe(
 
 // Update the program spec when links/joints change
 useStore.subscribe(
-  state=>({links:state.links,joints:state.joints}),
-  ({links,joints}) => useStore.getState().updateProgramSpec(links,joints),
+  (state) => ({ links: state.links, joints: state.joints }),
+  ({ links, joints }) => useStore.getState().updateProgramSpec(links, joints),
   { equalityFn: shallow }
-)
+);
 
 // Merge feedback/robot meshes when either updates
 useStore.subscribe(
@@ -346,7 +415,10 @@ useStore.subscribe(
     feedbackMeshes: state.feedbackMeshes,
   }),
   ({ robotMeshes, feedbackMeshes }) => {
-    useStore.setState({ items: { ...robotMeshes, ...feedbackMeshes }, texts: {} });
+    useStore.setState({
+      items: { ...robotMeshes, ...feedbackMeshes },
+      texts: {},
+    });
   },
   { equalityFn: shallow }
 );
@@ -362,8 +434,9 @@ useStore.subscribe(
   (newValues) => {
     // console.log('new goals/weights')
     if (newValues.goals && newValues.weights) {
-      useStore.setState({ 
-        goals: newValues.goals, weights: newValues.weights, 
+      useStore.setState({
+        goals: newValues.goals,
+        weights: newValues.weights,
         // goals:newValues.goals, weights:newValues.weights // We will remove this when the function below is finished
       });
     }
@@ -396,25 +469,36 @@ useStore.subscribe(
     weights: state.weights,
     objectives: state.objectives,
   }),
-  (newValues,pastValues) => {
-    console.log('new values to invoke');
-    if (newValues.goals && newValues.weights && newValues.objectives === pastValues.objectives) {
-      console.log('Updating solver goals/weights', {goals:newValues.goals,weights:newValues.weights})
+  (newValues, pastValues) => {
+    console.log("new values to invoke");
+    if (
+      newValues.goals &&
+      newValues.weights &&
+      newValues.objectives === pastValues.objectives
+    ) {
+      console.log("Updating solver goals/weights", {
+        goals: newValues.goals,
+        weights: newValues.weights,
+      });
       // useStore.setState({ goals: newValues.goals, weights: newValues.weights });
       invoke("update_goals_and_weights", {
         goals: newValues.goals,
         weights: newValues.weights,
       });
-    } else if (newValues.goals && newValues.weights && newValues.objectives !== pastValues.objectives) {
-      console.log('Updating solver props',newValues)
+    } else if (
+      newValues.goals &&
+      newValues.weights &&
+      newValues.objectives !== pastValues.objectives
+    ) {
+      console.log("Updating solver props", newValues);
       // useStore.setState({ goals: newValues.goals, weights: newValues.weights });
       invoke("update_objectives_and_goals_and_weights", {
         objectives: newValues.objectives,
         goals: newValues.goals,
         weights: newValues.weights,
       });
-    } else if (newValues.stateType !== 'stateType') {
-      console.log('Ignoring because not stateType')
+    } else if (newValues.stateType !== "stateType") {
+      console.log("Ignoring because not stateType");
     }
   },
   { equalityFn: shallow }
@@ -423,9 +507,12 @@ useStore.subscribe(
 // Update root bounds
 useStore.subscribe(
   (state) => state.rootBounds,
-  (rootBounds) => invoke('update_root_bounds',{rootBounds:rootBounds.map(b=>([b.value,b.delta]))}),
+  (rootBounds) =>
+    invoke("update_root_bounds", {
+      rootBounds: rootBounds.map((b) => [b.value, b.delta]),
+    }),
   { equalityFn: shallow }
-)
+);
 
 // Log current values
 useStore.subscribe(
@@ -442,7 +529,7 @@ useStore.subscribe(
 // useStore.setState({ programSpec, solverWorker: solverWorkerInstance });
 // useStore.setState({programData: {'s':instanceTemplateFromSpec('stateType',programSpec.objectTypes.stateType,false)}})
 useStore.setState({
-  loaded:true,
+  loaded: true,
   programSpec,
   currentState: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
   programData: {
