@@ -432,7 +432,6 @@ useStore.subscribe(
           shape: "cube",
           frame: "world",
           name: "Table",
-          frame: "world",
           scale: { x: 0.5, y: 0.7, z: 0.2 },
           position: { x: 0.5, y: 0, z: 0 },
           rotation: { w: 1, x: 0, y: 0, z: 0 },

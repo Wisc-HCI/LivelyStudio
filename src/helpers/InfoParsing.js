@@ -81,15 +81,19 @@ export function state2Lines(state) {
         // if (distance < 1 && (shape1 === 'Table' || shape2 === 'Table')) {
         //     console.log(`${shape1},${shape2},${distance},${loss}`)
         // }
-        lines[`${shape1}__${shape2}`] = {
-            name: "",
-            frame: "world",
-            width: 1,
-            vertices: [
-                { position: { x: points[0][0], y: points[0][1], z: points[0][2] }, color: { r: 255, g: 0, b: 0, a: 1/Math.pow(Math.E,distance/2) } },
-                { position: { x: points[1][0], y: points[1][1], z: points[1][2] }, color: { r: 255, g: 0, b: 0, a: 1/Math.pow(Math.E,distance/2) } }],
-            highlighted: false
+        if (points) {
+            // console.log(points)
+            lines[`${shape1}__${shape2}`] = {
+                name: "",
+                frame: "world",
+                width: 1,
+                vertices: [
+                    { position: { x: points[0][0], y: points[0][1], z: points[0][2] }, color: { r: 255, g: 0, b: 0, a: 1/Math.pow(Math.E,distance) } },
+                    { position: { x: points[1][0], y: points[1][1], z: points[1][2] }, color: { r: 255, g: 0, b: 0, a: 1/Math.pow(Math.E,distance) } }],
+                highlighted: false
+            }
         }
+        
     })
     return lines
 }
