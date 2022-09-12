@@ -6,7 +6,7 @@ import { programSpec } from "./programSpec";
 import { subscribeWithSelector, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { DEFAULTS } from "./defaults";
-import { shape2item, state2tfs } from "./helpers/InfoParsing";
+import { shape2item, state2Lines, state2tfs } from "./helpers/InfoParsing";
 import shallow from "zustand/shallow";
 import { invoke } from "@tauri-apps/api/tauri";
 import { listen } from "@tauri-apps/api/event";
@@ -96,6 +96,7 @@ const store = (set, get) => ({
   ...SceneSlice(set, get), // default robot-scene slice
   robotMeshes: {},
   feedbackMeshes: {},
+  proximityLines: {},
   texts: {
     onload: {
       value: "Configure URDF to Begin",
@@ -106,11 +107,13 @@ const store = (set, get) => ({
   },
   ...ProgrammingSlice(set, get), // default programming slice for simple-vp,
   programSpec,
-  setTfs: (tfstate) =>
+  setTfs: (robotstate) =>
     set((state) => {
-      const tfs = state2tfs(tfstate);
+      const tfs = state2tfs(robotstate);
+      const proximityLines = state2Lines(robotstate);
       // console.log("setting tfs")
       state.tfs = tfs;
+      state.proximityLines = proximityLines;
     }),
   setDefault: () =>
     set({
@@ -170,11 +173,16 @@ const store = (set, get) => ({
       );
       // set({loaded:true,programSpec:{drawers:programSpec.drawers,objectTypes:newObjectTypes}})
     }),
-    onMove: (id, source, worldTransform, localTransform) => set(state => {
-      if (source === 'items') {
+  onMove: (id, source, worldTransform, localTransform) =>
+    set((state) => {
+      if (source === "items") {
         switch (behaviorPropertyLookup[state.programData[id].type]) {
           case "PositionMatch":
-            state.programData[id].properties.translation = [worldTransform.position.x,worldTransform.position.y,worldTransform.position.z]
+            state.programData[id].properties.translation = [
+              worldTransform.position.x,
+              worldTransform.position.y,
+              worldTransform.position.z,
+            ];
         }
       }
       // console.log(localTransform)
@@ -185,7 +193,7 @@ const store = (set, get) => ({
       // state[source][id].rotation.z = localTransform.quaternion.z;
       // state[source][id].rotation.w = localTransform.quaternion.w;
       // state[source][id].scale = {...localTransform.scale};
-  }),
+    }),
 });
 
 const immerStore = immer(store);
@@ -271,7 +279,7 @@ useStore.subscribe(
         feedbackMeshes[bp.id] = goalFeedback;
       }
     });
-    console.log('feedbackMeshes',feedbackMeshes);
+    console.log("feedbackMeshes", feedbackMeshes);
     useStore.setState({ feedbackMeshes });
     // console.log('',state.feedbackMeshes)
   },
@@ -415,11 +423,27 @@ useStore.subscribe(
   (state) => ({
     robotMeshes: state.robotMeshes,
     feedbackMeshes: state.feedbackMeshes,
+    proximityLines: state.proximityLines,
   }),
-  ({ robotMeshes, feedbackMeshes }) => {
+  ({ robotMeshes, feedbackMeshes, proximityLines }) => {
     useStore.setState({
-      items: { ...robotMeshes, ...feedbackMeshes },
+      items: {
+        ...robotMeshes,
+        ...feedbackMeshes,
+        collision: {
+          shape: "cube",
+          frame: "world",
+          name: "Table",
+          frame: "world",
+          scale: { x: 0.5, y: 0.7, z: 0.2 },
+          position: { x: 0.5, y: 0, z: 0 },
+          rotation: { w: 1, x: 0, y: 0, z: 0 },
+          color: { r: 255, g: 0, b: 0, a: 1 },
+          wireframe: true,
+        },
+      },
       texts: {},
+      lines: proximityLines,
     });
   },
   { equalityFn: shallow }
@@ -591,6 +615,14 @@ useStore.subscribe(
   { equalityFn: shallow }
 );
 
+useStore.subscribe(
+  (state) => state.persistentShapes,
+  (shapes) => {
+    invoke("update_shapes", { shapes });
+  },
+  { equalityFn: shallow }
+);
+
 // Log current values
 useStore.subscribe(
   (state) => pick(state, ["currentState", "goals", "weights", "objectives"]),
@@ -609,6 +641,18 @@ useStore.setState({
   loaded: true,
   programSpec,
   currentState: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
+  persistentShapes: [
+    {
+      type: "Box",
+      name: "Table",
+      frame: "world",
+      physical: true,
+      x: 0.5,
+      y: 0.7,
+      z: 0.2,
+      localTransform: { translation: [0.5, 0, 0], rotation: [0, 0, 0, 1] },
+    },
+  ],
   programData: {
     "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a": {
       argumentBlockData: [],

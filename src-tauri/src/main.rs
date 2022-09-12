@@ -76,6 +76,7 @@ impl LivelyHandler {
           None,
         );
         // println!("{:?}",instant.elapsed());
+        // println!("proximity {:?}",solver.get_current_state().proximity);
         self.last_solved_state = Some(new_state)
       }
       None => {
