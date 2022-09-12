@@ -28,6 +28,8 @@ import {
 } from "lodash";
 import { bp2lik, bp2vis } from "./helpers/Conversion";
 import { indexOf } from "./helpers/Comparison";
+import { Vector3 } from "three";
+
 // import { Timer } from "./Timer";
 // import init from "puppeteer-rust";
 
@@ -458,8 +460,8 @@ useStore.subscribe(
     // console.log('new goals/weights')
     if (newValues.goals && newValues.weights) {
       useStore.setState({
-        goals: newValues.goals,
-        weights: newValues.weights,
+        goals: newValues.goals,                       //will say nextGoals  CHANGED
+        weights: newValues.weights,                   //will say nextWeights  CHANGED
         // goals:newValues.goals, weights:newValues.weights // We will remove this when the function below is finished
       });
     }
@@ -467,6 +469,7 @@ useStore.subscribe(
   { equalityFn: shallow }
 );
 
+//Subsriber to update------------------------------------------------------------------------------
 // useStore.subscribe(
 //   (state) => ({
 //     goals: state.goals,
@@ -476,14 +479,88 @@ useStore.subscribe(
 //   }),
 //   (newValues) => {
 //     if (newValues.nextGoals && newValues.nextWeights) {
-//       console.log('new goals/weights to interp',{newValues});
+//       //console.log('new goals/weights to interp',{newValues});
+//       //console.log("Goals: ", newValues.goals)
+//       //console.log("Weights: ", newValues.weights)
+//       //console.log("nextGoals: ", newValues.nextGoals)
+//       //console.log("nextWeights: ", newValues.nextWeights)
+
+//       //Check if goals are in nextGoals (if so, interpolate between them)
+//       for (let i in newValues.goals){
+//         for (let j in newValues.nextGoals){
+//           //Check if element in goals is in nextGoals
+//           if (newValues.goals[i] == newValues.nextGoals[j]){
+//             let tempInterp;
+//             let tempOldGoalValue;
+//             let tempNewGoalValue;
+//             let stepSize = 0.5;
+//             let oldQuat = 0;//Convert tempOld to quaternion
+//             let newQuat = 0;
+//             //console.log("DAK PRINT: ", newValues.goals[i])
+//             if (Object.keys(newValues.goals[i])[0] == "Translation"){
+//               //Translation- Use converstion I spoke with Andy about (make a 1 vector)
+//               tempOldGoalValue = Object.values(newValues.goals[i])[0]
+//               tempNewGoalValue = Object.values(newValues.goals[j])[0]
+//               //Interpolate
+//               tempInterp = tempOldGoalValue.add(tempNewGoalValue.sub(tempOldGoalValue) * stepSize)
+              
+//             }
+//             else if (Object.keys(newValues.goals[i])[0] == "Rotation"){
+//               //Rotation- 3 vector (convert to quaternion and use rotateTowards)
+//               tempOldGoalValue = Object.values(newValues.goals[i])[0]
+//               tempNewGoalValue = Object.values(newValues.goals[j])[0]
+//               oldQuat = 0; //Convert tempOld to quaternion
+//               newQuat = 0; //Convert tempNew to quaternion
+//               //Interpolate
+//               tempInterp = oldQuat.rotateTowards(newQuat, stepSize)
+
+//             }
+//             else if (Object.keys(newValues.goals[i])[0] == "Size"){
+//               //Size- 3 vector (three linear interpolations)
+//               tempOldGoalValue = Object.values(newValues.goals[i])[0]
+//               tempNewGoalValue = Object.values(newValues.goals[j])[0]
+//               //Interpolate
+//               tempInterp = tempOldGoalValue.lerp(tempNewGoalValue, stepSize)
+
+//             }
+//             else if (Object.keys(newValues.goals[i])[0] == "Ellipse"){
+//               //Elipse- translate, rotate, size
+//               tempOldGoalValue = Object.values(newValues.goals[i])[0]
+//               tempNewGoalValue = Object.values(newValues.goals[j])[0]
+//               //Interpolate
+//               //tempInterp = 
+
+//             }
+//             else if (Object.keys(newValues.goals[i])[0] == "ScalarRange"){
+//               //Scalar Range- two linearly interpolate
+//               tempOldGoalValue = Object.values(newValues.goals[i])[0]
+//               tempNewGoalValue = Object.values(newValues.goals[j])[0]
+
+//             }
+//           }
+//           //Interpolate between weights
+//         }
+//       }
+
+//       //Check if nextGoals are in goals (if not, add nextGoal values to interpolation values)
+//       for (let x in newValues.nextGoal){
+//         for (let y in newValues.goals){
+//           //Check if element in nextGoals is in goals
+//           if (newValues.goals[x] = newValues.nextGoals[y]){
+//             break;
+//           }
+//           //Add nextGoal values and weights to interpolation values
+//         }
+//       }
+      
 //       // Do interpolation here
 //       // useStore.setState({ goals: interpolatedGoals, weights: interpolatedWeights });
-//       // useStore.setState({ goals: nextGoals, weights: nextWeights });
+//        useStore.setState({ goals: newValues.nextGoals, weights: newValues.nextWeights });
 //     }
 //   },
 //   { equalityFn: shallow }
 // );
+//-------------------------------------------------------------------------------------------------
 
 // Listen for changes to goals, weights, objectives and send them to the backend
 useStore.subscribe(
