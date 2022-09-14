@@ -2,7 +2,6 @@
 import PepperCollisionCameraBase from "./Pepper/collision/Camera_base";
 import PepperCollisionCameraBody from "./Pepper/collision/Camera_body";
 import PepperCollisionCameraVisor from "./Pepper/collision/Camera_visor";
-import PepperCollisionCameraVisor from "./Pepper/collision/Camera_visor";
 import PepperCollisionHeadPitch from "./Pepper/collision/HeadPitch";
 import PepperCollisionHeadYaw from "./Pepper/collision/HeadYaw";
 import PepperCollisionHipPitch from "./Pepper/collision/HipPitch";
@@ -51,6 +50,55 @@ import PepperCollisionTorso from "./Pepper/collision/Torso";
 import PepperCollisionWheelB from "./Pepper/collision/WheelB";
 import PepperCollisionWheelFR from "./Pepper/collision/WheelFR";
 import PepperCollisionWheelFL from "./Pepper/collision/WheelFL";
+
+import PepperVisualD435 from "./Pepper/visual/D435";
+import PepperVisualHeadPitch from "./Pepper/visual/HeadPitch";
+import PepperVisualHeadYaw from "./Pepper/visual/HeadYaw";
+import PepperVisualHipPitch from "./Pepper/visual/HipPitch";
+import PepperVisualHipRoll from "./Pepper/visual/HipRoll";
+import PepperVisualKneePitch from "./Pepper/visual/KneePitch";
+import PepperVisualLElbowRoll from "./Pepper/visual/LElbowRoll";
+import PepperVisualLFinger11 from "./Pepper/visual/LFinger11";
+import PepperVisualLFinger12 from "./Pepper/visual/LFinger12";
+import PepperVisualLFinger13 from "./Pepper/visual/LFinger13";
+import PepperVisualLFinger21 from "./Pepper/visual/LFinger21";
+import PepperVisualLFinger22 from "./Pepper/visual/LFinger22";
+import PepperVisualLFinger23 from "./Pepper/visual/LFinger23";
+import PepperVisualLFinger31 from "./Pepper/visual/LFinger31";
+import PepperVisualLFinger32 from "./Pepper/visual/LFinger32";
+import PepperVisualLFinger33 from "./Pepper/visual/LFinger33";
+import PepperVisualLFinger41 from "./Pepper/visual/LFinger41";
+import PepperVisualLFinger42 from "./Pepper/visual/LFinger42";
+import PepperVisualLFinger43 from "./Pepper/visual/LFinger43";
+import PepperVisualLShoulderPitch from "./Pepper/visual/LShoulderPitch";
+import PepperVisualLShoulderRoll from "./Pepper/visual/LShoulderRoll";
+import PepperVisualLThumb1 from "./Pepper/visual/LThumb1";
+import PepperVisualLThumb2 from "./Pepper/visual/LThumb2";
+import PepperVisualLWristYaw from "./Pepper/visual/LWristYaw";
+import PepperVisualRElbowRoll from "./Pepper/visual/RElbowRoll";
+import PepperVisualRElbowYaw from "./Pepper/visual/LElbowYaw";
+import PepperVisualRFinger11 from "./Pepper/visual/RFinger11";
+import PepperVisualRFinger12 from "./Pepper/visual/RFinger12";
+import PepperVisualRFinger13 from "./Pepper/visual/RFinger13";
+import PepperVisualRFinger21 from "./Pepper/visual/RFinger21";
+import PepperVisualRFinger22 from "./Pepper/visual/RFinger22";
+import PepperVisualRFinger23 from "./Pepper/visual/RFinger23s";
+import PepperVisualRFinger31 from "./Pepper/visual/RFinger31";
+import PepperVisualRFinger32 from "./Pepper/visual/RFinger32";
+import PepperVisualRFinger33 from "./Pepper/visual/RFinger33";
+import PepperVisualRFinger41 from "./Pepper/visual/RFinger41";
+import PepperVisualRFinger42 from "./Pepper/visual/RFinger42";
+import PepperVisualRFinger43 from "./Pepper/visual/RFinger43";
+import PepperVisualRShoulderPitch from "./Pepper/visual/RShoulderPitch";
+import PepperVisualRShoulderRoll from "./Pepper/visual/RShoulderRoll";
+import PepperVisualRThumb1 from "./Pepper/visual/RThumb1";
+import PepperVisualRThumb2 from "./Pepper/visual/RThumb2";
+import PepperVisualRWristYaw from "./Pepper/visual/RWristYaw";
+import PepperVisualTorso from "./Pepper/visual/Torso";
+import PepperVisualWheelB from "./Pepper/visual/WheelB";
+import PepperVisualWheelFL from "./Pepper/visual/WheelFL";
+import PepperVisualWheelFR from "./Pepper/visual/WheelFR";
+
 
 
 
