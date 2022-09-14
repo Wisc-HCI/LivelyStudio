@@ -3,7 +3,7 @@ import React from "react";
 // import useStore from "../store";
 import { Box } from "grommet";
 import { Alert, IconButton, Badge, AppBar, Toolbar, Typography } from "@mui/material";
-import { DropMenu, RootSettings } from "./Elements/DropMenu";
+import { DropMenu, RootSettings, TransitionDropdown } from "./Elements/DropMenu";
 import useStore from "./store";
 import { FiThumbsUp, FiSettings, FiGrid, FiEye, FiCodepen } from "react-icons/fi";
 import { DEFAULTS } from "./defaults";
@@ -33,7 +33,7 @@ export const Menu = ({ mode, setMode }) => {
       <Typography variant='h6' component='div' sx={{flexGrow:1}}>
         {mode=== 'setup' ? "Setup" : "Editor"}
       </Typography>
-        {mode === "setup" && (
+        {mode === "setup" ? (
           <>
             <DropMenu
               size="xsmall"
@@ -46,7 +46,8 @@ export const Menu = ({ mode, setMode }) => {
             />
             <RootSettings/>
           </>
-        )}
+        ) : <TransitionDropdown/>}
+        
         <Badge
           invisible={!showCollision}
           color='error'

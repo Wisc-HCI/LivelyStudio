@@ -8,6 +8,7 @@ import {
   FiMoreHorizontal,
   FiFeather
 } from "react-icons/fi";
+import { IoArrowRedo } from "react-icons/io5";
 import { merge } from 'lodash';
 import { behaviorPropertyColorBase, behaviorPropertyColorBounding, behaviorPropertyColorMatching, behaviorPropertyColorMirroring, behaviorPropertyColorForces, behaviorPropertyColorLiveliness, behaviorPropertyDrawerBase, behaviorPropertyDrawerBounding, behaviorPropertyDrawerMatching, behaviorPropertyDrawerMirroring, behaviorPropertyDrawerForces, behaviorPropertyDrawerLiveliness } from './Constants.js'
 
@@ -878,14 +879,19 @@ export const programSpec = {
           },
         },
         extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
           {
             icon: FiMoreHorizontal,
             type: EXTRA_TYPES.DROPDOWN,
             contents: [
+              {
+                type: EXTRA_TYPES.FUNCTION_BUTTON,
+                icon: IoArrowRedo,
+                onClick: 'teleport',
+                label: "Teleport Here"
+              },
               EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
+              // EXTRA_TYPES.DEBUG_TOGGLE,
+              // EXTRA_TYPES.SELECTION_TOGGLE,
             ],
           },
         ],
@@ -940,21 +946,17 @@ export const programSpec = {
         connections: {
           bottom: {
             direction: CONNECTIONS.OUTBOUND,
-            allowed: ["stateType"],
+            allowed: ["stateType","powerOffType"],
             limitOne: false,
           },
         },
         extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
           {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-            ],
-          },
+            type: EXTRA_TYPES.FUNCTION_BUTTON,
+            icon: IoArrowRedo,
+            onClick: 'teleport',
+            label: "Teleport Here"
+          }
         ],
         hideNewPrefix: true,
       },
@@ -970,21 +972,17 @@ export const programSpec = {
         connections: {
           top: {
             direction: CONNECTIONS.INBOUND,
-            allowed: ["stateType", "operationType", "programType"],
+            allowed: ["stateType", "powerOnType"],
             limitOne: false,
           },
         },
         extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
           {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-            ],
-          },
+            type: EXTRA_TYPES.FUNCTION_BUTTON,
+            icon: IoArrowRedo,
+            onClick: 'teleport',
+            label: "Teleport Here"
+          }
         ],
         hideNewPrefix: true,
       },

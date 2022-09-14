@@ -72,6 +72,11 @@ const store = (set, get) => ({
       state.programData[toNode].selected = true;
       state.currentState = toNode;
     }),
+  teleport: (data,other) => {
+    const currentState = get().currentState;
+    console.log(other)
+    get().initiateTransition(currentState,data.id);
+  },
   isValid: false,
   urdf: DEFAULTS.urdf,
   setUrdf: (urdf) => set({ urdf }),
@@ -660,12 +665,26 @@ useStore.setState({
       dataType: "INSTANCE",
       editing: undefined,
       id: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
-      name: "PowerOn",
+      name: "Power On",
       position: { x: 100, y: 0 },
       properties: {},
       refData: null,
       selected: true,
       type: "powerOnType",
+    },
+    "powerOffType-sefess-sesff-r454-0f9f-1089dsisdis": {
+      argumentBlockData: [],
+      canDelete: false,
+      canEdit: true,
+      dataType: "INSTANCE",
+      editing: undefined,
+      id: "powerOffType-sefess-sesff-r454-0f9f-1089dsisdis",
+      name: "Power Off",
+      position: { x: 100, y: 200 },
+      properties: {},
+      refData: null,
+      selected: false,
+      type: "powerOffType",
     },
   },
 });
