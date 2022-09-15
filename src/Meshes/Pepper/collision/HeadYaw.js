@@ -7,10 +7,9 @@ import { useGLTF } from '@react-three/drei'
 export default function Model({ ...props }) {
 
   const { nodes} = useGLTF('/HeadYaw.glb')
-  return [{type : 'group',children : [{type:'raw' , }]}]
+  return [{type : 'group',children : [{type:'raw' ,geometry : nodes.HeadYaw_010.geometry , material : nodes.HeadYaw_010.material}]}]
     
-      //  type : 'raw'geometry={nodes.HeadYaw_010.geometry} material={nodes.HeadYaw_010.material} />
-
+     
   
 }
 
