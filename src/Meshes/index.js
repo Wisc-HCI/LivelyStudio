@@ -1,8 +1,8 @@
 //----------------------------------------------Pepper
 
-import PepperCollisionCameraBase from "./Pepper/collision/Camera_base";
-import PepperCollisionCameraBody from "./Pepper/collision/Camera_body";
-import PepperCollisionCameraVisor from "./Pepper/collision/Camera_visor";
+// import PepperCollisionCameraBase from "./Pepper/collision/Camera_base";
+// import PepperCollisionCameraBody from "./Pepper/collision/Camera_body";
+// import PepperCollisionCameraVisor from "./Pepper/collision/Camera_visor";
 import PepperCollisionHeadPitch from "./Pepper/collision/HeadPitch";
 import PepperCollisionHeadYaw from "./Pepper/collision/HeadYaw";
 import PepperCollisionHipPitch from "./Pepper/collision/HipPitch";
@@ -46,13 +46,13 @@ import PepperCollisionRShoulderRoll from "./Pepper/collision/RShoulderRoll";
 import PepperCollisionRThumb1 from "./Pepper/collision/RThumb1";
 import PepperCollisionRThumb2 from "./Pepper/collision/RThumb2";
 import PepperCollisionRWristYaw from "./Pepper/collision/RWristYaw";
-import PepperCollisionT265 from "./Pepper/collision/T265";
+//import PepperCollisionT265 from "./Pepper/collision/T265";
 import PepperCollisionTorso from "./Pepper/collision/Torso";
 import PepperCollisionWheelB from "./Pepper/collision/WheelB";
 import PepperCollisionWheelFR from "./Pepper/collision/WheelFR";
 import PepperCollisionWheelFL from "./Pepper/collision/WheelFL";
 
-import PepperVisualD435 from "./Pepper/visual/D435";
+//import PepperVisualD435 from "./Pepper/visual/D435";
 import PepperVisualHeadPitch from "./Pepper/visual/HeadPitch";
 import PepperVisualHeadYaw from "./Pepper/visual/HeadYaw";
 import PepperVisualHipPitch from "./Pepper/visual/HipPitch";
@@ -372,11 +372,11 @@ const MeshLookupTable = {
     "package://pepper_description/meshes/WheelB_0.10.stl" : PepperCollisionWheelB,
     "package://pepper_description/meshes/WheelFR.dae" : PepperVisualWheelFR,
     "package://pepper_description/meshes/WheelFR_0.10.stl" : PepperCollisionWheelFR,
-    "package://pepper_description/meshes/d435.dae" : PepperVisualD435,
-    "package://pepper_description/meshes/camera_body.stl" : PepperCollisionCameraBody,
-    "package://pepper_description/meshes/camera_base.stl" : PepperCollisionCameraBase,
-    "package://pepper_description/meshes/camera_visor.stl" : PepperCollisionCameraVisor,
-    "package://pepper_description/meshes/t265.stl" : PepperCollisionT265,
+    //"package://pepper_description/meshes/d435.dae" : PepperVisualD435,
+    // "package://pepper_description/meshes/camera_body.stl" : PepperCollisionCameraBody,
+    // "package://pepper_description/meshes/camera_base.stl" : PepperCollisionCameraBase,
+    // "package://pepper_description/meshes/camera_visor.stl" : PepperCollisionCameraVisor,
+    //"package://pepper_description/meshes/t265.stl" : PepperCollisionT265,
 
     //------------------------------------------------------Panda
     'package://franka_ros/franka_description/meshes/visual/finger.dae': Finger,
