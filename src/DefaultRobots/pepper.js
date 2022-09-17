@@ -20,15 +20,8 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-    
-      <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-     
-    </collision>
   </link>
+
   <joint name="HeadPitch" type="revolute">
     <parent link="Neck"/>
     <child link="Head"/>
@@ -48,13 +41,15 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
     <collision>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0.1"/>
       <geometry>
-        <capsule length="0.06" radius="0.06"/>
+        <sphere radius = "0.12"/>
       </geometry>
       
     </collision>
+    
   </link>
   <joint name="HipRoll" type="revolute">
     <parent link="Hip"/>
@@ -75,12 +70,15 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0.079"/>
     </visual>
+
     <collision>
-    <origin rpy="0 0 0" xyz="0 0 0.079"/>
+    <origin rpy="0 0 0" xyz="0 0 0.22"/>
       <geometry>
-        <capsule length="0.06" radius="0.06"/>
+        <cylinder length = "0.3" radius = "0.17"/>
       </geometry>
+      
     </collision>
+   
   </link>
   <joint name="HipPitch" type="revolute">
     <parent link="Pelvis"/>
@@ -101,12 +99,15 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0.268"/>
     </visual>
+
     <collision>
+    <origin rpy="0 0 0" xyz="0 0 0.15"/>
       <geometry>
-        <capsule length="0.06" radius="0.06"/>
+        <cylinder length = "0.35" radius = "0.13"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0.268"/>
+      
     </collision>
+   
   </link>
   <joint name="KneePitch" type="revolute">
     <parent link="Tibia"/>
@@ -127,12 +128,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
 
   <link name="torso">
@@ -147,12 +143,15 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="2e-05 0 0.139"/>
     </visual>
+
     <collision>
+    <origin rpy="0 0 0" xyz="0 0 -0.53"/>
       <geometry>
-        <capsule length="0.06" radius="0.06"/>
+        <cylinder length = "0.27" radius = "0.26"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="2e-05 0 0.139"/>
+      
     </collision>
+    
   </link>
   <joint name="LShoulderPitch" type="revolute">
     <parent link="torso"/>
@@ -173,12 +172,9 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+
+   
+    
   </link>
   <joint name="LShoulderRoll" type="revolute">
     <parent link="LShoulder"/>
@@ -199,12 +195,9 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+
+   
+   
   </link>
   <joint name="LElbowYaw" type="revolute">
     <parent link="LBicep"/>
@@ -225,12 +218,16 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
     <collision>
+    <origin rpy="0. 0.2 0" xyz="-0.08 00 0.02"/>
       <geometry>
-       <capsule length="0.06" radius="0.06"/>
+        <box size = "0.1 0.07 0.07"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      
     </collision>
+    
+    
   </link>
   <joint name="LElbowRoll" type="revolute">
     <parent link="LElbow"/>
@@ -252,10 +249,11 @@ export const pepper = `<?xml version="1.0" ?>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
     <collision>
+    <origin rpy="0 0 0" xyz="0.15 0 0"/>
       <geometry>
-        <capsule length="0.06" radius="0.06"/>
+        <box size = "0.23 0.07 0.07"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      
     </collision>
   </link>
   <joint name="LWristYaw" type="revolute">
@@ -277,12 +275,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LHand" type="revolute">
     <parent link="l_wrist"/>
@@ -316,12 +309,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-       <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RShoulderRoll" type="revolute">
     <parent link="RShoulder"/>
@@ -342,12 +330,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RElbowYaw" type="revolute">
     <parent link="RBicep"/>
@@ -368,12 +351,15 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
     <collision>
+    <origin rpy="0. 0.2 0" xyz="-0.08 00 0.02"/>
       <geometry>
-        <capsule length="0.06" radius="0.06"/>
+        <box size = "0.1 0.07 0.07"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      
     </collision>
+    
   </link>
   <joint name="RElbowRoll" type="revolute">
     <parent link="RElbow"/>
@@ -394,12 +380,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RWristYaw" type="revolute">
     <parent link="RForeArm"/>
@@ -420,12 +401,14 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
     <collision>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+        <box size = "0.23 0.07 0.07"/>
+      </geometry>  
     </collision>
+    
   </link>
   <joint name="RHand" type="revolute">
     <parent link="r_wrist"/>
@@ -452,12 +435,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RFinger41" type="continuous">
     <parent link="r_wrist"/>
@@ -477,12 +455,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="LFinger42" type="continuous">
     <parent link="LFinger41_link"/>
@@ -502,12 +475,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RFinger12" type="continuous">
     <parent link="RFinger11_link"/>
@@ -527,12 +495,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LFinger33" type="continuous">
     <parent link="LFinger32_link"/>
@@ -552,12 +515,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-       <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+  
   </link>
   <joint name="RFinger31" type="continuous">
     <parent link="r_wrist"/>
@@ -577,12 +535,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+  
   </link>
   <joint name="LFinger21" type="continuous">
     <parent link="l_wrist"/>
@@ -602,12 +555,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RFinger32" type="continuous">
     <parent link="RFinger31_link"/>
@@ -627,12 +575,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="LFinger13" type="continuous">
     <parent link="LFinger12_link"/>
@@ -652,12 +595,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LFinger32" type="continuous">
     <parent link="LFinger31_link"/>
@@ -677,12 +615,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LFinger11" type="continuous">
     <parent link="l_wrist"/>
@@ -702,12 +635,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+  
   </link>
   <joint name="RFinger22" type="continuous">
     <parent link="RFinger21_link"/>
@@ -727,12 +655,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RFinger13" type="continuous">
     <parent link="RFinger12_link"/>
@@ -752,12 +675,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LFinger22" type="continuous">
     <parent link="LFinger21_link"/>
@@ -777,12 +695,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RFinger21" type="continuous">
     <parent link="r_wrist"/>
@@ -802,12 +715,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LFinger41" type="continuous">
     <parent link="l_wrist"/>
@@ -827,12 +735,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LFinger12" type="continuous">
     <parent link="LFinger11_link"/>
@@ -852,12 +755,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RFinger23" type="continuous">
     <parent link="RFinger22_link"/>
@@ -877,12 +775,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RFinger11" type="continuous">
     <parent link="r_wrist"/>
@@ -902,12 +795,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LFinger23" type="continuous">
     <parent link="LFinger22_link"/>
@@ -927,12 +815,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LFinger43" type="continuous">
     <parent link="LFinger42_link"/>
@@ -952,12 +835,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RFinger43" type="continuous">
     <parent link="RFinger42_link"/>
@@ -977,12 +855,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+  
   </link>
   <joint name="RFinger42" type="continuous">
     <parent link="RFinger41_link"/>
@@ -1002,12 +875,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LFinger31" type="continuous">
     <parent link="l_wrist"/>
@@ -1027,12 +895,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RFinger33" type="continuous">
     <parent link="RFinger32_link"/>
@@ -1052,12 +915,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LThumb1" type="continuous">
     <parent link="l_wrist"/>
@@ -1077,12 +935,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="RThumb2" type="continuous">
     <parent link="RThumb1_link"/>
@@ -1102,12 +955,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RThumb1" type="continuous">
     <parent link="r_wrist"/>
@@ -1127,12 +975,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LThumb2" type="continuous">
     <parent link="LThumb1_link"/>
@@ -1154,12 +997,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="WheelFL" type="fixed">
     <parent link="Tibia"/>
@@ -1178,12 +1016,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="WheelB" type="fixed">
     <parent link="Tibia"/>
@@ -1202,12 +1035,7 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-      <capsule length="0.06" radius="0.06"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="WheelFR" type="fixed">
     <parent link="Tibia"/>
