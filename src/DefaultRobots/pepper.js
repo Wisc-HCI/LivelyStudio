@@ -21,10 +21,12 @@ export const pepper = `<?xml version="1.0" ?>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
     <collision>
+    
       <geometry>
-        <mesh filename="package://pepper_description/meshes/HeadYaw_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
+     
     </collision>
   </link>
   <joint name="HeadPitch" type="revolute">
@@ -47,10 +49,11 @@ export const pepper = `<?xml version="1.0" ?>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
     <collision>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/HeadPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      
     </collision>
   </link>
   <joint name="HipRoll" type="revolute">
@@ -73,10 +76,10 @@ export const pepper = `<?xml version="1.0" ?>
       <origin rpy="0 0 0" xyz="0 0 0.079"/>
     </visual>
     <collision>
+    <origin rpy="0 0 0" xyz="0 0 0.079"/>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/HipRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0.079"/>
     </collision>
   </link>
   <joint name="HipPitch" type="revolute">
@@ -100,7 +103,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/HipPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0.268"/>
     </collision>
@@ -126,7 +129,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/KneePitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -146,7 +149,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/Torso_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="2e-05 0 0.139"/>
     </collision>
@@ -172,7 +175,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LShoulderPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -198,7 +201,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LShoulderRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -224,7 +227,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LElbowYaw_0.10.stl" scale="0.1 0.1 0.1"/>
+       <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -250,7 +253,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LElbowRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -276,7 +279,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LWristYaw_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -315,7 +318,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RShoulderPitch_0.10.stl" scale="0.1 0.1 0.1"/>
+       <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -341,7 +344,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RShoulderRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -367,7 +370,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RElbowYaw_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -393,7 +396,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RElbowRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -419,7 +422,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RWristYaw_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -451,7 +454,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger41_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -476,7 +479,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger42_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -501,7 +504,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger12_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -526,7 +529,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger33_0.10.stl" scale="0.1 0.1 0.1"/>
+        <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -551,7 +554,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger31_0.10.stl" scale="0.1 0.1 0.1"/>
+       <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -576,7 +579,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger21_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -601,7 +604,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger32_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -626,7 +629,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger13_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -651,7 +654,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger32_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -676,7 +679,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger11_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -701,7 +704,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger22_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -726,7 +729,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger13_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -751,7 +754,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger22_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -776,7 +779,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger21_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -801,7 +804,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger41_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -826,7 +829,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger12_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -851,7 +854,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger23_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -876,7 +879,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger11_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -901,7 +904,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger23_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -926,7 +929,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger43_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -951,7 +954,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger43_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -976,7 +979,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger42_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -1001,7 +1004,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LFinger31_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -1026,7 +1029,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RFinger33_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -1051,7 +1054,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LThumb1_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -1076,7 +1079,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RThumb2_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -1101,7 +1104,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/RThumb1_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -1126,7 +1129,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/LThumb2_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -1153,7 +1156,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/WheelFL_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -1177,7 +1180,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/WheelB_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
@@ -1201,7 +1204,7 @@ export const pepper = `<?xml version="1.0" ?>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://pepper_description/meshes/WheelFR_0.10.stl" scale="0.1 0.1 0.1"/>
+      <capsule length="0.06" radius="0.06"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
