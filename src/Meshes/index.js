@@ -161,6 +161,50 @@ import RobotiqWiscCollisionFingerTipLink from
 './RobotiqWisc/collision/robotiq_85_finger_tip_link';
 import RobotiqWiscCollisionInnerKnuckleLink from 
 './RobotiqWisc/collision/robotiq_85_inner_knuckle_link';
+//-------------------------------------------------NAO
+import NaoHeadPitch from './Nao/HeadPitch';
+import NaoHeadYaw from './Nao/HeadYaw';
+import NaoLAnklePitch from './Nao/LAnklePitch';
+import NaoLAnkleRoll from './Nao/LAnkleRoll';
+import NaoLElbowRoll from './Nao/LElbowRoll';
+import NaoLFinger11 from './Nao/LFinger11';
+import NaoLFinger12 from './Nao/LFinger12';
+import NaoLFinger13 from './Nao/LFinger13';
+import NaoLFinger21 from './Nao/LFinger21';
+import NaoLFinger22 from './Nao/LFinger22';
+import NaoLFinger23 from './Nao/LFinger23';
+import NaoLHipPitch from './Nao/LHipPitch';
+import NaoLHipRoll from './Nao/LHipRoll';
+import NaoLHipYawPitch from './nao/LHipPitch';
+import NaoLKneePitch from './nao/LKneePitch';
+import NaoLShoulderPitch from './nao/LShoulderPitch';
+import NaoLShoulderRoll from './nao/LShoulderRoll';
+import NaoLThumb1 from './nao/LThumb1';
+import NaoLThumb2 from './nao/LThumb2';
+import NaoLWristYaw from './nao/LWristYaw';
+import NaoRAnklePitch from './nao/RAnklePitch';
+import NaoRAnkleRoll from './nao/RAnkleRoll';
+import NaoRElbowRoll from './nao/RElbowRoll';
+import NaoRFinger11 from './nao/RFinger11';
+import NaoRFinger12 from './nao/RFinger12';
+import NaoRFinger13 from './nao/RFinger13';
+import NaoRFinger21 from './nao/RFinger21';
+import NaoRFinger22 from './nao/RFinger22';
+import NaoRFinger23 from './nao/RFinger23';
+import NaoRHipPitch from './nao/RHipPitch';
+import NaoRHipRoll from './nao/RHipRoll';
+import NaoRHipYawPitch from './nao/RHipYawPitch';
+import NaoRKneePitch from './nao/RKneePitch';
+import NaoRShoulderPitch from './nao/RShoulderPitch';
+import NaoRShoulderRoll from './nao/RShoulderRoll';
+import NaoRThumb1 from './nao/RThumb1';
+import NaoRThumb2 from './nao/RThumb2';
+import NaoRWristYaw from './nao/RWristYaw';
+import NaoTorso from './nao/Torso';
+
+
+
+
 //-------------------------------------------------Baxter
 import Pedestal_Link_Collision from
 './Baxter/base/Pedestal_link_collision';
@@ -277,6 +321,48 @@ const MeshLookupTable = {
     'conveyor_receiver':ConveyorReceiver,
     'conveyor_dispatcher_collision':ConveyorDispatcherCollision,
     'conveyor_receiver_collision':ConveyorReceiverCollision,
+    //------------------------------------------------------Nao
+    // "package://nao_meshes/meshes/V40/HeadYaw.dae" : NaoHeadYaw,
+    // "package://nao_meshes/meshes/V40/HeadPitch.dae" : NaoHeadPitch,
+    // "package://nao_meshes/meshes/V40/LHipYawPitch.dae" : NaoLHipYawPitch,
+    // "package://nao_meshes/meshes/V40/LHipRoll.dae" : NaoLHipRoll,
+    // "package://nao_meshes/meshes/V40/LHipPitch.dae" : NaoLHipPitch,
+    // "package://nao_meshes/meshes/V40/LKneePitch.dae" : NaoLKneePitch,
+    // "package://nao_meshes/meshes/V40/LAnklePitch.dae" : NaoLAnklePitch,
+    // "package://nao_meshes/meshes/V40/LAnkleRoll.dae" : NaoLAnkleRoll,
+    // "package://nao_meshes/meshes/V40/RHipYawPitch.dae" : NaoRHipYawPitch,
+    // "package://nao_meshes/meshes/V40/RHipRoll.dae" : NaoRHipRoll,
+    // "package://nao_meshes/meshes/V40/RHipPitch.dae" : NaoRHipPitch,
+    // "package://nao_meshes/meshes/V40/RKneePitch.dae" : NaoRKneePitch,
+    // "package://nao_meshes/meshes/V40/RAnklePitch.dae" : NaoRAnklePitch,
+    // "package://nao_meshes/meshes/V40/RAnkleRoll.dae" : NaoRAnkleRoll,
+    // "package://nao_meshes/meshes/V40/Torso.dae" : NaoTorso,
+    // "package://nao_meshes/meshes/V40/LShoulderPitch.dae" : NaoLShoulderPitch,
+    // "package://nao_meshes/meshes/V40/LShoulderRoll.dae" : NaoLShoulderRoll,
+    // "package://nao_meshes/meshes/V40/LElbowRoll.dae" : NaoLElbowRoll,
+    // "package://nao_meshes/meshes/V40/LWristYaw.dae" : NaoLWristYaw,
+    // "package://nao_meshes/meshes/V40/RShoulderPitch.dae" : NaoRShoulderPitch,
+    // "package://nao_meshes/meshes/V40/RShoulderRoll.dae" : NaoRShoulderRoll,
+    // "package://nao_meshes/meshes/V40/RElbowRoll.dae" : NaoRElbowRoll,
+    // "package://nao_meshes/meshes/V40/RWristYaw.dae" : NaoRWristYaw,
+    // "package://nao_meshes/meshes/V40/RFinger13.dae" : NaoRFinger13,
+    // "package://nao_meshes/meshes/V40/RFinger12.dae" : NaoRFinger12,
+    // "package://nao_meshes/meshes/V40/LFinger21.dae" : NaoLFinger21,
+    // "package://nao_meshes/meshes/V40/LFinger13.dae" : NaoLFinger13,
+    // "package://nao_meshes/meshes/V40/LFinger11.dae" : NaoLFinger11,
+    // "package://nao_meshes/meshes/V40/RFinger22.dae" : NaoRFinger22,
+    // "package://nao_meshes/meshes/V40/LFinger22.dae" : NaoLFinger22,
+    // "package://nao_meshes/meshes/V40/LFinger21.dae" : NaoLFinger21,
+    // "package://nao_meshes/meshes/V40/LFinger12.dae" : NaoLFinger12,
+    // "package://nao_meshes/meshes/V40/RFinger23.dae" : NaoRFinger23,
+    // "package://nao_meshes/meshes/V40/RFinger11.dae" : NaoRFinger11,
+    // "package://nao_meshes/meshes/V40/LFinger23.dae" : NaoLFinger23,
+    // "package://nao_meshes/meshes/V40/LThumb1.dae" : NaoLThumb1,
+    // "package://nao_meshes/meshes/V40/RThumb1.dae" : NaoRThumb1,
+    // "package://nao_meshes/meshes/V40/RThumb2.dae" : NaoRThumb2, 
+    // "package://nao_meshes/meshes/V40/LThumb2.dae" : NaoLThumb2,
+
+
     //------------------------------------------------------Pepper
     "package://pepper_description/meshes/HeadYaw.dae" : PepperVisualHeadYaw,
     "package://pepper_description/meshes/HeadYaw_0.10.stl" : PepperCollisionHeadYaw,
