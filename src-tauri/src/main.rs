@@ -30,6 +30,7 @@ struct LivelyHandler {
   pub objectives: HashMap<String,Objective>,
   pub goals: HashMap<String,Goal>,
   pub weights: HashMap<String,f64>,
+  pub target_weights: HashMap<String,f64>,
   pub robot_info: Option<RobotInfo>,
   pub root_bounds: Option<Vec<(f64, f64)>>,
   pub shapes: Vec<Shape>,
@@ -52,6 +53,7 @@ impl LivelyHandler {
       objectives: HashMap::new(),
       goals: HashMap::new(),
       weights: HashMap::new(),
+      target_weights: HashMap::new(),
       robot_info: None,
       root_bounds: None,
       shapes: vec![],
@@ -67,8 +69,20 @@ impl LivelyHandler {
     // println!("Solving {:?} | {:?}",self.goals,self.weights);
     match &mut self.solver {
       Some(solver) => {
-        // println!("Solver Valid, solving with {:?} {:?}",self.goals,self.weights);
-        // let instant = Instant::now();
+        // Update weights with an Exponential Moving Average function.
+        for (key, new_weight) in self.target_weights.iter() {
+          match self.weights.get(key) {
+            Some(weight) => {
+              // There is a current weight and a target weight. Move the current weight towards the target.
+              let new_value = weight*0.95+new_weight*0.05;
+              self.weights.insert(key.to_string(),new_value);
+            },
+            None => {
+              self.weights.insert(key.to_string(),*new_weight);
+            }
+          }
+        }
+        // println!("{:?}",self.weights);
         let new_state = solver.solve(
           self.goals.clone(),
           self.weights.clone(),
@@ -131,6 +145,7 @@ impl LivelyHandler {
     self.objectives = HashMap::new();
     self.goals = HashMap::new();
     self.weights = HashMap::new();
+    self.target_weights = HashMap::new();
     // println!("Updating urdf");
     self.update_solver();
     return self.robot_info.clone();
@@ -142,10 +157,20 @@ impl LivelyHandler {
     goals: HashMap<String,Goal>,
     weights: HashMap<String,f64>,
   ) {
-    self.objectives = objectives;
+
+    self.objectives = objectives.clone();
+
+    match &mut self.solver {
+      Some(solver) => {
+        solver.set_objectives(objectives.clone())
+      },
+      None => {}
+    };
+    // println!("{:?}",goals);
     self.goals = goals;
-    self.weights = weights;
-    self.update_solver();
+    // self.weights = weights.clone();
+    self.target_weights = weights;
+    // self.update_solver();
     return;
   }
 
@@ -157,7 +182,7 @@ impl LivelyHandler {
 
   pub fn update_goals_and_weights(&mut self, goals: HashMap<String,Goal>, weights: HashMap<String,f64>) {
     self.goals = goals;
-    self.weights = weights;
+    self.target_weights = weights;
     return;
   }
 

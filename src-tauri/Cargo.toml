@@ -12,14 +12,14 @@ rust-version = "1.57"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.0.4", features = [] }
+tauri-build = { version = "1.1.1", features = [] }
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.0.4", features = ["api-all"] }
+tauri = { version = "1.1.1", features = ["api-all"] }
 thiserror = "1.0"
-lively_tk = {git = "https://github.com/Wisc-HCI/lively_tk", rev="bf1eca0b945998e5545e541e1bd48a5afbe9e31c"}
+lively_tk = {git = "https://github.com/Wisc-HCI/lively_tk", rev="e27e326e598b366f5b8be509d366fbfc78f6b1cb"}
 game-loop = "0.9.1"
 urdf-rs = "0.6.4"
 nalgebra = { version = "0.31", features = ["serde-serialize-no-std"] }

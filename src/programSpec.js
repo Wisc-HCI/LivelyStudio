@@ -89,7 +89,7 @@ const DEFAULT_ROTATION = {
 const DEFAULT_SIZE = {
   name: "Size",
   type: SIMPLE_PROPERTY_TYPES.VECTOR3,
-  default: [0.0, 0.0, 0.0],
+  default: [0.05, 0.05, 0.05],
   min: [0.0,0.0,0.0],
   step: 0.01
 }
@@ -237,6 +237,12 @@ const positionBoundingBehaviorData = {
       name: "Link",
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [],
+      default: '',
+    },
+    editMode: {
+      name: "Edit Mode",
+      type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+      options: [{value:'translate',label:'Translate'},{value:'rotate',label:'Rotate'},{value:'scale',label:'Scale'}],
       default: '',
     },
     translation: {...DEFAULT_TRANSLATION,name:'Ellipse Translation'},

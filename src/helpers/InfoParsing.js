@@ -71,7 +71,27 @@ export function state2tfs(state) {
                 z: 1
             }
         }
+        tfs[pair[0]+'-translation'] = {
+            frame: 'world',
+            position: { 
+                x: pair[1].world.translation[0], 
+                y: pair[1].world.translation[1], 
+                z: pair[1].world.translation[2] 
+            },
+            rotation: { 
+                w: 1, 
+                x: 0, 
+                y: 0, 
+                z: 0
+            },
+            scale: {
+                x: 1,
+                y: 1,
+                z: 1
+            }
+        }
     })
+    // console.log(tfs)
     return tfs
 }
 
