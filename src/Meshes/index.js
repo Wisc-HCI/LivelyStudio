@@ -1,8 +1,8 @@
-//---------------------------------------------- Pepper
-/*
-import PepperCollisionCameraBase from "./Pepper/collision/Camera_base";
-import PepperCollisionCameraBody from "./Pepper/collision/Camera_body";
-import PepperCollisionCameraVisor from "./Pepper/collision/Camera_visor";
+//----------------------------------------------Pepper
+
+// import PepperCollisionCameraBase from "./Pepper/collision/Camera_base";
+// import PepperCollisionCameraBody from "./Pepper/collision/Camera_body";
+// import PepperCollisionCameraVisor from "./Pepper/collision/Camera_visor";
 import PepperCollisionHeadPitch from "./Pepper/collision/HeadPitch";
 import PepperCollisionHeadYaw from "./Pepper/collision/HeadYaw";
 import PepperCollisionHipPitch from "./Pepper/collision/HipPitch";
@@ -46,13 +46,13 @@ import PepperCollisionRShoulderRoll from "./Pepper/collision/RShoulderRoll";
 import PepperCollisionRThumb1 from "./Pepper/collision/RThumb1";
 import PepperCollisionRThumb2 from "./Pepper/collision/RThumb2";
 import PepperCollisionRWristYaw from "./Pepper/collision/RWristYaw";
-import PepperCollisionT265 from "./Pepper/collision/T265";
+//import PepperCollisionT265 from "./Pepper/collision/T265";
 import PepperCollisionTorso from "./Pepper/collision/Torso";
 import PepperCollisionWheelB from "./Pepper/collision/WheelB";
 import PepperCollisionWheelFR from "./Pepper/collision/WheelFR";
 import PepperCollisionWheelFL from "./Pepper/collision/WheelFL";
 
-import PepperVisualD435 from "./Pepper/visual/D435";
+//import PepperVisualD435 from "./Pepper/visual/D435";
 import PepperVisualHeadPitch from "./Pepper/visual/HeadPitch";
 import PepperVisualHeadYaw from "./Pepper/visual/HeadYaw";
 import PepperVisualHipPitch from "./Pepper/visual/HipPitch";
@@ -100,11 +100,6 @@ import PepperVisualTorso from "./Pepper/visual/Torso";
 import PepperVisualWheelB from "./Pepper/visual/WheelB";
 import PepperVisualWheelFL from "./Pepper/visual/WheelFL";
 import PepperVisualWheelFR from "./Pepper/visual/WheelFR";
-
-*/
-
-
-
 
 
 //---------------------------------------------- Panda
@@ -166,6 +161,50 @@ import RobotiqWiscCollisionFingerTipLink from
 './RobotiqWisc/collision/robotiq_85_finger_tip_link';
 import RobotiqWiscCollisionInnerKnuckleLink from 
 './RobotiqWisc/collision/robotiq_85_inner_knuckle_link';
+//-------------------------------------------------NAO
+import NaoHeadPitch from './Nao/HeadPitch';
+import NaoHeadYaw from './Nao/HeadYaw';
+import NaoLAnklePitch from './Nao/LAnklePitch';
+import NaoLAnkleRoll from './Nao/LAnkleRoll';
+import NaoLElbowRoll from './Nao/LElbowRoll';
+import NaoLFinger11 from './Nao/LFinger11';
+import NaoLFinger12 from './Nao/LFinger12';
+import NaoLFinger13 from './Nao/LFinger13';
+import NaoLFinger21 from './Nao/LFinger21';
+import NaoLFinger22 from './Nao/LFinger22';
+import NaoLFinger23 from './Nao/LFinger23';
+import NaoLHipPitch from './Nao/LHipPitch';
+import NaoLHipRoll from './Nao/LHipRoll';
+import NaoLHipYawPitch from './nao/LHipPitch';
+import NaoLKneePitch from './nao/LKneePitch';
+import NaoLShoulderPitch from './nao/LShoulderPitch';
+import NaoLShoulderRoll from './nao/LShoulderRoll';
+import NaoLThumb1 from './nao/LThumb1';
+import NaoLThumb2 from './nao/LThumb2';
+import NaoLWristYaw from './nao/LWristYaw';
+import NaoRAnklePitch from './nao/RAnklePitch';
+import NaoRAnkleRoll from './nao/RAnkleRoll';
+import NaoRElbowRoll from './nao/RElbowRoll';
+import NaoRFinger11 from './nao/RFinger11';
+import NaoRFinger12 from './nao/RFinger12';
+import NaoRFinger13 from './nao/RFinger13';
+import NaoRFinger21 from './nao/RFinger21';
+import NaoRFinger22 from './nao/RFinger22';
+import NaoRFinger23 from './nao/RFinger23';
+import NaoRHipPitch from './nao/RHipPitch';
+import NaoRHipRoll from './nao/RHipRoll';
+import NaoRHipYawPitch from './nao/RHipYawPitch';
+import NaoRKneePitch from './nao/RKneePitch';
+import NaoRShoulderPitch from './nao/RShoulderPitch';
+import NaoRShoulderRoll from './nao/RShoulderRoll';
+import NaoRThumb1 from './nao/RThumb1';
+import NaoRThumb2 from './nao/RThumb2';
+import NaoRWristYaw from './nao/RWristYaw';
+import NaoTorso from './nao/Torso';
+
+
+
+
 //-------------------------------------------------Baxter
 import Pedestal_Link_Collision from
 './Baxter/base/Pedestal_link_collision';
@@ -282,111 +321,148 @@ const MeshLookupTable = {
     'conveyor_receiver':ConveyorReceiver,
     'conveyor_dispatcher_collision':ConveyorDispatcherCollision,
     'conveyor_receiver_collision':ConveyorReceiverCollision,
+    //------------------------------------------------------Nao
+    // "package://nao_meshes/meshes/V40/HeadYaw.dae" : NaoHeadYaw,
+    // "package://nao_meshes/meshes/V40/HeadPitch.dae" : NaoHeadPitch,
+    // "package://nao_meshes/meshes/V40/LHipYawPitch.dae" : NaoLHipYawPitch,
+    // "package://nao_meshes/meshes/V40/LHipRoll.dae" : NaoLHipRoll,
+    // "package://nao_meshes/meshes/V40/LHipPitch.dae" : NaoLHipPitch,
+    // "package://nao_meshes/meshes/V40/LKneePitch.dae" : NaoLKneePitch,
+    // "package://nao_meshes/meshes/V40/LAnklePitch.dae" : NaoLAnklePitch,
+    // "package://nao_meshes/meshes/V40/LAnkleRoll.dae" : NaoLAnkleRoll,
+    // "package://nao_meshes/meshes/V40/RHipYawPitch.dae" : NaoRHipYawPitch,
+    // "package://nao_meshes/meshes/V40/RHipRoll.dae" : NaoRHipRoll,
+    // "package://nao_meshes/meshes/V40/RHipPitch.dae" : NaoRHipPitch,
+    // "package://nao_meshes/meshes/V40/RKneePitch.dae" : NaoRKneePitch,
+    // "package://nao_meshes/meshes/V40/RAnklePitch.dae" : NaoRAnklePitch,
+    // "package://nao_meshes/meshes/V40/RAnkleRoll.dae" : NaoRAnkleRoll,
+    // "package://nao_meshes/meshes/V40/Torso.dae" : NaoTorso,
+    // "package://nao_meshes/meshes/V40/LShoulderPitch.dae" : NaoLShoulderPitch,
+    // "package://nao_meshes/meshes/V40/LShoulderRoll.dae" : NaoLShoulderRoll,
+    // "package://nao_meshes/meshes/V40/LElbowRoll.dae" : NaoLElbowRoll,
+    // "package://nao_meshes/meshes/V40/LWristYaw.dae" : NaoLWristYaw,
+    // "package://nao_meshes/meshes/V40/RShoulderPitch.dae" : NaoRShoulderPitch,
+    // "package://nao_meshes/meshes/V40/RShoulderRoll.dae" : NaoRShoulderRoll,
+    // "package://nao_meshes/meshes/V40/RElbowRoll.dae" : NaoRElbowRoll,
+    // "package://nao_meshes/meshes/V40/RWristYaw.dae" : NaoRWristYaw,
+    // "package://nao_meshes/meshes/V40/RFinger13.dae" : NaoRFinger13,
+    // "package://nao_meshes/meshes/V40/RFinger12.dae" : NaoRFinger12,
+    // "package://nao_meshes/meshes/V40/LFinger21.dae" : NaoLFinger21,
+    // "package://nao_meshes/meshes/V40/LFinger13.dae" : NaoLFinger13,
+    // "package://nao_meshes/meshes/V40/LFinger11.dae" : NaoLFinger11,
+    // "package://nao_meshes/meshes/V40/RFinger22.dae" : NaoRFinger22,
+    // "package://nao_meshes/meshes/V40/LFinger22.dae" : NaoLFinger22,
+    // "package://nao_meshes/meshes/V40/LFinger21.dae" : NaoLFinger21,
+    // "package://nao_meshes/meshes/V40/LFinger12.dae" : NaoLFinger12,
+    // "package://nao_meshes/meshes/V40/RFinger23.dae" : NaoRFinger23,
+    // "package://nao_meshes/meshes/V40/RFinger11.dae" : NaoRFinger11,
+    // "package://nao_meshes/meshes/V40/LFinger23.dae" : NaoLFinger23,
+    // "package://nao_meshes/meshes/V40/LThumb1.dae" : NaoLThumb1,
+    // "package://nao_meshes/meshes/V40/RThumb1.dae" : NaoRThumb1,
+    // "package://nao_meshes/meshes/V40/RThumb2.dae" : NaoRThumb2, 
+    // "package://nao_meshes/meshes/V40/LThumb2.dae" : NaoLThumb2,
+
+
     //------------------------------------------------------Pepper
-    // "package://pepper_description/meshes/HeadYaw.dae" : PepperVisualHeadYaw,
-    // "package://pepper_description/meshes/HeadYaw_0.10.stl" : PepperCollisionHeadYaw,
-    // "package://pepper_description/meshes/HeadPitch.dae" : PepperVisualHeadPitch,
-    // "package://pepper_description/meshes/HeadPitch_0.10.stl" : PepperCollisionHeadPitch,
-    // "package://pepper_description/meshes/HipRoll.dae" : PepperVisualHipRoll,
-    // "package://pepper_description/meshes/HipRoll_0.10.stl" : PepperCollisionHipRoll,
-    // "package://pepper_description/meshes/HipPitch.dae" : PepperVisualHipPitch,
-    // "package://pepper_description/meshes/HipPitch_0.10.stl" : PepperCollisionHipPitch,
-    // "package://pepper_description/meshes/KneePitch.dae" : PepperVisualKneePitch,
-    // "package://pepper_description/meshes/KneePitch_0.10.stl" : PepperCollisionKneePitch,
-    // "package://pepper_description/meshes/Torso.dae" : PepperVisualTorso,
-    // "package://pepper_description/meshes/Torso_0.10.stl" : PepperCollisionTorso,
-    // "package://pepper_description/meshes/LShoulderPitch.dae" : PepperVisualLShoulderPitch,
-    // "package://pepper_description/meshes/LShoulderPitch_0.10.stl" : PepperCollisionLShoulderPitch,
-    // "package://pepper_description/meshes/LShoulderRoll.dae" : PepperVisualLShoulderRoll,
-    // "package://pepper_description/meshes/LShoulderRoll_0.10.stl" : PepperCollisionLShoulderRoll,
-    // "package://pepper_description/meshes/LElbowYaw.dae" : PepperVisualLElbowYaw,
-    // "package://pepper_description/meshes/LElbowYaw_0.10.stl" : PepperCollisionLElbowYaw,
-    // "package://pepper_description/meshes/LElbowRoll.dae" : PepperVisualLElbowRoll,
-    // "package://pepper_description/meshes/LElbowRoll_0.10.stl" : PepperCollisionLElbowRoll,
-    // "package://pepper_description/meshes/LWristYaw.dae" : PepperVisualLWristYaw,
-    // "package://pepper_description/meshes/LWristYaw_0.10.stl" : PepperCollisionLWristYaw,
-    // "package://pepper_description/meshes/RShoulderPitch.dae" : PepperVisualRShoulderPitch,
-    // "package://pepper_description/meshes/RShoulderPitch_0.10.stl" : PepperCollisionRShoulderPitch,
-    // "package://pepper_description/meshes/RShoulderRoll.dae" : PepperVisualRShoulderRoll,
-    // "package://pepper_description/meshes/RShoulderRoll_0.10.stl" : PepperCollisionRShoulderRoll,
-    // "package://pepper_description/meshes/RElbowYaw.dae" : PepperVisualRElbowYaw,
-    // "package://pepper_description/meshes/RElbowYaw_0.10.stl": PepperCollisionRElbowYaw,
-    // "package://pepper_description/meshes/RElbowRoll.dae" : PepperVisualRElbowRoll,
-    // "package://pepper_description/meshes/RElbowRoll_0.10.stl" : PepperCollisionRElbowRoll,
-    // "package://pepper_description/meshes/RWristYaw.dae" : PepperVisualRWristYaw,
-    // "package://pepper_description/meshes/RWristYaw_0.10.stl" : PepperCollisionRWristYaw,
-    // "package://pepper_description/meshes/RFinger41.dae" : PepperVisualRFinger41,
-    // "package://pepper_description/meshes/RFinger41_0.10.stl" : PepperCollisionRFinger41,
-    // "package://pepper_description/meshes/LFinger42.dae" : PepperVisualLFinger42,
-    // "package://pepper_description/meshes/LFinger42_0.10.stl" : PepperCollisionLFinger42,
-    // "package://pepper_description/meshes/RFinger12.dae" : PepperVisualRFinger12,
-    // "package://pepper_description/meshes/RFinger12_0.10.stl" : PepperCollisionRFinger12,
-    // "package://pepper_description/meshes/LFinger33.dae" : PepperVisualLFinger33,
-    // "package://pepper_description/meshes/LFinger33_0.10.stl" : PepperCollisionLFinger33,
-    // "package://pepper_description/meshes/RFinger31.dae" : PepperVisualRFinger31,
-    // "package://pepper_description/meshes/RFinger31_0.10.stl" : PepperCollisionRFinger31,
-    // "package://pepper_description/meshes/LFinger21.dae" : PepperVisualLFinger21,
-    // "package://pepper_description/meshes/LFinger21_0.10.stl" : PepperCollisionLFinger21,
-    // "package://pepper_description/meshes/RFinger32.dae" : PepperVisualRFinger32,
-    // "package://pepper_description/meshes/RFinger32_0.10.stl" : PepperCollisionRFinger32,
-    // "package://pepper_description/meshes/LFinger13.dae" : PepperVisualLFinger13,
-    // "package://pepper_description/meshes/LFinger13_0.10.stl" : PepperCollisionLFinger13,
-    // "package://pepper_description/meshes/LFinger32.dae" : PepperVisualLFinger32,
-    // "package://pepper_description/meshes/LFinger32_0.10.stl" : PepperCollisionLFinger32,
-    // "package://pepper_description/meshes/LFinger11.dae" : PepperVisualLFinger11,
-    // "package://pepper_description/meshes/LFinger11_0.10.stl" : PepperCollisionLFinger11,
-    // "package://pepper_description/meshes/RFinger22.dae" : PepperVisualRFinger22,
-    // "package://pepper_description/meshes/RFinger22_0.10.stl" : PepperCollisionRFinger22,
-    // "package://pepper_description/meshes/RFinger13.dae" : PepperVisualRFinger13,
-    // "package://pepper_description/meshes/RFinger13_0.10.stl" : PepperCollisionRFinger13,
-    // "package://pepper_description/meshes/LFinger22.dae" : PepperVisualLFinger22,
-    // "package://pepper_description/meshes/LFinger22_0.10.stl" : PepperCollisionLFinger22,
-    // "package://pepper_description/meshes/RFinger21.dae" : PepperVisualRFinger21,
-    // "package://pepper_description/meshes/RFinger21_0.10.stl" : PepperCollisionRFinger21,
-    // "package://pepper_description/meshes/LFinger41.dae" : PepperVisualLFinger41,
-    // "package://pepper_description/meshes/LFinger41_0.10.stl" : PepperCollisionLFinger41,
-    // "package://pepper_description/meshes/LFinger12.dae" : PepperVisualLFinger12,
-    // "package://pepper_description/meshes/LFinger12_0.10.stl" : PepperCollisionLFinger12,
-    // "package://pepper_description/meshes/RFinger23.dae" : PepperVisualRFinger23,
-    // "package://pepper_description/meshes/RFinger23_0.10.stl" : PepperCollisionRFinger23,
-    // "package://pepper_description/meshes/RFinger11.dae" : PepperVisualRFinger11,
-    // "package://pepper_description/meshes/RFinger11_0.10.stl" : PepperCollisionRFinger11,
-    // "package://pepper_description/meshes/LFinger23.dae" : PepperVisualLFinger23,
-    // "package://pepper_description/meshes/LFinger23_0.10.stl" : PepperCollisionLFinger23,
-    // "package://pepper_description/meshes/LFinger43.dae" : PepperVisualLFinger43,
-    // "package://pepper_description/meshes/LFinger43_0.10.stl" : PepperCollisionLFinger43,
-    // "package://pepper_description/meshes/RFinger43.dae" : PepperVisualRFinger43,
-    // "package://pepper_description/meshes/RFinger43_0.10.stl" : PepperCollisionRFinger43,
-    // "package://pepper_description/meshes/RFinger42.dae" : PepperVisualRFinger42,
-    // "package://pepper_description/meshes/RFinger42_0.10.stl" : PepperCollisionRFinger42,
-    // "package://pepper_description/meshes/LFinger31.dae" : PepperVisualLFinger31,
-    // "package://pepper_description/meshes/LFinger31_0.10.stl" : PepperCollisionLFinger31,
-    // "package://pepper_description/meshes/RFinger33.dae" : PepperVisualRFinger33,
-    // "package://pepper_description/meshes/RFinger33_0.10.stl" : PepperCollisionRFinger33,
-    // "package://pepper_description/meshes/LThumb1.dae" : PepperVisualLThumb1,
-    // "package://pepper_description/meshes/LThumb1_0.10.stl" : PepperCollisionLThumb1,
-    // "package://pepper_description/meshes/RThumb2.dae" : PepperVisualRThumb2,
-    // "package://pepper_description/meshes/RThumb2_0.10.stl" : PepperCollisionRThumb2,
-    // "package://pepper_description/meshes/RThumb1.dae" : PepperVisualRThumb1,
-    // "package://pepper_description/meshes/RThumb1_0.10.stl" : PepperCollisionRThumb1,
-    // "package://pepper_description/meshes/LThumb2.dae" : PepperVisualLThumb2,
-    // "package://pepper_description/meshes/LThumb2_0.10.stl" : PepperCollisionLThumb2,
-    // "package://pepper_description/meshes/WheelFL.dae" : PepperVisualWheelFL,
-    // "package://pepper_description/meshes/WheelFL_0.10.stl" : PepperCollisionWheelFL,
-    // "package://pepper_description/meshes/WheelB.dae" : PepperVisualWheelB,
-    // "package://pepper_description/meshes/WheelB_0.10.stl" : PepperCollisionWheelB,
-    // "package://pepper_description/meshes/WheelFR.dae" : PepperVisualWheelFR,
-    // "package://pepper_description/meshes/WheelFR_0.10.stl" : PepperCollisionWheelFR,
-    // "package://pepper_description/meshes/d435.dae" : PepperVisualD435,
+    "package://pepper_description/meshes/HeadYaw.dae" : PepperVisualHeadYaw,
+    "package://pepper_description/meshes/HeadYaw_0.10.stl" : PepperCollisionHeadYaw,
+    "package://pepper_description/meshes/HeadPitch.dae" : PepperVisualHeadPitch,
+    "package://pepper_description/meshes/HeadPitch_0.10.stl" : PepperCollisionHeadPitch,
+    "package://pepper_description/meshes/HipRoll.dae" : PepperVisualHipRoll,
+    "package://pepper_description/meshes/HipRoll_0.10.stl" : PepperCollisionHipRoll,
+    "package://pepper_description/meshes/HipPitch.dae" : PepperVisualHipPitch,
+    "package://pepper_description/meshes/HipPitch_0.10.stl" : PepperCollisionHipPitch,
+    "package://pepper_description/meshes/KneePitch.dae" : PepperVisualKneePitch,
+    "package://pepper_description/meshes/KneePitch_0.10.stl" : PepperCollisionKneePitch,
+    "package://pepper_description/meshes/Torso.dae" : PepperVisualTorso,
+    "package://pepper_description/meshes/Torso_0.10.stl" : PepperCollisionTorso,
+    "package://pepper_description/meshes/LShoulderPitch.dae" : PepperVisualLShoulderPitch,
+    "package://pepper_description/meshes/LShoulderPitch_0.10.stl" : PepperCollisionLShoulderPitch,
+    "package://pepper_description/meshes/LShoulderRoll.dae" : PepperVisualLShoulderRoll,
+    "package://pepper_description/meshes/LShoulderRoll_0.10.stl" : PepperCollisionLShoulderRoll,
+    "package://pepper_description/meshes/LElbowYaw.dae" : PepperVisualLElbowYaw,
+    "package://pepper_description/meshes/LElbowYaw_0.10.stl" : PepperCollisionLElbowYaw,
+    "package://pepper_description/meshes/LElbowRoll.dae" : PepperVisualLElbowRoll,
+    "package://pepper_description/meshes/LElbowRoll_0.10.stl" : PepperCollisionLElbowRoll,
+    "package://pepper_description/meshes/LWristYaw.dae" : PepperVisualLWristYaw,
+    "package://pepper_description/meshes/LWristYaw_0.10.stl" : PepperCollisionLWristYaw,
+    "package://pepper_description/meshes/RShoulderPitch.dae" : PepperVisualRShoulderPitch,
+    "package://pepper_description/meshes/RShoulderPitch_0.10.stl" : PepperCollisionRShoulderPitch,
+    "package://pepper_description/meshes/RShoulderRoll.dae" : PepperVisualRShoulderRoll,
+    "package://pepper_description/meshes/RShoulderRoll_0.10.stl" : PepperCollisionRShoulderRoll,
+    "package://pepper_description/meshes/RElbowYaw.dae" : PepperVisualRElbowYaw,
+    "package://pepper_description/meshes/RElbowYaw_0.10.stl": PepperCollisionRElbowYaw,
+    "package://pepper_description/meshes/RElbowRoll.dae" : PepperVisualRElbowRoll,
+    "package://pepper_description/meshes/RElbowRoll_0.10.stl" : PepperCollisionRElbowRoll,
+    "package://pepper_description/meshes/RWristYaw.dae" : PepperVisualRWristYaw,
+    "package://pepper_description/meshes/RWristYaw_0.10.stl" : PepperCollisionRWristYaw,
+    "package://pepper_description/meshes/RFinger41.dae" : PepperVisualRFinger41,
+    "package://pepper_description/meshes/RFinger41_0.10.stl" : PepperCollisionRFinger41,
+    "package://pepper_description/meshes/LFinger42.dae" : PepperVisualLFinger42,
+    "package://pepper_description/meshes/LFinger42_0.10.stl" : PepperCollisionLFinger42,
+    "package://pepper_description/meshes/RFinger12.dae" : PepperVisualRFinger12,
+    "package://pepper_description/meshes/RFinger12_0.10.stl" : PepperCollisionRFinger12,
+    "package://pepper_description/meshes/LFinger33.dae" : PepperVisualLFinger33,
+    "package://pepper_description/meshes/LFinger33_0.10.stl" : PepperCollisionLFinger33,
+    "package://pepper_description/meshes/RFinger31.dae" : PepperVisualRFinger31,
+    "package://pepper_description/meshes/RFinger31_0.10.stl" : PepperCollisionRFinger31,
+    "package://pepper_description/meshes/LFinger21.dae" : PepperVisualLFinger21,
+    "package://pepper_description/meshes/LFinger21_0.10.stl" : PepperCollisionLFinger21,
+    "package://pepper_description/meshes/RFinger32.dae" : PepperVisualRFinger32,
+    "package://pepper_description/meshes/RFinger32_0.10.stl" : PepperCollisionRFinger32,
+    "package://pepper_description/meshes/LFinger13.dae" : PepperVisualLFinger13,
+    "package://pepper_description/meshes/LFinger13_0.10.stl" : PepperCollisionLFinger13,
+    "package://pepper_description/meshes/LFinger32.dae" : PepperVisualLFinger32,
+    "package://pepper_description/meshes/LFinger32_0.10.stl" : PepperCollisionLFinger32,
+    "package://pepper_description/meshes/LFinger11.dae" : PepperVisualLFinger11,
+    "package://pepper_description/meshes/LFinger11_0.10.stl" : PepperCollisionLFinger11,
+    "package://pepper_description/meshes/RFinger22.dae" : PepperVisualRFinger22,
+    "package://pepper_description/meshes/RFinger22_0.10.stl" : PepperCollisionRFinger22,
+    "package://pepper_description/meshes/RFinger13.dae" : PepperVisualRFinger13,
+    "package://pepper_description/meshes/RFinger13_0.10.stl" : PepperCollisionRFinger13,
+    "package://pepper_description/meshes/LFinger22.dae" : PepperVisualLFinger22,
+    "package://pepper_description/meshes/LFinger22_0.10.stl" : PepperCollisionLFinger22,
+    "package://pepper_description/meshes/RFinger21.dae" : PepperVisualRFinger21,
+    "package://pepper_description/meshes/RFinger21_0.10.stl" : PepperCollisionRFinger21,
+    "package://pepper_description/meshes/LFinger41.dae" : PepperVisualLFinger41,
+    "package://pepper_description/meshes/LFinger41_0.10.stl" : PepperCollisionLFinger41,
+    "package://pepper_description/meshes/LFinger12.dae" : PepperVisualLFinger12,
+    "package://pepper_description/meshes/LFinger12_0.10.stl" : PepperCollisionLFinger12,
+    "package://pepper_description/meshes/RFinger23.dae" : PepperVisualRFinger23,
+    "package://pepper_description/meshes/RFinger23_0.10.stl" : PepperCollisionRFinger23,
+    "package://pepper_description/meshes/RFinger11.dae" : PepperVisualRFinger11,
+    "package://pepper_description/meshes/RFinger11_0.10.stl" : PepperCollisionRFinger11,
+    "package://pepper_description/meshes/LFinger23.dae" : PepperVisualLFinger23,
+    "package://pepper_description/meshes/LFinger23_0.10.stl" : PepperCollisionLFinger23,
+    "package://pepper_description/meshes/LFinger43.dae" : PepperVisualLFinger43,
+    "package://pepper_description/meshes/LFinger43_0.10.stl" : PepperCollisionLFinger43,
+    "package://pepper_description/meshes/RFinger43.dae" : PepperVisualRFinger43,
+    "package://pepper_description/meshes/RFinger43_0.10.stl" : PepperCollisionRFinger43,
+    "package://pepper_description/meshes/RFinger42.dae" : PepperVisualRFinger42,
+    "package://pepper_description/meshes/RFinger42_0.10.stl" : PepperCollisionRFinger42,
+    "package://pepper_description/meshes/LFinger31.dae" : PepperVisualLFinger31,
+    "package://pepper_description/meshes/LFinger31_0.10.stl" : PepperCollisionLFinger31,
+    "package://pepper_description/meshes/RFinger33.dae" : PepperVisualRFinger33,
+    "package://pepper_description/meshes/RFinger33_0.10.stl" : PepperCollisionRFinger33,
+    "package://pepper_description/meshes/LThumb1.dae" : PepperVisualLThumb1,
+    "package://pepper_description/meshes/LThumb1_0.10.stl" : PepperCollisionLThumb1,
+    "package://pepper_description/meshes/RThumb2.dae" : PepperVisualRThumb2,
+    "package://pepper_description/meshes/RThumb2_0.10.stl" : PepperCollisionRThumb2,
+    "package://pepper_description/meshes/RThumb1.dae" : PepperVisualRThumb1,
+    "package://pepper_description/meshes/RThumb1_0.10.stl" : PepperCollisionRThumb1,
+    "package://pepper_description/meshes/LThumb2.dae" : PepperVisualLThumb2,
+    "package://pepper_description/meshes/LThumb2_0.10.stl" : PepperCollisionLThumb2,
+    "package://pepper_description/meshes/WheelFL.dae" : PepperVisualWheelFL,
+    "package://pepper_description/meshes/WheelFL_0.10.stl" : PepperCollisionWheelFL,
+    "package://pepper_description/meshes/WheelB.dae" : PepperVisualWheelB,
+    "package://pepper_description/meshes/WheelB_0.10.stl" : PepperCollisionWheelB,
+    "package://pepper_description/meshes/WheelFR.dae" : PepperVisualWheelFR,
+    "package://pepper_description/meshes/WheelFR_0.10.stl" : PepperCollisionWheelFR,
+    //"package://pepper_description/meshes/d435.dae" : PepperVisualD435,
     // "package://pepper_description/meshes/camera_body.stl" : PepperCollisionCameraBody,
     // "package://pepper_description/meshes/camera_base.stl" : PepperCollisionCameraBase,
     // "package://pepper_description/meshes/camera_visor.stl" : PepperCollisionCameraVisor,
-    // "package://pepper_description/meshes/t265.stl" : PepperCollisionT265,
-
-
-
-
-
+    //"package://pepper_description/meshes/t265.stl" : PepperCollisionT265,
 
     //------------------------------------------------------Panda
     'package://franka_ros/franka_description/meshes/visual/finger.dae': Finger,

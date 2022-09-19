@@ -42,6 +42,7 @@ export const Menu = ({ mode, setMode }) => {
               options={[
                 { value: "ur3", label: "UR3" },
                 { value: "panda", label: "Panda" },
+                { value: "pepper", label: "Pepper" },
               ]}
             />
             <RootSettings/>
