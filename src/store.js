@@ -180,9 +180,17 @@ const store = (set, get) => ({
     }),
   onMove: (id, source, worldTransform, localTransform) =>
     set((state) => {
-      const newBp = rs2bp({current:state.programData[id],worldTransform,localTransform,source});
+      let bpId = id;
+      let shapeFlag = null;
+      ['-top','-bottom'].forEach(flag=>{
+        if (id.includes(flag)) {
+          id = id.replace(flag,'');
+          shapeFlag = flag.replace('-','')
+        }
+      })
+      const newBp = rs2bp({current:state.programData[bpId],worldTransform,localTransform,source,flag:shapeFlag});
       if (newBp) {
-        state.programData[id] = newBp;
+        state.programData[bpId] = newBp;
       }
       // if (source === "items") {
       //   switch (behaviorPropertyLookup[state.programData[id].type]) {
@@ -626,10 +634,11 @@ useStore.subscribe(
 // Update root bounds
 useStore.subscribe(
   (state) => state.rootBounds,
-  (rootBounds) =>
+  (rootBounds) => {
+    console.log('updating root bounds')
     invoke("update_root_bounds", {
-      rootBounds: rootBounds.map((b) => [b.value, b.delta]),
-    }),
+      rootBounds: rootBounds.map((b) => [Number(b.value), Number(b.delta)]),
+    })},
   { equalityFn: shallow }
 );
 

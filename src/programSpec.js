@@ -243,7 +243,7 @@ const positionBoundingBehaviorData = {
       name: "Edit Mode",
       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
       options: [{value:'translate',label:'Translate'},{value:'rotate',label:'Rotate'},{value:'scale',label:'Scale'}],
-      default: '',
+      default: 'translate',
     },
     translation: {...DEFAULT_TRANSLATION,name:'Ellipse Translation'},
     rotation: {...DEFAULT_ROTATION,name:'Ellipse Rotation'},

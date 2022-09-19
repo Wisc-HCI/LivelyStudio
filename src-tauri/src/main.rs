@@ -26,6 +26,7 @@ struct Storage(Mutex<HashMap<String,String>>);
 struct LivelyHandler {
   pub urdf: String,
   pub solver: Option<Solver>,
+  pub initial_solved_state: Option<State>,
   pub last_solved_state: Option<State>,
   pub objectives: HashMap<String,Objective>,
   pub goals: HashMap<String,Goal>,
@@ -49,6 +50,7 @@ impl LivelyHandler {
     return Self {
       urdf: "<xml></xml>".into(),
       solver: None,
+      initial_solved_state: None,
       last_solved_state: None,
       objectives: HashMap::new(),
       goals: HashMap::new(),
@@ -120,6 +122,7 @@ impl LivelyHandler {
         );
         solver.compute_average_distance_table();
         // println!("Created solver");
+        self.initial_solved_state = Some(solver.get_current_state());
         self.last_solved_state = Some(solver.get_current_state());
         // println!("Created in {:?}",instant.elapsed());
         let links = solver.robot_model.links.clone();
@@ -141,6 +144,7 @@ impl LivelyHandler {
 
   pub fn update_urdf(&mut self, urdf: String) -> Option<RobotInfo> {
     self.last_solved_state = None;
+    self.initial_solved_state = None;
     self.urdf = urdf;
     self.objectives = HashMap::new();
     self.goals = HashMap::new();
@@ -192,6 +196,15 @@ impl LivelyHandler {
     self.update_solver();
     return;
   }
+
+  pub fn reset(&mut self) {
+    match &mut self.solver {
+      Some(solver) => {
+        solver.reset(solver.robot_model.get_default_state(),HashMap::new());
+      },
+      None => {}
+    };
+  }
 }
 
 struct Runner(Mutex<LivelyHandler>);
@@ -214,6 +227,12 @@ fn update_shapes(state: tauri::State<Arc<Runner>>, shapes: Vec<Shape>) -> Option
 #[tauri::command]
 fn update_root_bounds(state: tauri::State<Arc<Runner>>, root_bounds: Vec<(f64, f64)>) {
   state.0.lock().unwrap().update_root_bounds(root_bounds);
+  return;
+}
+
+#[tauri::command]
+fn reset(state: tauri::State<Arc<Runner>>) {
+  state.0.lock().unwrap().reset();
   return;
 }
 
@@ -305,7 +324,8 @@ fn main() {
       update_goals_and_weights,
       set_item,
       get_item,
-      remove_item
+      remove_item,
+      reset
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

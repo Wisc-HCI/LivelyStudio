@@ -7,7 +7,7 @@ import {
   behaviorPropertyColorBounding,
 } from "../Constants";
 import { eulerFromQuaternion, quaternionFromEuler } from "./Geometry";
-import { toNumber } from "lodash";
+import { clamp, toNumber } from "lodash";
 
 const RAD_2_DEG = 180 / Math.PI;
 const DEG_2_RAD = Math.PI / 180;
@@ -599,7 +599,32 @@ export function hexToRgb(hex) {
     : null;
 }
 
-export const rs2bp = ({ current, worldTransform, localTransform, source }) => {
+export const rs2bp = ({ current, worldTransform, localTransform, source, joints, links }) => {
+  let jointInfo = null;
+  if (current.properties.joint) {
+    joints.some((j) => {
+      if (j.name === bp.properties.joint) {
+        jointInfo = j;
+        return true;
+      } else {
+        return false;
+      }
+    });
+  } else if (current.properties.joint1) {
+    jointInfo = [null,null];
+    joints.some((j) => {
+      if (j.name === bp.properties.joint1) {
+        jointInfo[0] = j;
+        return jointInfo[0] && jointInfo[1];
+      } else if (j.name === bp.properties.joint2) {
+        jointInfos[1] = j;
+        return jointInfo[0] && jointInfo[1];
+      } else {
+        return false;
+      }
+    });
+  }
+  
   switch (behaviorPropertyLookup[current.type]) {
     case "PositionMatch":
       current.properties.translation = [
@@ -615,6 +640,31 @@ export const rs2bp = ({ current, worldTransform, localTransform, source }) => {
         worldTransform.quaternion.y,
         worldTransform.quaternion.z,
       ]).map((v) => v * RAD_2_DEG);
+      break;
+    case "JointMatch":
+      current.properties.scalar = clamp((4 * localTransform.position.z + 0.5) * (range[1]-range[0]) + range[0],range[0],range[1]);
+      break;
+    case "PositionBounding":
+      if (current.properties.editMode === 'translate') {
+        current.properties.translation = [
+          worldTransform.position.x,
+          worldTransform.position.y,
+          worldTransform.position.z,
+        ];
+      } else if (current.properties.editMode === 'rotate') {
+        current.properties.rotation = eulerFromQuaternion([
+          worldTransform.quaternion.w,
+          worldTransform.quaternion.x,
+          worldTransform.quaternion.y,
+          worldTransform.quaternion.z,
+        ]).map((v) => v * RAD_2_DEG);
+      } else if (current.properties.editMode === 'scale') {
+        current.properties.size = [
+          worldTransform.scale.x,
+          worldTransform.scale.y,
+          worldTransform.scale.z
+        ]
+      }
       break;
     default:
       break;

@@ -103,6 +103,7 @@ export const RootSettings = () => {
         <MenuItem sx={{ paddingTop: 1.5 }} key="pos-x">
           <TextField
             size="small"
+            type='number'
             label="Position X"
             value={rootBounds[0].value}
             sx={{ marginRight: 1 }}
@@ -110,6 +111,7 @@ export const RootSettings = () => {
           />
           <TextField
             size="small"
+            type='number'
             label="Position X (Delta)"
             value={rootBounds[0].delta}
             onChange={(e) => setRootBound(e.target.value, 0, false)}
@@ -118,6 +120,7 @@ export const RootSettings = () => {
         <MenuItem sx={{ paddingTop: 1.5 }} key="pos-y">
           <TextField
             size="small"
+            type='number'
             label="Position Y"
             value={rootBounds[1].value}
             sx={{ marginRight: 1 }}
@@ -125,6 +128,7 @@ export const RootSettings = () => {
           />
           <TextField
             size="small"
+            type='number'
             label="Position Y (Delta)"
             value={rootBounds[1].delta}
             onChange={(e) => setRootBound(e.target.value, 1, false)}
@@ -133,6 +137,7 @@ export const RootSettings = () => {
         <MenuItem sx={{ paddingTop: 1.5 }} key="pos-z">
           <TextField
             size="small"
+            type='number'
             label="Position Z"
             value={rootBounds[2].value}
             sx={{ marginRight: 1 }}
@@ -140,6 +145,7 @@ export const RootSettings = () => {
           />
           <TextField
             size="small"
+            type='number'
             label="Position Z (Delta)"
             value={rootBounds[2].delta}
             onChange={(e) => setRootBound(e.target.value, 2, false)}
@@ -149,6 +155,7 @@ export const RootSettings = () => {
         <MenuItem sx={{ paddingTop: 1.5 }} key="rot-r">
           <TextField
             size="small"
+            type='number'
             label="Rotation R"
             value={rootBounds[3].value}
             sx={{ marginRight: 1 }}
@@ -156,6 +163,7 @@ export const RootSettings = () => {
           />
           <TextField
             size="small"
+            type='number'
             label="Rotation R (Delta)"
             value={rootBounds[3].delta}
             onChange={(e) => setRootBound(e.target.value, 3, false)}
@@ -164,6 +172,7 @@ export const RootSettings = () => {
         <MenuItem sx={{ paddingTop: 1.5 }} key="rot-p">
           <TextField
             size="small"
+            type='number'
             label="Rotation P"
             value={rootBounds[4].value}
             sx={{ marginRight: 1 }}
@@ -171,6 +180,7 @@ export const RootSettings = () => {
           />
           <TextField
             size="small"
+            type='number'
             label="Rotation P (Delta)"
             value={rootBounds[4].delta}
             onChange={(e) => setRootBound(e.target.value, 4, false)}
@@ -179,6 +189,7 @@ export const RootSettings = () => {
         <MenuItem sx={{ paddingTop: 1.5 }} key="rot-y">
           <TextField
             size="small"
+            type='number'
             label="Rotation Y"
             value={rootBounds[5].value}
             sx={{ marginRight: 1 }}
@@ -186,6 +197,7 @@ export const RootSettings = () => {
           />
           <TextField
             size="small"
+            type='number'
             label="Rotation Y (Delta)"
             value={rootBounds[5].delta}
             onChange={(e) => setRootBound(e.target.value, 5, false)}
