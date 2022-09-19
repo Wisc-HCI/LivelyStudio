@@ -462,7 +462,7 @@ export const nao = `<?xml version="1.0" ?>
     <collision>
     <origin rpy="0 1.6 0.1" xyz="0.03 0.007 0.0"/>
        <geometry>
-        <capsule length="0.078" radius="0.03"/>
+        <capsule length="0.065" radius="0.03"/>
       </geometry>
       
     </collision>
@@ -588,7 +588,7 @@ export const nao = `<?xml version="1.0" ?>
     <collision>
     <origin rpy="0 1.6 0.0" xyz="0.03 -0.007 0.0"/>
        <geometry>
-        <capsule length="0.078" radius="0.03"/>
+        <capsule length="0.065" radius="0.03"/>
       </geometry>
       
     </collision>
