@@ -1,7 +1,4 @@
 import React from "react";
-// import AceEditor from "react-ace";
-// import useStore from "../store";
-import { Box } from "grommet";
 import { Alert, IconButton, Badge, AppBar, Toolbar, Typography } from "@mui/material";
 import { DropMenu, RootSettings, TransitionDropdown } from "./Elements/DropMenu";
 import useStore from "./store";

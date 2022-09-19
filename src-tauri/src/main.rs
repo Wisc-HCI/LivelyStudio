@@ -198,9 +198,15 @@ impl LivelyHandler {
   }
 
   pub fn reset(&mut self) {
+    let mut weights: HashMap<String,f64> = HashMap::new();
+    for (key,_) in self.weights.iter() {
+      weights.insert(key.to_string(),0.0);
+    }
+    self.weights = weights.clone();
+    self.target_weights = weights.clone();
     match &mut self.solver {
       Some(solver) => {
-        solver.reset(solver.robot_model.get_default_state(),HashMap::new());
+        solver.reset(solver.robot_model.get_default_state(),weights);
       },
       None => {}
     };

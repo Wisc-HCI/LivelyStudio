@@ -495,7 +495,7 @@ useStore.subscribe(
   },
   { equalityFn: shallow }
 );
-
+// console.log('built store')
 //Subsriber to update------------------------------------------------------------------------------
 // useStore.subscribe(
 //   (state) => ({
@@ -595,12 +595,12 @@ useStore.subscribe(
     goals: state.goals,
     weights: state.weights,
     objectives: state.objectives,
-    isSource: state.programData[currentState]?.type === 'powerOnType'
+    isSource: state.programData?.[state.currentState]?.type === 'powerOnType'
   }),
   (newValues, pastValues) => {
     console.log("new values to invoke");
     if (newValues.isSource) {
-      // invoke("reset")
+      invoke("reset")
     } else if (
       newValues.goals &&
       newValues.weights &&
@@ -633,7 +633,6 @@ useStore.subscribe(
   },
   { equalityFn: shallow }
 );
-
 // Update root bounds
 useStore.subscribe(
   (state) => state.rootBounds,
@@ -714,6 +713,8 @@ useStore.setState({
     },
   },
 });
+
+// console.log('built store')
 
 export default useStore;
 
