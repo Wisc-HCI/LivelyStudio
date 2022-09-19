@@ -128,6 +128,14 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+     <collision>
+    <origin rpy="0 0 0" xyz="0 0 -0.2"/>
+      <geometry>
+        <cylinder length = "0.27" radius = "0.26"/>
+      </geometry>
+      
+    </collision>
    
   </link>
 
@@ -144,13 +152,7 @@ export const pepper = `<?xml version="1.0" ?>
       <origin rpy="0 0 0" xyz="2e-05 0 0.139"/>
     </visual>
 
-    <collision>
-    <origin rpy="0 0 0" xyz="0 0 -0.53"/>
-      <geometry>
-        <cylinder length = "0.27" radius = "0.26"/>
-      </geometry>
-      
-    </collision>
+   
     
   </link>
   <joint name="LShoulderPitch" type="revolute">
@@ -359,6 +361,8 @@ export const pepper = `<?xml version="1.0" ?>
       </geometry>
       
     </collision>
+
+    
     
   </link>
   <joint name="RElbowRoll" type="revolute">
