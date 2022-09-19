@@ -26,7 +26,7 @@ import {
   fromPairs,
   findKey,
 } from "lodash";
-import { bp2lik, bp2vis } from "./helpers/Conversion";
+import { bp2lik, bp2vis, rs2bp } from "./helpers/Conversion";
 import { indexOf } from "./helpers/Comparison";
 import { Vector3 } from "three";
 
@@ -180,16 +180,21 @@ const store = (set, get) => ({
     }),
   onMove: (id, source, worldTransform, localTransform) =>
     set((state) => {
-      if (source === "items") {
-        switch (behaviorPropertyLookup[state.programData[id].type]) {
-          case "PositionMatch":
-            state.programData[id].properties.translation = [
-              worldTransform.position.x,
-              worldTransform.position.y,
-              worldTransform.position.z,
-            ];
-        }
+      const newBp = rs2bp({current:state.programData[id],worldTransform,localTransform,source});
+      if (newBp) {
+        state.programData[id] = newBp;
       }
+      // if (source === "items") {
+      //   switch (behaviorPropertyLookup[state.programData[id].type]) {
+      //     case "PositionMatch":
+      //       state.programData[id] = 
+      //       break;
+      //     case "OrientationMatch":
+      //       state.programData[id].properties.rotation = [
+
+      //       ]
+      //   }
+      // }
       // console.log(localTransform)
       // state.[source][id].position = {...localTransform.position};
       // state[source][id].rotation = localTransform.quaternion;
@@ -272,20 +277,29 @@ useStore.subscribe(
 // Update feedback/input meshes when goals/state change
 useStore.subscribe(
   (state) =>
-    state.programData[state.currentState]?.properties?.children?.map(
-      (child) => state.programData[child]
-    ) || [],
+  state.programData[state.currentState]?.properties?.children?.map(
+    (child) => state.programData[child]
+  ) || [],
   (activeBehaviorProperties) => {
+    const joints = useStore.getState().joints;
     // Create feedback meshes
     let feedbackMeshes = {};
+    let lines = {};
+    let hulls = {};
     activeBehaviorProperties.forEach((bp) => {
-      const goalFeedback = bp2vis(bp);
-      if (goalFeedback) {
-        feedbackMeshes[bp.id] = goalFeedback;
-      }
+      const goalFeedbackItems = bp2vis(bp,joints);
+      goalFeedbackItems.forEach(({group,id,data})=>{
+        if (group === 'items') {
+          feedbackMeshes[id] = data;
+        } else if (group === 'lines') {
+          lines[id] = data;
+        } else if (group === 'hulls') {
+          hulls[id] = data;
+        }
+      })
     });
     console.log("feedbackMeshes", feedbackMeshes);
-    useStore.setState({ feedbackMeshes });
+    useStore.setState({ feedbackMeshes, lines, hulls });
     // console.log('',state.feedbackMeshes)
   },
   { equalityFn: shallow }
@@ -435,16 +449,16 @@ useStore.subscribe(
       items: {
         ...robotMeshes,
         ...feedbackMeshes,
-        collision: {
-          shape: "cube",
-          frame: "world",
-          name: "Table",
-          scale: { x: 0.5, y: 0.7, z: 0.2 },
-          position: { x: 0.5, y: 0, z: 0 },
-          rotation: { w: 1, x: 0, y: 0, z: 0 },
-          color: { r: 255, g: 0, b: 0, a: 1 },
-          wireframe: true,
-        },
+        // collision: {
+        //   shape: "cube",
+        //   frame: "world",
+        //   name: "Table",
+        //   scale: { x: 0.5, y: 0.7, z: 0.2 },
+        //   position: { x: 0.5, y: 0, z: 0 },
+        //   rotation: { w: 1, x: 0, y: 0, z: 0 },
+        //   color: { r: 255, g: 0, b: 0, a: 1 },
+        //   wireframe: true,
+        // },
       },
       texts: {},
       lines: proximityLines,
@@ -646,16 +660,16 @@ useStore.setState({
   programSpec,
   currentState: "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a",
   persistentShapes: [
-    {
-      type: "Box",
-      name: "Table",
-      frame: "world",
-      physical: true,
-      x: 0.5,
-      y: 0.7,
-      z: 0.2,
-      localTransform: { translation: [0.5, 0, 0], rotation: [0, 0, 0, 1] },
-    },
+    // {
+    //   type: "Box",
+    //   name: "Table",
+    //   frame: "world",
+    //   physical: true,
+    //   x: 0.5,
+    //   y: 0.7,
+    //   z: 0.2,
+    //   localTransform: { translation: [0.5, 0, 0], rotation: [0, 0, 0, 1] },
+    // },
   ],
   programData: {
     "powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a": {
