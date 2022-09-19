@@ -175,7 +175,7 @@ import NaoLFinger22 from './Nao/LFinger22';
 import NaoLFinger23 from './Nao/LFinger23';
 import NaoLHipPitch from './Nao/LHipPitch';
 import NaoLHipRoll from './Nao/LHipRoll';
-import NaoLHipYawPitch from './nao/LHipPitch';
+import NaoLHipYawPitch from './nao/LHipYawPitch';
 import NaoLKneePitch from './nao/LKneePitch';
 import NaoLShoulderPitch from './nao/LShoulderPitch';
 import NaoLShoulderRoll from './nao/LShoulderRoll';

@@ -47,6 +47,14 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+    <collision>
+    <origin rpy="0 0 0" xyz="0 0 0.06"/>
+      <geometry>
+        <sphere radius = "0.075"/>
+      </geometry>
+      
+    </collision>
     
   </link>
   <joint name="gaze_joint" type="fixed">
@@ -68,12 +76,14 @@ export const nao = `<?xml version="1.0" ?>
       <inertia ixx="2.3407e-05" ixy="1.07922e-06" ixz="-1.76003e-06" iyy="4.76355e-05" iyz="2.76058e-06" izz="4.97021e-05"/>
       <origin rpy="0 0 0" xyz="-0.00781 -0.01114 0.02661"/>
     </inertial>
-    <visual>
+
+     <visual>
       <geometry>
         <mesh filename="package://nao_meshes/meshes/V40/LHipYawPitch.dae" scale="0.1 0.1 0.1"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+    
    
   </link>
   <joint name="LHipRoll" type="revolute">
@@ -95,6 +105,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
     
   </link>
   <joint name="LHipPitch" type="revolute">
@@ -116,6 +127,15 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+
+    <collision>
+    <origin rpy="0 -0.4 0.0" xyz="0 0.0 -0.04"/>
+       <geometry>
+        <capsule length="0.078" radius="0.045"/>
+      </geometry>
+      
+    </collision>
     
   </link>
   <joint name="LKneePitch" type="revolute">
@@ -137,6 +157,14 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+    <collision>
+    <origin rpy="0 0 0.0" xyz="0 0. -0.075"/>
+       <geometry>
+        <sphere radius="0.045"/>
+      </geometry>
+      
+    </collision>
     
   </link>
   <joint name="LAnklePitch" type="revolute">
@@ -179,6 +207,14 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+    <collision>
+    <origin rpy="0 0 0.0" xyz="0.02 0. -0.03"/>
+       <geometry>
+        <box size = "0.15 0.1 0.04"/>
+      </geometry>
+      
+    </collision>
     
   </link>
   <joint name="LLeg_effector_fixedjoint" type="fixed">
@@ -208,6 +244,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
    
   </link>
   <joint name="RHipRoll" type="revolute">
@@ -229,6 +266,8 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+    
    
   </link>
   <joint name="RHipPitch" type="revolute">
@@ -250,6 +289,17 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+    <collision>
+    <origin rpy="0 -0.4 0.0" xyz="0 0.0 -0.04"/>
+       <geometry>
+        <capsule length="0.078" radius="0.045"/>
+      </geometry>
+      
+    </collision>
+
+
+    
    
   </link>
   <joint name="RKneePitch" type="revolute">
@@ -271,6 +321,15 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+    <collision>
+    <origin rpy="0 0 0.0" xyz="0 0. -0.075"/>
+       <geometry>
+        <sphere radius="0.045"/>
+      </geometry>
+      
+    </collision>
+
    
   </link>
   <joint name="RAnklePitch" type="revolute">
@@ -313,6 +372,14 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+    <collision>
+    <origin rpy="0 0 0.0" xyz="0.02 0. -0.03"/>
+       <geometry>
+        <box size = "0.15 0.1 0.04"/>
+      </geometry>
+      
+    </collision>
    
   </link>
   <joint name="RLeg_effector_fixedjoint" type="fixed">
@@ -341,6 +408,14 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+    <collision>
+    <origin rpy="0 0 0" xyz="0 0 0.033"/>
+      <geometry>
+        <cylinder length = "0.16" radius = "0.07"/>
+      </geometry>
+      
+    </collision>
    
   </link>
   <joint name="LShoulderPitch" type="revolute">
@@ -383,6 +458,14 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+    <collision>
+    <origin rpy="0 1.6 0.1" xyz="0.03 0.007 0.0"/>
+       <geometry>
+        <capsule length="0.078" radius="0.03"/>
+      </geometry>
+      
+    </collision>
    
   </link>
   <joint name="LElbowYaw" type="revolute">
@@ -419,6 +502,13 @@ export const nao = `<?xml version="1.0" ?>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
 
+    <collision>
+    <origin rpy="0 1.6 -0.1" xyz="0.09 0.004 0.0"/>
+       <geometry>
+        <capsule length="0.08" radius="0.038"/>
+      </geometry>
+      
+    </collision>
   </link>
   <joint name="LWristYaw" type="revolute">
     <parent link="LForeArm"/>
@@ -494,6 +584,14 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
+    <collision>
+    <origin rpy="0 1.6 0.0" xyz="0.03 -0.007 0.0"/>
+       <geometry>
+        <capsule length="0.078" radius="0.03"/>
+      </geometry>
+      
+    </collision>
    
   </link>
   <joint name="RElbowYaw" type="revolute">
@@ -529,12 +627,14 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+
     <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/RElbowRoll_0.10.stl" scale="0.1 0.1 0.1"/>
+    <origin rpy="0 1.7 0" xyz="0.09 0.00 0.0"/>
+       <geometry>
+        <capsule length="0.08" radius="0.038"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
+    
   </link>
   <joint name="RWristYaw" type="revolute">
     <parent link="RForeArm"/>
@@ -555,12 +655,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/RWristYaw_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RHand" type="revolute">
     <parent link="r_wrist"/>
@@ -583,12 +678,7 @@ export const nao = `<?xml version="1.0" ?>
     <axis xyz="0 0 0"/>
   </joint>
   <link name="RFsrRL_frame">
-    <collision>
-      <geometry>
-        <box size="0.01 0.01 0.005"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
     <inertial>
       <mass value="2e-06"/>
       <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
@@ -607,12 +697,7 @@ export const nao = `<?xml version="1.0" ?>
     <origin rpy="-1.57079632679 0 -1.57079632679" xyz="0 0 0"/>
   </joint>
   <link name="RFsrRR_frame">
-    <collision>
-      <geometry>
-        <box size="0.01 0.01 0.005"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
     <inertial>
       <mass value="2e-06"/>
       <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
@@ -625,12 +710,7 @@ export const nao = `<?xml version="1.0" ?>
     <axis xyz="0 0 0"/>
   </joint>
   <link name="LFsrFR_frame">
-    <collision>
-      <geometry>
-        <box size="0.01 0.01 0.005"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
     <inertial>
       <mass value="2e-06"/>
       <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
@@ -664,12 +744,7 @@ export const nao = `<?xml version="1.0" ?>
     <axis xyz="0 0 0"/>
   </joint>
   <link name="RFsrFR_frame">
-    <collision>
-      <geometry>
-        <box size="0.01 0.01 0.005"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
     <inertial>
       <mass value="2e-06"/>
       <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
@@ -689,12 +764,7 @@ export const nao = `<?xml version="1.0" ?>
     <axis xyz="0 0 0"/>
   </joint>
   <link name="LFsrRR_frame">
-    <collision>
-      <geometry>
-        <box size="0.01 0.01 0.005"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
     <inertial>
       <mass value="2e-06"/>
       <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
@@ -756,12 +826,7 @@ export const nao = `<?xml version="1.0" ?>
     <axis xyz="0 0 0"/>
   </joint>
   <link name="RFsrFL_frame">
-    <collision>
-      <geometry>
-        <box size="0.01 0.01 0.005"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
     <inertial>
       <mass value="2e-06"/>
       <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
@@ -781,12 +846,7 @@ export const nao = `<?xml version="1.0" ?>
     <axis xyz="0 0 0"/>
   </joint>
   <link name="LFsrFL_frame">
-    <collision>
-      <geometry>
-        <box size="0.01 0.01 0.005"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
     <inertial>
       <mass value="2e-06"/>
       <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
@@ -799,12 +859,7 @@ export const nao = `<?xml version="1.0" ?>
     <axis xyz="0 0 0"/>
   </joint>
   <link name="LFsrRL_frame">
-    <collision>
-      <geometry>
-        <box size="0.01 0.01 0.005"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
     <inertial>
       <mass value="2e-06"/>
       <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
@@ -924,12 +979,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/RFinger23_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="RFinger23" type="continuous">
     <parent link="RFinger22_link"/>
@@ -949,12 +999,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/RFinger13_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="RFinger13" type="continuous">
     <parent link="RFinger12_link"/>
@@ -974,12 +1019,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/RFinger12_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="RFinger12" type="continuous">
     <parent link="RFinger11_link"/>
@@ -999,12 +1039,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/LFinger21_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LFinger21" type="continuous">
     <parent link="l_wrist"/>
@@ -1024,12 +1059,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/LFinger13_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="LFinger13" type="continuous">
     <parent link="LFinger12_link"/>
@@ -1049,12 +1079,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/LFinger11_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="LFinger11" type="continuous">
     <parent link="l_wrist"/>
@@ -1074,12 +1099,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/RFinger22_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RFinger22" type="continuous">
     <parent link="RFinger21_link"/>
@@ -1099,12 +1119,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/LFinger22_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="LFinger22" type="continuous">
     <parent link="LFinger21_link"/>
@@ -1124,12 +1139,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/RFinger21_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="RFinger21" type="continuous">
     <parent link="r_wrist"/>
@@ -1149,12 +1159,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/LFinger12_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="LFinger12" type="continuous">
     <parent link="LFinger11_link"/>
@@ -1174,12 +1179,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/RFinger11_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+   
   </link>
   <joint name="RFinger11" type="continuous">
     <parent link="r_wrist"/>
@@ -1199,12 +1199,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/LFinger23_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="LFinger23" type="continuous">
     <parent link="LFinger22_link"/>
@@ -1224,12 +1219,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/LThumb1_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="LThumb1" type="continuous">
     <parent link="l_wrist"/>
@@ -1249,12 +1239,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/RThumb1_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="RThumb1" type="continuous">
     <parent link="r_wrist"/>
@@ -1274,12 +1259,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/RThumb2_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="RThumb2" type="continuous">
     <parent link="RThumb1_link"/>
@@ -1299,12 +1279,7 @@ export const nao = `<?xml version="1.0" ?>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://nao_meshes/meshes/V40/LThumb2_0.10.stl" scale="0.1 0.1 0.1"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
+    
   </link>
   <joint name="LThumb2" type="continuous">
     <parent link="LThumb1_link"/>
