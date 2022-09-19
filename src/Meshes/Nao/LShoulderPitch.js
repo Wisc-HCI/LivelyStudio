@@ -6,7 +6,7 @@ import { useGLTF } from '@react-three/drei';
 import LShoulderPitchMesh from './LShoulderPitch.glb';
 
 export default function Model(props) {
-  const { nodes, materials } = useGLTF(LShoulderRollMesh);
+  const { nodes, materials } = useGLTF(LShoulderPitchMesh);
   return [{type:'raw',geometry:nodes.LShoulderPitch.geometry,material:materials['NaoMat_MainSkin.014'],scale:[0.01, 0.01, 0.01]}]
 }
 
