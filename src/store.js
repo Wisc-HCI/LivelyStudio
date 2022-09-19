@@ -595,10 +595,13 @@ useStore.subscribe(
     goals: state.goals,
     weights: state.weights,
     objectives: state.objectives,
+    isSource: state.programData[currentState]?.type === 'powerOnType'
   }),
   (newValues, pastValues) => {
     console.log("new values to invoke");
-    if (
+    if (newValues.isSource) {
+      // invoke("reset")
+    } else if (
       newValues.goals &&
       newValues.weights &&
       newValues.objectives === pastValues.objectives

@@ -167,11 +167,11 @@ export const bp2vis = (bp, joints) => {
       });
       scalarInputItems(
         bp.id,
-        jointInfo.childLink,
+        jointInfo.childLink+'-translation',
         bp.selected,
         [jointInfo.lowerBound, jointInfo.upperBound],
         bp.properties.scalar,
-        0.05,
+        0.1,
         hexToRgb(behaviorPropertyColorMatching)
       ).forEach((item) => feedbackItems.push(item));
       break;
