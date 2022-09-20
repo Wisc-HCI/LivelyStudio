@@ -1,7 +1,7 @@
 import create from "zustand";
 // import produce from "immer";
 import { SceneSlice } from "robot-scene";
-import { ProgrammingSlice } from "simple-vp";
+import { ProgrammingSlice, DATA_TYPES, SIMPLE_PROPERTY_TYPES } from "simple-vp";
 import { programSpec } from "./programSpec";
 import { subscribeWithSelector, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -51,6 +51,7 @@ const DEFAULT_OBJECTIVE = {
 };
 
 const store = (set, get) => ({
+  pendingTransition: null,
   loaded: true,
   setLoaded: (loaded) => {
     // console.log('new loaded',loaded);
@@ -67,10 +68,29 @@ const store = (set, get) => ({
       // Should do checking to see whether this is a valid transition,
       // and do any relevant interpolations.
       // For now just immediately transition
+      if (state.pendingTransition) {
+        clearTimeout(state.pendingTransition);
+      }
       console.log(`initiating transition ${fromNode} -> ${toNode}`);
       state.programData[fromNode].selected = false;
       state.programData[toNode].selected = true;
       state.currentState = toNode;
+
+      // Schedule a transition if a timed transition exists
+      let transitionTime = Infinity;
+      let transitionNode = null;
+      Object.values(state.programData)
+        .filter(d=>d.dataType===DATA_TYPES.CONNECTION && d.parent.id === toNode && d.mode === SIMPLE_PROPERTY_TYPES.NUMBER)
+        .forEach(d=>{
+          if (Number(d.name) < transitionTime) {
+            transitionTime = Number(d.name);
+            transitionNode = d.child.id;
+          }
+        })
+      if (transitionNode) {
+        const transitionFn = get().initiateTransition;
+        state.pendingTransition = setTimeout(()=>transitionFn(toNode,transitionNode),transitionTime*1000)
+      }
     }),
   teleport: (data,other) => {
     const currentState = get().currentState;
@@ -192,58 +212,10 @@ const store = (set, get) => ({
       if (newBp) {
         state.programData[bpId] = newBp;
       }
-      // if (source === "items") {
-      //   switch (behaviorPropertyLookup[state.programData[id].type]) {
-      //     case "PositionMatch":
-      //       state.programData[id] = 
-      //       break;
-      //     case "OrientationMatch":
-      //       state.programData[id].properties.rotation = [
-
-      //       ]
-      //   }
-      // }
-      // console.log(localTransform)
-      // state.[source][id].position = {...localTransform.position};
-      // state[source][id].rotation = localTransform.quaternion;
-      // state[source][id].rotation.x = localTransform.quaternion.x;
-      // state[source][id].rotation.y = localTransform.quaternion.y;
-      // state[source][id].rotation.z = localTransform.quaternion.z;
-      // state[source][id].rotation.w = localTransform.quaternion.w;
-      // state[source][id].scale = {...localTransform.scale};
     }),
 });
 
 const immerStore = immer(store);
-
-// const persistStore = persist(immerStore,{
-//   name:'puppeteer-store',
-//   partialize: (state) => ({
-//     ...state,
-//     loaded: false,
-//     programSpec: {objectTypes:mapValues(state.programSpec.objectTypes,(objectType)=>({properties:objectType.properties}))}
-//   }),
-//   deserialize: (string) => {
-//     console.log("INCOMING", JSON.parse(string))
-//     console.log('MERGED',merge({state:{programSpec,clock:new Timer()}},JSON.parse(string)))
-//     return merge({state:{programSpec,clock:new Timer()}},JSON.parse(string))
-//   },
-//   onRehydrateStorage: (state) => {
-//     console.log("hydration starts");
-//     // optional
-//     return (state, error) => {
-//       // if (error) {
-//       //   console.log("An error happened during hydration. Reloading with Default", error);
-//       //   state.setDefault();
-//       // } else {
-//       //   console.log("hydration finished");
-//       //   state.updateProgramSpec(state.links,state.joints)
-//       // }
-//       console.log('rehydrated state',state);
-//       setTimeout(()=>state.setLoaded(true),50)
-//     };
-//   },
-// })
 
 const useStore = create(subscribeWithSelector(immerStore));
 
@@ -254,33 +226,6 @@ const unlisten = await listen("solution-calculated", (event) => {
     setTfs(event.payload);
   }
 });
-
-const initiateTransition = useStore.getState().initiateTransition;
-
-// Handle Transitioning between states
-useStore.subscribe(
-  (state) =>
-    mapValues(
-      pickBy(state.programData, (d) => STATE_TYPES.includes(d.type)),
-      (d) => d.selected
-    ),
-  (currentSelected, pastSelected) => {
-    let fromNode = null;
-    let toNode = null;
-    Object.keys(currentSelected).some((key) => {
-      if (currentSelected[key] && pastSelected[key]) {
-        fromNode = key;
-      } else if (currentSelected[key] && !pastSelected[key]) {
-        toNode = key;
-      }
-      return toNode && fromNode;
-    });
-    if (toNode && fromNode) {
-      initiateTransition(fromNode, toNode);
-    }
-  },
-  { equalityFn: shallow }
-);
 
 // Update feedback/input meshes when goals/state change
 useStore.subscribe(
@@ -495,8 +440,8 @@ useStore.subscribe(
   },
   { equalityFn: shallow }
 );
-// console.log('built store')
-//Subsriber to update------------------------------------------------------------------------------
+
+// Subsriber to update solving ------------------------------------------------------------------------------
 // useStore.subscribe(
 //   (state) => ({
 //     goals: state.goals,
