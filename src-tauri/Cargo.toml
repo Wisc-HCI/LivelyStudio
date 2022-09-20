@@ -19,7 +19,7 @@ serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.1.1", features = ["api-all"] }
 thiserror = "1.0"
-lively_tk = {git = "https://github.com/Wisc-HCI/lively_tk", rev="460c11640224c2351edc22c9999965ef67dc688b"}
+lively_tk = {git = "https://github.com/Wisc-HCI/lively_tk", rev="7bbf2805aebdf7960d2e59455ee0b30c4695ffd6"}
 game-loop = "0.9.1"
 urdf-rs = "0.6.4"
 nalgebra = { version = "0.31", features = ["serde-serialize-no-std"] }

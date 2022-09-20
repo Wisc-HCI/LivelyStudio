@@ -140,6 +140,11 @@ const store = (set, get) => ({
       state.tfs = tfs;
       state.proximityLines = proximityLines;
     }),
+  setBlockSelection: (id, value) => set(state=>{
+    if (state.programData[id]) {
+      state.programData[id].selected = value
+    }
+  }),
   setDefault: () =>
     set({
       loaded: true,
@@ -220,6 +225,7 @@ const immerStore = immer(store);
 const useStore = create(subscribeWithSelector(immerStore));
 
 const setTfs = useStore.getState().setTfs;
+const setBlockSelection = useStore.getState().setBlockSelection;
 
 const unlisten = await listen("solution-calculated", (event) => {
   if (event.payload) {
@@ -386,6 +392,22 @@ useStore.subscribe(
 useStore.subscribe(
   (state) => ({ links: state.links, joints: state.joints }),
   ({ links, joints }) => useStore.getState().updateProgramSpec(links, joints),
+  { equalityFn: shallow }
+);
+
+// Limit only one behavior property being selected
+useStore.subscribe(
+  (state) => mapValues(
+    pickBy(state.programData,(d)=>allBehaviorProperties.includes(d.type)),
+    d=>d.selected
+  ),
+  (newSelected,pastSelected) => {
+    // If one is selected in past and current, and another was not selected in past and is now selected,
+    // then set the one selected both times to false, and keep the one that is now selected.
+
+    // 
+    // setBlockSelection(pastId,false)
+  },
   { equalityFn: shallow }
 );
 
