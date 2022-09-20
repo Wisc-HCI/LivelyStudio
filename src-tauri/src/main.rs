@@ -142,8 +142,14 @@ impl LivelyHandler {
     return;
   }
 
-  pub fn update_urdf(&mut self, urdf: String) -> Option<RobotInfo> {
+  pub fn update_urdf(&mut self, urdf: String, root_bounds: Option<Vec<(f64, f64)>>) -> Option<RobotInfo> {
     self.last_solved_state = None;
+    match root_bounds {
+      Some(bounds)=>{
+        self.root_bounds = Some(bounds);
+      },
+      None => {}
+    }
     self.initial_solved_state = None;
     self.urdf = urdf;
     self.objectives = HashMap::new();
@@ -221,8 +227,8 @@ fn solve(state: tauri::State<Arc<Runner>>) -> Option<State> {
 }
 
 #[tauri::command]
-fn update_urdf(state: tauri::State<Arc<Runner>>, urdf: String) -> Option<RobotInfo> {
-  return state.0.lock().unwrap().update_urdf(urdf);
+fn update_urdf(state: tauri::State<Arc<Runner>>, urdf: String, root_bounds: Option<Vec<(f64, f64)>>) -> Option<RobotInfo> {
+  return state.0.lock().unwrap().update_urdf(urdf,root_bounds);
 }
 
 #[tauri::command]

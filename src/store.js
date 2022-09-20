@@ -336,14 +336,13 @@ useStore.subscribe(
 
 // Handle updating the urdf
 useStore.subscribe(
-  (state) => state.urdf,
-  async (urdf) => {
-    const rootBounds = useStore.getState().rootBounds;
-    const result = await invoke("update_urdf", { urdf });
+  (state) => ({urdf:state.urdf,rootBounds:state.rootBounds}),
+  async ({urdf,rootBounds}) => {
+    const result = await invoke("update_urdf", { urdf, rootBounds: rootBounds.map((b) => [b.value, b.delta])});
     // console.log(rootBounds.map(b=>(b.value,b.delta)))
-    await invoke("update_root_bounds", {
-      rootBounds: rootBounds.map((b) => [b.value, b.delta]),
-    });
+    // await invoke("update_root_bounds", {
+    //   rootBounds: rootBounds.map((b) => [b.value, b.delta]),
+    // });
     // const worker = useStore.getState().solverWorker;
     if (result) {
       const initialState = await invoke("solve");
@@ -576,16 +575,6 @@ useStore.subscribe(
       console.log("Ignoring because not stateType");
     }
   },
-  { equalityFn: shallow }
-);
-// Update root bounds
-useStore.subscribe(
-  (state) => state.rootBounds,
-  (rootBounds) => {
-    console.log('updating root bounds')
-    invoke("update_root_bounds", {
-      rootBounds: rootBounds.map((b) => [Number(b.value), Number(b.delta)]),
-    })},
   { equalityFn: shallow }
 );
 
