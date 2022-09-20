@@ -159,9 +159,9 @@ export const nao = `<?xml version="1.0" ?>
     </visual>
 
     <collision>
-    <origin rpy="0 0 0.0" xyz="0 0. -0.075"/>
+    <origin rpy="0 0 0.0" xyz="0 0. -0.065"/>
        <geometry>
-        <sphere radius="0.045"/>
+        <sphere radius="0.04"/>
       </geometry>
       
     </collision>
@@ -322,14 +322,13 @@ export const nao = `<?xml version="1.0" ?>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
 
-    <collision>
-    <origin rpy="0 0 0.0" xyz="0 0. -0.075"/>
+       <collision>
+    <origin rpy="0 0 0.0" xyz="0 0. -0.065"/>
        <geometry>
-        <sphere radius="0.045"/>
+        <sphere radius="0.04"/>
       </geometry>
       
     </collision>
-
    
   </link>
   <joint name="RAnklePitch" type="revolute">
