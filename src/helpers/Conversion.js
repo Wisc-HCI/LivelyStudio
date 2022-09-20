@@ -246,7 +246,7 @@ export const bp2vis = (bp, joints) => {
         id: bp.id + "-link1",
         data: {
           name: bp.name,
-          frame: bp.properties.link1,
+          frame: bp.properties.link2,
           position: {
             x: 0,
             y: 0,
@@ -268,7 +268,7 @@ export const bp2vis = (bp, joints) => {
         id: bp.id,
         data: {
           name: bp.name,
-          frame: bp.properties.link1,
+          frame: bp.properties.link2,
           position: {
             x: bp.properties.translation[0],
             y: bp.properties.translation[1],
