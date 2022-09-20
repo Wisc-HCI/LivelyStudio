@@ -1,6 +1,5 @@
 import { DATA_TYPES, CONNECTIONS, EXTRA_TYPES, TYPES, SIMPLE_PROPERTY_TYPES } from "simple-vp";
 import {
-  FiClipboard,
   FiBriefcase,
   FiGrid,
   FiBox,
@@ -8,6 +7,13 @@ import {
   FiMoreHorizontal,
   FiFeather
 } from "react-icons/fi";
+import { ContainerIcon } from "./Elements/Icons/Container";
+import { BoundingIcon } from "./Elements/Icons/Bounding";
+import { BasicIcon } from "./Elements/Icons/Basic";
+import { MatchingIcon } from "./Elements/Icons/Matching";
+import { MirroringIcon } from "./Elements/Icons/Mirroring";
+import { ForcesIcon } from "./Elements/Icons/Forces";
+import { LivelinessIcon } from "./Elements/Icons/Liveliness";
 import { IoArrowRedo } from "react-icons/io5";
 import { merge } from 'lodash';
 import { behaviorPropertyColorBase, behaviorPropertyColorBounding, behaviorPropertyColorMatching, behaviorPropertyColorMirroring, behaviorPropertyColorForces, behaviorPropertyColorLiveliness, behaviorPropertyDrawerBase, behaviorPropertyDrawerBounding, behaviorPropertyDrawerMatching, behaviorPropertyDrawerMirroring, behaviorPropertyDrawerForces, behaviorPropertyDrawerLiveliness } from './Constants.js'
@@ -38,15 +44,14 @@ const behaviorPropertyTemplate = {
     // icon: FiGrid,
     hideNewPrefix: true,
     extras: [
-      EXTRA_TYPES.LOCKED_INDICATOR,
       {
         icon: FiMoreHorizontal,
         type: EXTRA_TYPES.DROPDOWN,
         contents: [
-          EXTRA_TYPES.DELETE_BUTTON,
-          EXTRA_TYPES.DEBUG_TOGGLE,
-          EXTRA_TYPES.NAME_EDIT_TOGGLE,
           EXTRA_TYPES.SELECTION_TOGGLE,
+          EXTRA_TYPES.NAME_EDIT_TOGGLE,
+          EXTRA_TYPES.COLLAPSE_TOGGLE,
+          EXTRA_TYPES.DELETE_BUTTON,
         ],
       },
     ],
@@ -105,9 +110,9 @@ const DEFAULT_SCALAR = {
 
 //Name, weight, link, translation
 const positionMatchBehaviorData = {
-  name: 'Position Match Behavior',
+  name: 'Position Match',
   instanceBlock: {
-    icon: FiGrid,
+    icon: MatchingIcon,
     color: behaviorPropertyColorMatching
   },
   properties: {
@@ -123,9 +128,9 @@ const positionMatchBehaviorData = {
 
 //Name, weight, link, rotation
 const orientationMatchBehaviorData = {
-  name: 'Orientation Match Behavior',
+  name: 'Orientation Match',
   instanceBlock: {
-    icon: FiGrid,
+    icon: MatchingIcon,
     color: behaviorPropertyColorMatching
   },
   properties: {
@@ -141,9 +146,9 @@ const orientationMatchBehaviorData = {
 
 //Name, weight, link, frequency, size
 const positionLivelinessBehaviorData = {
-  name: 'Position Liveliness Behavior',
+  name: 'Position Liveliness',
   instanceBlock: {
-    icon: FiGrid,
+    icon: LivelinessIcon,
     color: behaviorPropertyColorLiveliness
   },
   properties: {
@@ -160,9 +165,9 @@ const positionLivelinessBehaviorData = {
 
 //Name, weight, link, frequency, size
 const orientationLivelinessBehaviorData = {
-  name: 'Orientation Liveliness Behavior',
+  name: 'Orientation Liveliness',
   instanceBlock: {
-    icon: FiGrid,
+    icon: LivelinessIcon,
     color: behaviorPropertyColorLiveliness
   },
   properties: {
@@ -179,9 +184,9 @@ const orientationLivelinessBehaviorData = {
 
 //Name, weight, link1, link2, translation
 const positionMirroringBehaviorData = {
-  name: 'Position Mirroring Behavior',
+  name: 'Position Mirroring',
   instanceBlock: {
-    icon: FiGrid,
+    icon: MirroringIcon,
     color: behaviorPropertyColorMirroring
   },
   properties: {
@@ -203,9 +208,9 @@ const positionMirroringBehaviorData = {
 
 //Name, weight, link1, link2, rotation
 const orientationMirroringBehaviorData = {
-  name: 'Orientation Mirroring Behavior',
+  name: 'Orientation Mirroring',
   instanceBlock: {
-    icon: FiGrid,
+    icon: MirroringIcon,
     color: behaviorPropertyColorMirroring
   },
   properties: {
@@ -227,9 +232,9 @@ const orientationMirroringBehaviorData = {
 
 //Name, weight, link, elipse
 const positionBoundingBehaviorData = {
-  name: 'Position Bounding Behavior',
+  name: 'Position Bounding',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BoundingIcon,
     color: behaviorPropertyColorBounding
   },
   properties: {
@@ -253,9 +258,9 @@ const positionBoundingBehaviorData = {
 
 //Name, weight, link
 const orientationBoundingBehaviorData = {
-  name: 'Orientation Bounding Behavior',
+  name: 'Orientation Bounding',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BoundingIcon,
     color: behaviorPropertyColorBounding
   },
   properties: {
@@ -272,9 +277,9 @@ const orientationBoundingBehaviorData = {
 
 //Name, weight, joint, scalar
 const jointMatchBehaviorData = {
-  name: 'Joint Match Behavior',
+  name: 'Joint Match',
   instanceBlock: {
-    icon: FiGrid,
+    icon: MatchingIcon,
     color: behaviorPropertyColorMatching
   },
   properties: {
@@ -290,9 +295,9 @@ const jointMatchBehaviorData = {
 
 //Name, weight, link, frequency, scalar
 const jointLivelinessBehaviorData = {
-  name: 'Joint Liveliness Behavior',
+  name: 'Joint Liveliness',
   instanceBlock: {
-    icon: FiGrid,
+    icon: LivelinessIcon,
     color: behaviorPropertyColorLiveliness
   },
   properties: {
@@ -309,9 +314,9 @@ const jointLivelinessBehaviorData = {
 
 //Name, weight, joint1, joint2, scalar
 const jointMirroringBehaviorData = {
-  name: 'Joint Mirroring Behavior',
+  name: 'Joint Mirroring',
   instanceBlock: {
-    icon: FiGrid,
+    icon: MirroringIcon,
     color: behaviorPropertyColorMirroring
   },
   properties: {
@@ -333,9 +338,9 @@ const jointMirroringBehaviorData = {
 
 //Name, weight
 const jointLimitsBehaviorData = {
-  name: 'Joint Limits Behavior',
+  name: 'Joint Limits',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BasicIcon,
     color: behaviorPropertyColorBase
   },
   properties: {
@@ -344,9 +349,9 @@ const jointLimitsBehaviorData = {
 
 //Name, weight, joint, scalar range
 const jointBoundingBehaviorData = {
-  name: 'Joint Bounding Behavior',
+  name: 'Joint Bounding',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BoundingIcon,
     color: behaviorPropertyColorBounding
   },
   properties: {
@@ -363,9 +368,9 @@ const jointBoundingBehaviorData = {
 
 //Name, weight
 const collisionAvoidanceBehaviorData = {
-  name: 'Collision Avoidance Behavior',
+  name: 'Collision Avoidance',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BasicIcon,
     color: behaviorPropertyColorBase
   },
   properties: {
@@ -374,9 +379,9 @@ const collisionAvoidanceBehaviorData = {
 
 //Name, weight
 const velocityMinimizationBehaviorData = {
-  name: 'Velocity Minimization Behavior',
+  name: 'Velocity Minimization',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BasicIcon,
     color: behaviorPropertyColorBase
   },
   properties: {
@@ -385,9 +390,9 @@ const velocityMinimizationBehaviorData = {
 
 //Name, weight
 const accelerationMinimizationBehaviorData = {
-  name: 'Acceleration Minimization Behavior',
+  name: 'Acceleration Minimization',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BasicIcon,
     color: behaviorPropertyColorBase
   },
   properties: {
@@ -396,9 +401,9 @@ const accelerationMinimizationBehaviorData = {
 
 //Name, weight
 const jerkMinimizationBehaviorData = {
-  name: 'Jerk Minimization Behavior',
+  name: 'Jerk Minimization',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BasicIcon,
     color: behaviorPropertyColorBase
   },
   properties: {
@@ -407,9 +412,9 @@ const jerkMinimizationBehaviorData = {
 
 //Name, weight
 const originVelocityMinimizationBehaviorData = {
-  name: 'Origin Velocity Minimization Behavior',
+  name: 'Origin Velocity Minimization',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BasicIcon,
     color: behaviorPropertyColorBase
   },
   properties: {
@@ -418,9 +423,9 @@ const originVelocityMinimizationBehaviorData = {
 
 //Name, weight
 const originAccelerationMinimizationBehaviorData = {
-  name: 'Origin Acceleration Minimization Behavior',
+  name: 'Origin Acceleration Minimization',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BasicIcon,
     color: behaviorPropertyColorBase
   },
   properties: {
@@ -429,9 +434,9 @@ const originAccelerationMinimizationBehaviorData = {
 
 //Name, weight
 const originJerkMinimizationBehaviorData = {
-  name: 'Origin Jerk Minimization Behavior',
+  name: 'Origin Jerk Minimization',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BasicIcon,
     color: behaviorPropertyColorBase
   },
   properties: {
@@ -440,9 +445,9 @@ const originJerkMinimizationBehaviorData = {
 
 //Name, weight, link 1, link 2, frequency, scalar
 const relativeMotionLivelinessBehaviorData = {
-  name: 'Relative Motion Liveliness Behavior',
+  name: 'Relative Motion Liveliness',
   instanceBlock: {
-    icon: FiGrid,
+    icon: LivelinessIcon,
     color: behaviorPropertyColorLiveliness
   },
   properties: {
@@ -466,9 +471,9 @@ const relativeMotionLivelinessBehaviorData = {
 
 //Name, weight, link
 const gravityBehaviorData = {
-  name: 'Gravity Behavior',
+  name: 'Gravity',
   instanceBlock: {
-    icon: FiGrid,
+    icon: ForcesIcon,
     color: behaviorPropertyColorForces
   },
   properties: {
@@ -483,9 +488,9 @@ const gravityBehaviorData = {
 
 //Name, weight
 const smoothnessMacroBehaviorData = {
-  name: 'Smoothness Macro Behavior',
+  name: 'Smoothness Macro',
   instanceBlock: {
-    icon: FiGrid,
+    icon: BasicIcon,
     color: behaviorPropertyColorBase
   },
   properties: {
@@ -494,9 +499,9 @@ const smoothnessMacroBehaviorData = {
 
 //Name, weight, link1, link2, scalar
 const distanceMatchBehaviorData = {
-  name: 'Distance Match Behavior',
+  name: 'Distance Match',
   instanceBlock: {
-    icon: FiGrid,
+    icon: MatchingIcon,
     color: behaviorPropertyColorMatching
   },
   properties: {
@@ -523,51 +528,44 @@ export const programSpec = {
       title: "Structures",
       dataType: DATA_TYPES.INSTANCE,
       objectTypes: ["stateType", "powerOnType", "powerOffType"],
-      icon: FiClipboard,
+      icon: ContainerIcon,
     },
-    //Moved "States" to structures, but kept old function code for reference
-    //{
-    //  title: "Functions",
-    //  dataType: DATA_TYPES.CALL,
-    //  objectType: "functionType",
-    //  icon: FiLogOut,
-    //},
     {
       //Changed "Hat" to "Goals" and added all new behavioral properties.
-      title: "Base Behavior Properties",
+      title: "Basic Behavior Properties",
       dataType: DATA_TYPES.INSTANCE,
       objectTypes: behaviorPropertyDrawerBase,
-      icon: FiGrid,
+      icon: BasicIcon,
     },
     {
       title: "Bounding Behavior Properties",
       dataType: DATA_TYPES.INSTANCE,
       objectTypes: behaviorPropertyDrawerBounding,
-      icon: FiGrid,
+      icon: BoundingIcon,
     },
     {
       title: "Matching Behavior Properties",
       dataType: DATA_TYPES.INSTANCE,
       objectTypes: behaviorPropertyDrawerMatching,
-      icon: FiGrid,
+      icon: MatchingIcon,
     },
     {
       title: "Mirroring Behavior Properties",
       dataType: DATA_TYPES.INSTANCE,
       objectTypes: behaviorPropertyDrawerMirroring,
-      icon: FiGrid,
+      icon: MirroringIcon,
     },
     {
-      title: "Forces Behavior Properties",
+      title: "Force Behavior Properties",
       dataType: DATA_TYPES.INSTANCE,
       objectTypes: behaviorPropertyDrawerForces,
-      icon: FiGrid,
+      icon: ForcesIcon,
     },
     {
       title: "Liveliness Behavior Properties",
       dataType: DATA_TYPES.INSTANCE,
       objectTypes: behaviorPropertyDrawerLiveliness,
-      icon: FiGrid,
+      icon: LivelinessIcon,
     },
     //Commented out Boots as this will no longer be needed.
     //{
@@ -578,265 +576,6 @@ export const programSpec = {
     //},
   ],
   objectTypes: {
-    programType: {
-      name: "Root",
-      type: TYPES.OBJECT,
-      instanceBlock: {
-        onCanvas: true,
-        color: "#3f3f3f",
-        icon: FiBriefcase,
-        connections: {
-          bottom: {
-            direction: CONNECTIONS.OUTBOUND,
-            allowed: ["operationType"],
-          },
-        },
-        extras: [
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            label: "Custom More...",
-            contents: [
-              EXTRA_TYPES.NAME_EDIT_TOGGLE,
-              EXTRA_TYPES.LOCKED_INDICATOR,
-              EXTRA_TYPES.SELECTION_TOGGLE,
-              EXTRA_TYPES.DIVIDER,
-              {
-                // icon: FiMoreHorizontal,
-                label: "More Options",
-                type: EXTRA_TYPES.DROPDOWN,
-                contents: [
-                  EXTRA_TYPES.NAME_EDIT_TOGGLE,
-                  EXTRA_TYPES.COLLAPSE_TOGGLE,
-                  EXTRA_TYPES.LOCKED_INDICATOR,
-                  {
-                    type: EXTRA_TYPES.FUNCTION_BUTTON,
-                    onClick: "updateItemBlockColors",
-                    label: "Cycle Color",
-                    icon: FiFeather,
-                  }
-                ],
-              },
-            ],
-          },
-          EXTRA_TYPES.DIVIDER,
-          EXTRA_TYPES.LOCKED_INDICATOR,
-        ],
-      },
-      referenceBlock: null,
-    },
-    functionType: {
-      name: "Function",
-      type: TYPES.FUNCTION,
-      instanceBlock: {
-        onCanvas: true,
-        color: "#62869e",
-        icon: FiLogOut,
-        extras: [
-          EXTRA_TYPES.LOCKED_INDICATOR,
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [
-              EXTRA_TYPES.SELECTION_TOGGLE,
-              EXTRA_TYPES.NAME_EDIT_TOGGLE,
-              EXTRA_TYPES.DELETE_BUTTON,
-              EXTRA_TYPES.LOCKED_INDICATOR,
-              EXTRA_TYPES.DEBUG_TOGGLE,
-              {
-                type: EXTRA_TYPES.ADD_ARGUMENT_GROUP,
-                allowed: ["hatType", "bootType"],
-              },
-              {
-                type: EXTRA_TYPES.ADD_ARGUMENT,
-                argumentType: "hatType",
-              },
-            ],
-          },
-          {
-            type: EXTRA_TYPES.ADD_ARGUMENT_GROUP,
-            allowed: ["hatType", "bootType"],
-          },
-        ],
-      },
-      callBlock: {
-        onCanvas: false,
-        color: "#62869e",
-        icon: FiLogOut,
-        extras: [
-          {
-            icon: FiMoreHorizontal,
-            type: EXTRA_TYPES.DROPDOWN,
-            contents: [EXTRA_TYPES.DEBUG_TOGGLE],
-          },
-        ],
-      },
-      properties: {
-        children: {
-          name: "Children",
-          accepts: ["functionType", "blockType", "operationType"],
-          default: [],
-          isList: true,
-          fullWidth: true,
-        },
-      },
-    },
-    // operationType: {
-    //   name: "Operation",
-    //   type: TYPES.OBJECT,
-    //   instanceBlock: {
-    //     onCanvas: true,
-    //     color: "#629e6c",
-    //     icon: FiClipboard,
-    //     connections: {
-    //       bottom: {
-    //         direction: CONNECTIONS.OUTBOUND,
-    //         allowed: ["operationType"],
-    //         limitOne: true,
-    //       },
-    //       top: {
-    //         direction: CONNECTIONS.INBOUND,
-    //         allowed: ["operationType", "programType"],
-    //         limitOne: false,
-    //       },
-    //     },
-    //     extras: [
-    //       EXTRA_TYPES.LOCKED_INDICATOR,
-    //       {
-    //         icon: FiMoreHorizontal,
-    //         type: EXTRA_TYPES.DROPDOWN,
-    //         contents: [
-    //           EXTRA_TYPES.DELETE_BUTTON,
-    //           EXTRA_TYPES.DEBUG_TOGGLE,
-    //           EXTRA_TYPES.SELECTION_TOGGLE,
-    //         ],
-    //       },
-    //     ],
-    //     hideNewPrefix: true,
-    //   },
-    //   properties: {
-    //     hat: {
-    //       name: "Hat",
-    //       accepts: ["hatType"],
-    //       default: null,
-    //       isList: false,
-    //     },
-    //     boot: {
-    //       name: "Boot",
-    //       accepts: ["bootType"],
-    //       default: null,
-    //       isList: false,
-    //     },
-    //     speed: {
-    //       name: "Speed",
-    //       type: SIMPLE_PROPERTY_TYPES.NUMBER,
-    //       default: 1,
-    //       min: 0,
-    //       max: 20,
-    //       step: 0.1,
-    //       units: "m/s",
-    //       visualScaling: 0.1,
-    //       visualPrecision: 1,
-    //     },
-    //     doFunky: {
-    //       name: "Do Funky",
-    //       type: SIMPLE_PROPERTY_TYPES.BOOLEAN,
-    //       default: false,
-    //     },
-    //     greeting: {
-    //       name: "Greeting",
-    //       type: SIMPLE_PROPERTY_TYPES.STRING,
-    //       default: "",
-    //     },
-    //     time: {
-    //       name: "Time",
-    //       type: SIMPLE_PROPERTY_TYPES.OPTIONS,
-    //       options: [
-    //         { value: "am", label: "AM" },
-    //         { value: "pm", label: "PM" },
-    //       ],
-    //       default: "am",
-    //     },
-    //   },
-    // },
-    // hatType: {
-    //   name: "Hat",
-    //   type: TYPES.OBJECT,
-    //   referenceBlock: {
-    //     onCanvas: false,
-    //     color: "#AD1FDE",
-    //     icon: FiGrid,
-    //     extras: [
-    //       EXTRA_TYPES.LOCKED_INDICATOR,
-    //       {
-    //         icon: FiMoreHorizontal,
-    //         type: EXTRA_TYPES.DROPDOWN,
-    //         contents: [
-    //           EXTRA_TYPES.DELETE_BUTTON,
-    //           EXTRA_TYPES.DEBUG_TOGGLE,
-    //           EXTRA_TYPES.NAME_EDIT_TOGGLE,
-    //           EXTRA_TYPES.SELECTION_TOGGLE,
-    //         ],
-    //       },
-    //     ],
-    //   },
-    //   instanceBlock: {
-    //     onCanvas: true,
-    //     color: "#AD1FDE",
-    //     icon: FiGrid,
-    //     extras: [
-    //       EXTRA_TYPES.LOCKED_INDICATOR,
-    //       {
-    //         icon: FiMoreHorizontal,
-    //         type: EXTRA_TYPES.DROPDOWN,
-    //         contents: [
-    //           EXTRA_TYPES.DELETE_BUTTON,
-    //           EXTRA_TYPES.DEBUG_TOGGLE,
-    //           EXTRA_TYPES.NAME_EDIT_TOGGLE,
-    //           EXTRA_TYPES.SELECTION_TOGGLE,
-    //         ],
-    //       },
-    //     ],
-    //   },
-    // },
-    // bootType: {
-    //   name: "Boot",
-    //   type: TYPES.OBJECT,
-    //   referenceBlock: {
-    //     onCanvas: false,
-    //     color: "#B3A533",
-    //     icon: FiGrid,
-    //     extras: [
-    //       EXTRA_TYPES.LOCKED_INDICATOR,
-    //       {
-    //         icon: FiMoreHorizontal,
-    //         type: EXTRA_TYPES.DROPDOWN,
-    //         contents: [
-    //           EXTRA_TYPES.DELETE_BUTTON,
-    //           EXTRA_TYPES.DEBUG_TOGGLE,
-    //           EXTRA_TYPES.SELECTION_TOGGLE,
-    //         ],
-    //       },
-    //     ],
-    //   },
-    //   instanceBlock: {
-    //     onCanvas: true,
-    //     color: "#B3A533",
-    //     icon: FiGrid,
-    //     extras: [
-    //       EXTRA_TYPES.LOCKED_INDICATOR,
-    //       {
-    //         icon: FiMoreHorizontal,
-    //         type: EXTRA_TYPES.DROPDOWN,
-    //         contents: [
-    //           EXTRA_TYPES.DELETE_BUTTON,
-    //           EXTRA_TYPES.DEBUG_TOGGLE,
-    //           EXTRA_TYPES.SELECTION_TOGGLE,
-    //         ],
-    //       },
-    //     ],
-    //   },
-    // },
 
     // Add all new behavior properties-----------------------------------------------------------------
     positionMatchBehaviorProperty: merge(positionMatchBehaviorData, behaviorPropertyTemplate),
@@ -871,7 +610,7 @@ export const programSpec = {
       instanceBlock: {
         onCanvas: true,
         color: "#7dd6ff",
-        icon: FiClipboard,
+        icon: ContainerIcon,
         connections: {
           bottom: {
             direction: CONNECTIONS.OUTBOUND,
@@ -889,6 +628,8 @@ export const programSpec = {
             icon: FiMoreHorizontal,
             type: EXTRA_TYPES.DROPDOWN,
             contents: [
+              EXTRA_TYPES.NAME_EDIT_TOGGLE,
+              EXTRA_TYPES.COLLAPSE_TOGGLE,
               {
                 type: EXTRA_TYPES.FUNCTION_BUTTON,
                 icon: IoArrowRedo,
@@ -948,7 +689,7 @@ export const programSpec = {
       instanceBlock: {
         onCanvas: true,
         color: "#eb4444",
-        icon: FiClipboard,
+        icon: ContainerIcon,
         connections: {
           bottom: {
             direction: CONNECTIONS.OUTBOUND,
@@ -974,7 +715,7 @@ export const programSpec = {
       instanceBlock: {
         onCanvas: true,
         color: "#7d746f",
-        icon: FiClipboard,
+        icon: ContainerIcon,
         connections: {
           top: {
             direction: CONNECTIONS.INBOUND,

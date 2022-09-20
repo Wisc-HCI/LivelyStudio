@@ -11,14 +11,14 @@ export const STATE_TYPES = ['stateType','powerOnType','powerOffType'];
 //Drawer items
 export const behaviorPropertyDrawerBase = [
     "collisionAvoidanceBehaviorProperty",
+    "smoothnessMacroBehaviorProperty",
     "jointLimitsBehaviorProperty",
     "velocityMinimizationBehaviorProperty",
     "originVelocityMinimizationBehaviorProperty",
     "accelerationMinimizationBehaviorProperty",
     "originAccelerationMinimizationBehaviorProperty",
     "jerkMinimizationBehaviorProperty",
-    "originJerkMinimizationBehaviorProperty",
-    "smoothnessMacroBehaviorProperty"
+    "originJerkMinimizationBehaviorProperty"
 ]
 
 export const behaviorPropertyDrawerBounding = [
