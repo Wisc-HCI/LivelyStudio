@@ -7,7 +7,7 @@ import {
   behaviorPropertyColorBounding,
 } from "../Constants";
 import { eulerFromQuaternion, quaternionFromEuler } from "./Geometry";
-import { clamp, max, toNumber } from "lodash";
+import { clamp, max, toNumber,range } from "lodash";
 import { Quaternion, Euler, Vector3 } from "three";
 
 const RAD_2_DEG = 180 / Math.PI;
@@ -443,6 +443,7 @@ export const bp2vis = (bp, joints) => {
       });
       break;
     case "OrientationBounding":
+      console.log("Orientationbounding" , conicalHullVertices(0.5, bp.properties.scalar));
       feedbackItems.push({
         group: "hulls",
         id: bp.id,
@@ -452,6 +453,8 @@ export const bp2vis = (bp, joints) => {
           vertices: conicalHullVertices(0.5, bp.properties.scalar),
           color: { ...hexToRgb(behaviorPropertyColorBounding), a: 0.5 },
           highlighted: bp.selected,
+         
+         
         },
       });
       break;
@@ -617,7 +620,7 @@ export function hexToRgb(hex) {
 }
 
 export const rs2bp = ({ current, worldTransform, localTransform, source, joints, links }) => {
-  console.log("current.type:" , behaviorPropertyLookup[current.type]);
+  
   let jointInfo = null;
   if (current.properties.joint) {
     joints.some((j) => {
@@ -684,15 +687,15 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
         ]
       }
       break;
-      case "OrientationBounding":
-        console.log("Orientationbounding" , current.properties);
-        current.properties.rotation = eulerFromQuaternion([
-          worldTransform.quaternion.w,
-          worldTransform.quaternion.x,
-          worldTransform.quaternion.y,
-          worldTransform.quaternion.z,
-        ]).map((v) => v * RAD_2_DEG);
-        break;
+      // case "OrientationBounding":
+       
+      //   current.properties.rotation = eulerFromQuaternion([
+      //     worldTransform.quaternion.w,
+      //     worldTransform.quaternion.x,
+      //     worldTransform.quaternion.y,
+      //     worldTransform.quaternion.z,
+      //   ]).map((v) => v * RAD_2_DEG);
+      //   break;
       
     default:
       break;
@@ -703,15 +706,19 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
 const conicalHullVertices = (length, angle) => {
   const origin = new Quaternion();
   const eulerA = new Euler(0, Math.PI / 2, 0);
+  
   const qA = origin
     .clone()
-    .rotateTowards(new Quaternion().setFromEuler(eulerA), angle);
+    .rotateTowards(new Quaternion().setFromEuler(eulerA), angle || 0.001);
   const qB = origin
     .clone()
-    .rotateTowards(new Quaternion().setFromEuler(eulerA), angle / 2);
+    .rotateTowards(new Quaternion().setFromEuler(eulerA), angle ? angle / 2 : 0.0005);
   const centralVec = new Vector3(0, 0, length);
   const vecA = centralVec.clone().applyQuaternion(qA);
   const vecB = centralVec.clone().applyQuaternion(qB);
+
+  
+
 
   return [
     { x: 0, y: 0, z: 0 },
@@ -729,10 +736,10 @@ const conicalHullVertices = (length, angle) => {
 const conicalHullVerticesVariable = (length, size) => {
   // const origin = new Quaternion();
   const eulers = [
-    new Euler(size.x, 0, 0),
-    new Euler(-size.x, 0, 0),
-    new Euler(0, size.y, 0),
-    new Euler(0, -size.y, 0),
+    new Euler(size.x || 0.001, 0, 0),
+    new Euler(-size.x || -0.001, 0, 0),
+    new Euler(0, size.y || 0.001, 0),
+    new Euler(0, -size.y || 0.001, 0),
   ];
   const qs = eulers.map((e) => new Quaternion().setFromEuler(e));
   const centralVec = new Vector3(0, 0, length);
