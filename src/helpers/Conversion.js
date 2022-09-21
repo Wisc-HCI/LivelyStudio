@@ -617,6 +617,7 @@ export function hexToRgb(hex) {
 }
 
 export const rs2bp = ({ current, worldTransform, localTransform, source, joints, links }) => {
+  console.log("current.type:" , behaviorPropertyLookup[current.type]);
   let jointInfo = null;
   if (current.properties.joint) {
     joints.some((j) => {
@@ -683,6 +684,16 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
         ]
       }
       break;
+      case "OrientationBounding":
+        console.log("Orientationbounding" , current.properties);
+        current.properties.rotation = eulerFromQuaternion([
+          worldTransform.quaternion.w,
+          worldTransform.quaternion.x,
+          worldTransform.quaternion.y,
+          worldTransform.quaternion.z,
+        ]).map((v) => v * RAD_2_DEG);
+        break;
+      
     default:
       break;
   }

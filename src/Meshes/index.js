@@ -350,6 +350,7 @@ const MeshLookupTable = {
     "package://nao_meshes/meshes/V40/LFinger21.dae" : NaoLFinger21,
     "package://nao_meshes/meshes/V40/LFinger13.dae" : NaoLFinger13,
     "package://nao_meshes/meshes/V40/LFinger11.dae" : NaoLFinger11,
+    "package://nao_meshes/meshes/V40/RFinger21.dae" : NaoRFinger21,
     "package://nao_meshes/meshes/V40/RFinger22.dae" : NaoRFinger22,
     "package://nao_meshes/meshes/V40/LFinger22.dae" : NaoLFinger22,
     "package://nao_meshes/meshes/V40/LFinger21.dae" : NaoLFinger21,
