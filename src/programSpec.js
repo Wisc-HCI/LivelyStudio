@@ -716,7 +716,7 @@ export const programSpec = {
             {label:'Low',value:0.5},
             {label:'Standard',value:1},
             {label:'High',value:5},
-            {label:'Critical',value:20}
+            {label:'Critical',value:50}
           ],
           default: 1
         },

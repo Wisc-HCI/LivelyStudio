@@ -7,7 +7,8 @@ import {
   behaviorPropertyColorBounding,
 } from "../Constants";
 import { eulerFromQuaternion, quaternionFromEuler } from "./Geometry";
-import { clamp, toNumber } from "lodash";
+import { clamp, max, toNumber } from "lodash";
+import { Quaternion, Euler, Vector3 } from "three";
 
 const RAD_2_DEG = 180 / Math.PI;
 const DEG_2_RAD = Math.PI / 180;
@@ -84,7 +85,7 @@ export const bp2lik = (bp) => {
       // console.log(bp.properties)
       if (bp.properties[property] !== undefined) {
         if (property === "frequency") {
-          objective[property] = toNumber(bp.properties[property]);
+          objective[property] = max([0.5,toNumber(bp.properties[property])]);
         } else {
           objective[property] = bp.properties[property];
         }
@@ -123,6 +124,7 @@ export const bp2vis = (bp, joints) => {
           color: { ...hexToRgb(behaviorPropertyColorMatching), a: 0.5 },
           scale: { x: 0.1, y: 0.1, z: 0.1 },
           transformMode: bp.selected ? "translate" : undefined,
+          highlighted: bp.selected,
           shape: "sphere",
         },
       });
@@ -151,6 +153,7 @@ export const bp2vis = (bp, joints) => {
           color: { ...hexToRgb(behaviorPropertyColorMatching), a: 0.5 },
           scale: { x: 0.1, y: 0.1, z: 0.1 },
           transformMode: bp.selected ? "rotate" : undefined,
+          highlighted: bp.selected,
           shape: "arrow",
         },
       });
@@ -200,6 +203,7 @@ export const bp2vis = (bp, joints) => {
             z: bp.properties.size[2],
           },
           transformMode: bp.selected ? "scale" : undefined,
+          highlighted: bp.selected,
           shape: "sphere",
         },
       });
@@ -217,6 +221,7 @@ export const bp2vis = (bp, joints) => {
             z: bp.properties.size[2],
           }),
           color: { ...hexToRgb(behaviorPropertyColorLiveliness), a: 0.5 },
+          highlighted: bp.selected,
         },
       });
       break;
@@ -246,7 +251,7 @@ export const bp2vis = (bp, joints) => {
         id: bp.id + "-link1",
         data: {
           name: bp.name,
-          frame: bp.properties.link2,
+          frame: bp.properties.link2+'-translation',
           position: {
             x: 0,
             y: 0,
@@ -261,6 +266,7 @@ export const bp2vis = (bp, joints) => {
           color: { ...hexToRgb(behaviorPropertyColorMirroring), a: 0.3 },
           scale: { x: 0.1, y: 0.1, z: 0.1 },
           shape: "sphere",
+          highlighted: bp.selected,
         },
       });
       feedbackItems.push({
@@ -268,7 +274,7 @@ export const bp2vis = (bp, joints) => {
         id: bp.id,
         data: {
           name: bp.name,
-          frame: bp.properties.link2,
+          frame: bp.properties.link2+'-translation',
           position: {
             x: bp.properties.translation[0],
             y: bp.properties.translation[1],
@@ -283,6 +289,7 @@ export const bp2vis = (bp, joints) => {
           color: { ...hexToRgb(behaviorPropertyColorMirroring), a: 0.5 },
           scale: { x: 0.1, y: 0.1, z: 0.1 },
           transformMode: bp.selected ? "translate" : undefined,
+          highlighted: bp.selected,
           shape: "sphere",
         },
       });
@@ -310,6 +317,7 @@ export const bp2vis = (bp, joints) => {
           },
           color: { ...hexToRgb(behaviorPropertyColorMirroring), a: 0.3 },
           scale: { x: 0.1, y: 0.1, z: 0.1 },
+          highlighted: bp.selected,
           shape: "arrow",
         },
       });
@@ -368,6 +376,7 @@ export const bp2vis = (bp, joints) => {
           },
           color: { ...hexToRgb(behaviorPropertyColorMirroring), a: 0.3 },
           scale: { x: 0.1, y: 0.1, z: 0.1 },
+          highlighted: bp.selected,
           shape: "sphere",
         },
       });
@@ -390,6 +399,7 @@ export const bp2vis = (bp, joints) => {
           },
           color: { ...hexToRgb(behaviorPropertyColorMirroring), a: 0.5 },
           scale: { x: 0.1, y: 0.1, z: 0.1 },
+          highlighted: bp.selected,
           shape: "sphere",
         },
       });
@@ -427,6 +437,7 @@ export const bp2vis = (bp, joints) => {
           color: { ...hexToRgb(behaviorPropertyColorBounding), a: 0.5 },
           scale: { x: bp.properties.size[0], y: bp.properties.size[1], z: bp.properties.size[2] },
           transformMode: bp.selected ? bp.properties.editMode : undefined,
+          highlighted: bp.selected,
           shape: "sphere",
         },
       });
@@ -440,6 +451,7 @@ export const bp2vis = (bp, joints) => {
           frame: bp.properties.link,
           vertices: conicalHullVertices(0.5, bp.properties.scalar),
           color: { ...hexToRgb(behaviorPropertyColorBounding), a: 0.5 },
+          highlighted: bp.selected,
         },
       });
       break;
@@ -483,6 +495,7 @@ export const bp2vis = (bp, joints) => {
           },
           color: { ...hexToRgb(behaviorPropertyColorLiveliness), a: 0.5 },
           scale: { x: 0.1, y: 0.1, z: 0.1 },
+          highlighted: bp.selected,
           shape: "sphere",
         },
       });
@@ -505,6 +518,7 @@ export const bp2vis = (bp, joints) => {
           },
           color: { ...hexToRgb(behaviorPropertyColorLiveliness), a: 0.5 },
           scale: { x: bp.properties.scalar, y: bp.properties.scalar, z: bp.properties.scalar },
+          highlighted: bp.selected,
           shape: "sphere",
         },
       });
@@ -529,6 +543,7 @@ export const bp2vis = (bp, joints) => {
           },
           color: { ...hexToRgb(behaviorPropertyColorMatching), a: 0.7 },
           scale: { x: 0.1, y: 0.1, z: 0.1 },
+          highlighted: bp.selected,
           shape: "sphere",
         },
       });
@@ -551,6 +566,7 @@ export const bp2vis = (bp, joints) => {
           },
           color: { ...hexToRgb(behaviorPropertyColorMatching), a: 0.3 },
           scale: { x: bp.properties.scalar, y: bp.properties.scalar, z: bp.properties.scalar },
+          highlighted: bp.selected,
           shape: "sphere",
         },
       });
@@ -573,6 +589,7 @@ export const bp2vis = (bp, joints) => {
           },
           color: { ...hexToRgb(behaviorPropertyColorMatching), a: 0.7 },
           scale: { x: 0.1, y: 0.1, z: 0.1 },
+          highlighted: bp.selected,
           shape: "sphere",
         },
       });
@@ -699,7 +716,7 @@ const conicalHullVertices = (length, angle) => {
 };
 
 const conicalHullVerticesVariable = (length, size) => {
-  const origin = new Quaternion();
+  // const origin = new Quaternion();
   const eulers = [
     new Euler(size.x, 0, 0),
     new Euler(-size.x, 0, 0),
@@ -732,7 +749,7 @@ const scalarInputItems = (id, frame, selected, range, value, offset, color) => {
         color: { r: 100, g: 100, b: 100, a: 0.3 },
         scale: { x: 1, y: 1, z: 1 },
         shapeParams: { height: 0.25, radius: 0.05 },
-        highlighted: false,
+        highlighted: selected,
       },
     },
     {
@@ -782,7 +799,7 @@ const rangeInputItems = (
         color: { r: 100, g: 100, b: 100, a: 0.3 },
         scale: { x: 1, y: 1, z: 1 },
         shapeParams: { height: 0.25, radius: 0.05 },
-        highlighted: false,
+        highlighted: selected,
       },
     },
     {
