@@ -663,6 +663,8 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       ]).map((v) => v * RAD_2_DEG);
       break;
     case "JointMatch":
+      // TODO: FIX
+      console.log()
       current.properties.scalar = clamp((4 * localTransform.position.z + 0.5) * (range[1]-range[0]) + range[0],range[0],range[1]);
       break;
     case "PositionBounding":
@@ -687,16 +689,36 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
         ]
       }
       break;
-      // case "OrientationBounding":
-       
-      //   current.properties.rotation = eulerFromQuaternion([
-      //     worldTransform.quaternion.w,
-      //     worldTransform.quaternion.x,
-      //     worldTransform.quaternion.y,
-      //     worldTransform.quaternion.z,
-      //   ]).map((v) => v * RAD_2_DEG);
-      //   break;
+    case "OrientationBounding":
       
+      current.properties.rotation = eulerFromQuaternion([
+        worldTransform.quaternion.w,
+        worldTransform.quaternion.x,
+        worldTransform.quaternion.y,
+        worldTransform.quaternion.z,
+      ]).map((v) => v * RAD_2_DEG);
+      break;
+    case "JointBounding":
+      // rangeInputItems
+      break;
+    case "PositionLiveliness":
+      // Looks like PositionBounding but only scale
+      break;
+    // case "OrientationLiveliness":
+    //   // Not Doing
+    //   break;
+    case "JointLiveliness":
+      // Pill (scalarInputValue)
+      break;
+    case "PositionMirroring":
+      // Translate controls, should look like positionMatch
+      break;
+    case "OrientationMirroring":
+      // Rotate controls, should look like orientationMatch
+      break;
+    case "JointMirroring":
+      // Pill control thing, should convert z value to the scalar
+      break;
     default:
       break;
   }
