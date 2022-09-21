@@ -25,6 +25,7 @@ import _, {
   cloneDeep,
   fromPairs,
   findKey,
+  set,
 } from "lodash";
 import { bp2lik, bp2vis, rs2bp } from "./helpers/Conversion";
 import { indexOf } from "./helpers/Comparison";
@@ -148,10 +149,13 @@ const store = (set, get) => ({
       state.tfs = tfs;
       state.proximityLines = proximityLines;
     }),
-  setBlockSelection: (id, value) =>
+  setBlockSelection: (id,id2) =>
     set((state) => {
-      if (state.programData[id]) {
-        state.programData[id].selected = value;
+     
+      if (state.programData[id] && state.programData[id2]) {
+        state.programData[id].selected = true;
+        state.programData[id2].selected = false;
+       
       }
     }),
   setDefault: () =>
@@ -479,11 +483,40 @@ useStore.subscribe(
     d=>d.selected
   ),
   (newSelected,pastSelected) => {
-    console.log("newSelected: " , newSelected);
-    console.log("pastSelected: " , pastSelected);
+    
 
     if (!(_.isEqual(newSelected,pastSelected))){
-      console.log("not the same");
+    
+      if (Object.keys(newSelected).length === Object.keys(pastSelected).length){
+       
+        let setFalseID = "";
+        let setTrueID = "";
+        for (const [key, selected] of Object.entries(newSelected)) {
+         
+          if (!pastSelected[key] && selected === true){
+            
+            setTrueID = key;
+            
+          }
+          if (pastSelected[key] === true && selected === true){
+            
+           setFalseID = key;
+            
+          }
+
+         
+
+        }
+      
+
+        if (setFalseID !== "" && setTrueID!== ""){
+          setBlockSelection(setTrueID,setFalseID);
+        }
+
+      }
+
+      
+      
     }
 
 
