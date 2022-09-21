@@ -15,7 +15,7 @@ import {
   behaviorPropertyLookup,
   STATE_TYPES,
 } from "./Constants";
-import {
+import _, {
   mapValues,
   pickBy,
   pick,
@@ -402,6 +402,12 @@ useStore.subscribe(
     d=>d.selected
   ),
   (newSelected,pastSelected) => {
+    console.log("newSelected: " , newSelected);
+    console.log("pastSelected: " , pastSelected);
+
+    if (!(_.isEqual(newSelected,pastSelected))){
+      console.log("not the same");
+    }
     // If one is selected in past and current, and another was not selected in past and is now selected,
     // then set the one selected both times to false, and keep the one that is now selected.
 
