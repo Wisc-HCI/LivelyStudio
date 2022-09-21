@@ -28,7 +28,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
     "react-reflex": "^4.0.9",
-    "robot-scene": "github:Wisc-HCI/robot-scene#v0.9.6",
+    "robot-scene": "github:Wisc-HCI/robot-scene#v0.9.7",
     "simple-vp": "github:Wisc-HCI/simple-vp#v0.7.3",
     "styled-components": "^5.3.5",
     "three": "^0.142.0",
