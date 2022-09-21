@@ -731,8 +731,8 @@ const conicalHullVerticesVariable = (length, size) => {
   const eulers = [
     new Euler(size.x, 0, 0),
     new Euler(-size.x, 0, 0),
-    new Euler(0, size.x, 0),
-    new Euler(0, -size.x, 0),
+    new Euler(0, size.y, 0),
+    new Euler(0, -size.y, 0),
   ];
   const qs = eulers.map((e) => new Quaternion().setFromEuler(e));
   const centralVec = new Vector3(0, 0, length);
@@ -741,7 +741,7 @@ const conicalHullVerticesVariable = (length, size) => {
   const vertices = [
     { x: 0, y: 0, z: 0 },
     { x: centralVec.x, y: centralVec.y, z: centralVec.z },
-    vecs.map((v) => ({ x: v.x, y: v.y, z: v.z })),
+    ...vecs.map((v) => ({ x: v.x, y: v.y, z: v.z })),
   ];
   console.log('vertices',vertices);
   return vertices
