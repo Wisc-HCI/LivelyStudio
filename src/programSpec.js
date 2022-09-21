@@ -57,7 +57,11 @@ const behaviorPropertyTemplate = {
     ],
   },
   properties: {
-
+    // prioritize: {
+    //   name: "Prioritize",
+    //   type: SIMPLE_PROPERTY_TYPES.BOOLEAN,
+    //   default: false,
+    // }
   }
 }
 
@@ -527,7 +531,7 @@ export const programSpec = {
     {
       title: "Structures",
       dataType: DATA_TYPES.INSTANCE,
-      objectTypes: ["stateType", "powerOnType", "powerOffType"],
+      objectTypes: ["stateType", 'groupType', "powerOnType", "powerOffType"],
       icon: ContainerIcon,
     },
     {
@@ -645,6 +649,77 @@ export const programSpec = {
         hideNewPrefix: true,
       },
       properties: {
+        children: {
+          name: "Children",
+          accepts: [
+            "groupType",
+            "positionMatchBehaviorProperty",
+            "orientationMatchBehaviorProperty",
+            "positionLivelinessBehaviorProperty",
+            "orientationLivelinessBehaviorProperty",
+            "positionMirroringBehaviorProperty",
+            "orientationMirroringBehaviorProperty",
+            "positionBoundingBehaviorProperty",
+            "orientationBoundingBehaviorProperty",
+            "jointMatchBehaviorProperty",
+            "jointLivelinessBehaviorProperty",
+            "jointMirroringBehaviorProperty",
+            "jointLimitsBehaviorProperty",
+            "jointBoundingBehaviorProperty",
+            "collisionAvoidanceBehaviorProperty",
+            "velocityMinimizationBehaviorProperty",
+            "accelerationMinimizationBehaviorProperty",
+            "jerkMinimizationBehaviorProperty",
+            "originVelocityMinimizationBehaviorProperty",
+            "originAccelerationMinimizationBehaviorProperty",
+            "originJerkMinimizationBehaviorProperty",
+            "relativeMotionLivelinessBehaviorProperty",
+            "originPositionLivelinessBehaviorProperty",
+            "originOrientationLivelinessBehaviorProperty",
+            "originPositionMatchBehaviorProperty",
+            "originOrientationMatchBehaviorProperty",
+            "gravityBehaviorProperty",
+            "smoothnessMacroBehaviorProperty",
+            "distanceMatchBehaviorProperty"
+          ],
+          default: [],
+          isList: true,
+          fullWidth: true,
+        },
+      },
+    },
+    groupType: {
+      name: "Group",
+      type: TYPES.OBJECT,
+      instanceBlock: {
+        onCanvas: false,
+        color: "#444444",
+        icon: ContainerIcon,
+        extras: [
+          {
+            icon: FiMoreHorizontal,
+            type: EXTRA_TYPES.DROPDOWN,
+            contents: [
+              EXTRA_TYPES.NAME_EDIT_TOGGLE,
+              EXTRA_TYPES.COLLAPSE_TOGGLE,
+              EXTRA_TYPES.DELETE_BUTTON
+            ],
+          },
+        ],
+        hideNewPrefix: true,
+      },
+      properties: {
+        priority: {
+          name: "Priority",
+          type: SIMPLE_PROPERTY_TYPES.OPTIONS,
+          options:[
+            {label:'Low',value:0.5},
+            {label:'Standard',value:1},
+            {label:'High',value:5},
+            {label:'Critical',value:20}
+          ],
+          default: 1
+        },
         children: {
           name: "Children",
           accepts: ["positionMatchBehaviorProperty",

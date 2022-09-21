@@ -80,22 +80,30 @@ const store = (set, get) => ({
       let transitionTime = Infinity;
       let transitionNode = null;
       Object.values(state.programData)
-        .filter(d=>d.dataType===DATA_TYPES.CONNECTION && d.parent.id === toNode && d.mode === SIMPLE_PROPERTY_TYPES.NUMBER)
-        .forEach(d=>{
+        .filter(
+          (d) =>
+            d.dataType === DATA_TYPES.CONNECTION &&
+            d.parent.id === toNode &&
+            d.mode === SIMPLE_PROPERTY_TYPES.NUMBER
+        )
+        .forEach((d) => {
           if (Number(d.name) < transitionTime) {
             transitionTime = Number(d.name);
             transitionNode = d.child.id;
           }
-        })
+        });
       if (transitionNode) {
         const transitionFn = get().initiateTransition;
-        state.pendingTransition = setTimeout(()=>transitionFn(toNode,transitionNode),transitionTime*1000)
+        state.pendingTransition = setTimeout(
+          () => transitionFn(toNode, transitionNode),
+          transitionTime * 1000
+        );
       }
     }),
-  teleport: (data,other) => {
+  teleport: (data, other) => {
     const currentState = get().currentState;
-    console.log(other)
-    get().initiateTransition(currentState,data.id);
+    console.log(other);
+    get().initiateTransition(currentState, data.id);
   },
   isValid: false,
   urdf: DEFAULTS.urdf,
@@ -135,16 +143,17 @@ const store = (set, get) => ({
   setTfs: (robotstate) =>
     set((state) => {
       const tfs = state2tfs(robotstate);
-      const proximityLines = state2Lines(robotstate);
+      const proximityLines = state.showCollision ? state2Lines(robotstate) : {};
       // console.log("setting tfs")
       state.tfs = tfs;
       state.proximityLines = proximityLines;
     }),
-  setBlockSelection: (id, value) => set(state=>{
-    if (state.programData[id]) {
-      state.programData[id].selected = value
-    }
-  }),
+  setBlockSelection: (id, value) =>
+    set((state) => {
+      if (state.programData[id]) {
+        state.programData[id].selected = value;
+      }
+    }),
   setDefault: () =>
     set({
       loaded: true,
@@ -171,11 +180,29 @@ const store = (set, get) => ({
     set((state) => {
       console.log("updating programSpec");
       const objectTypes = programSpec.objectTypes;
-      const jointOptions = joints.map((j) => ({
-        label: j.name,
-        value: j.name,
-      }));
-      const linkOptions = links.map((l) => ({ label: l.name, value: l.name }));
+      let jointOptions = joints
+        .filter((j) => j.jointType !== "fixed" && !j.mimic)
+        .map((j) => ({
+          label: j.name,
+          value: j.name,
+        }))
+        .sort((a, b) => {
+          if (a.label.toLowerCase() < b.label.toLowerCase()) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
+      let linkOptions = links
+        .map((l) => ({ label: l.name, value: l.name }))
+        .sort((a, b) => {
+          if (a.label.toLowerCase() < b.label.toLowerCase()) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
+      // linkOptions.sort((a,b)=>{if (a.name.toLowerCase() < b.name.toLowerCase()) {return -1} else {return 1}});
       // console.log(objectTypes)
       state.programSpec.objectTypes = mapValues(
         objectTypes,
@@ -207,13 +234,19 @@ const store = (set, get) => ({
     set((state) => {
       let bpId = id;
       let shapeFlag = null;
-      ['-top','-bottom'].forEach(flag=>{
+      ["-top", "-bottom"].forEach((flag) => {
         if (id.includes(flag)) {
-          id = id.replace(flag,'');
-          shapeFlag = flag.replace('-','')
+          id = id.replace(flag, "");
+          shapeFlag = flag.replace("-", "");
         }
-      })
-      const newBp = rs2bp({current:state.programData[bpId],worldTransform,localTransform,source,flag:shapeFlag});
+      });
+      const newBp = rs2bp({
+        current: state.programData[bpId],
+        worldTransform,
+        localTransform,
+        source,
+        flag: shapeFlag,
+      });
       if (newBp) {
         state.programData[bpId] = newBp;
       }
@@ -235,10 +268,19 @@ const unlisten = await listen("solution-calculated", (event) => {
 
 // Update feedback/input meshes when goals/state change
 useStore.subscribe(
-  (state) =>
-  state.programData[state.currentState]?.properties?.children?.map(
-    (child) => state.programData[child]
-  ) || [],
+  (state) => {
+    let bps = [];
+    state.programData[state.currentState]?.properties?.children?.forEach(child=>{
+      if (state.programData[child].type === 'groupType') {
+        state.programData[child]?.properties?.children?.forEach(childChild=>{
+          bps.push(state.programData[childChild])
+        })
+      } else {
+        bps.push(state.programData[child])
+      }
+    });
+    return bps
+  },
   (activeBehaviorProperties) => {
     const joints = useStore.getState().joints;
     // Create feedback meshes
@@ -246,16 +288,16 @@ useStore.subscribe(
     let lines = {};
     let hulls = {};
     activeBehaviorProperties.forEach((bp) => {
-      const goalFeedbackItems = bp2vis(bp,joints);
-      goalFeedbackItems.forEach(({group,id,data})=>{
-        if (group === 'items') {
+      const goalFeedbackItems = bp2vis(bp, joints);
+      goalFeedbackItems.forEach(({ group, id, data }) => {
+        if (group === "items") {
           feedbackMeshes[id] = data;
-        } else if (group === 'lines') {
+        } else if (group === "lines") {
           lines[id] = data;
-        } else if (group === 'hulls') {
+        } else if (group === "hulls") {
           hulls[id] = data;
         }
-      })
+      });
     });
     console.log("feedbackMeshes", feedbackMeshes);
     useStore.setState({ feedbackMeshes, lines, hulls });
@@ -298,13 +340,26 @@ useStore.subscribe(
     const stateGoals = mapValues(states, (state) => {
       let currentStateGoals = {};
       state.properties?.children?.forEach((key) => {
-        const childData = bp2lik(programData[key]);
-        if (!childData.goal) return;
-        let matchedObjKey = findKey(objectives, (objective) =>
-          isEqual(objective, childData.objective)
-        );
-        if (matchedObjKey) {
-          currentStateGoals[matchedObjKey] = childData.goal;
+        if (programData[key]?.type === "groupType") {
+          programData[key].properties.children.forEach((groupChildKey) => {
+            const childData = bp2lik(programData[groupChildKey]);
+            if (!childData.goal) return;
+            let matchedObjKey = findKey(objectives, (objective) =>
+              isEqual(objective, childData.objective)
+            );
+            if (matchedObjKey) {
+              currentStateGoals[matchedObjKey] = childData.goal;
+            }
+          });
+        } else {
+          const childData = bp2lik(programData[key]);
+          if (!childData.goal) return;
+          let matchedObjKey = findKey(objectives, (objective) =>
+            isEqual(objective, childData.objective)
+          );
+          if (matchedObjKey) {
+            currentStateGoals[matchedObjKey] = childData.goal;
+          }
         }
       });
       return currentStateGoals;
@@ -314,15 +369,33 @@ useStore.subscribe(
     const stateWeights = mapValues(states, (state) => {
       let currentStateWeights = {};
       state.properties?.children?.forEach((key, idx) => {
-        const childData = bp2lik(programData[key]);
-        let matchedObjKey = findKey(objectives, (objective) =>
-          isEqual(objective, childData.objective)
-        );
-        if (matchedObjKey) {
-          currentStateWeights[matchedObjKey] =
-            50 / Math.pow(Math.E, idx / state.properties.children.length);
+        if (programData[key]?.type === "groupType") {
+          programData[key].properties.children.forEach((groupChildKey) => {
+            const childData = bp2lik(programData[groupChildKey]);
+            let matchedObjKey = findKey(objectives, (objective) =>
+              isEqual(objective, childData.objective)
+            );
+            if (matchedObjKey) {
+              currentStateWeights[matchedObjKey] =
+                programData[key].properties.priority * 50 / Math.pow(Math.E, idx / state.properties.children.length);
+            } else {
+              return 0;
+            }
+          });
         } else {
-          return 0;
+          const childData = bp2lik(programData[key]);
+          let matchedObjKey = findKey(objectives, (objective) =>
+            isEqual(objective, childData.objective)
+          );
+          if (matchedObjKey) {
+            currentStateWeights[matchedObjKey] =
+              50 / Math.pow(Math.E, idx / state.properties.children.length);
+            if (programData[key].properties.prioritize) {
+              currentStateWeights[matchedObjKey] *= 10;
+            }
+          } else {
+            return 0;
+          }
         }
       });
       return currentStateWeights;
@@ -342,9 +415,12 @@ useStore.subscribe(
 
 // Handle updating the urdf
 useStore.subscribe(
-  (state) => ({urdf:state.urdf,rootBounds:state.rootBounds}),
-  async ({urdf,rootBounds}) => {
-    const result = await invoke("update_urdf", { urdf, rootBounds: rootBounds.map((b) => [b.value, b.delta])});
+  (state) => ({ urdf: state.urdf, rootBounds: state.rootBounds }),
+  async ({ urdf, rootBounds }) => {
+    const result = await invoke("update_urdf", {
+      urdf,
+      rootBounds: rootBounds.map((b) => [b.value, b.delta]),
+    });
     // console.log(rootBounds.map(b=>(b.value,b.delta)))
     // await invoke("update_root_bounds", {
     //   rootBounds: rootBounds.map((b) => [b.value, b.delta]),
@@ -397,15 +473,15 @@ useStore.subscribe(
 
 // Limit only one behavior property being selected
 useStore.subscribe(
-  (state) => mapValues(
-    pickBy(state.programData,(d)=>allBehaviorProperties.includes(d.type)),
-    d=>d.selected
-  ),
-  (newSelected,pastSelected) => {
+  (state) =>
+    mapValues(
+      pickBy(state.programData, (d) => allBehaviorProperties.includes(d.type)),
+      (d) => d.selected
+    ),
+  (newSelected, pastSelected) => {
     // If one is selected in past and current, and another was not selected in past and is now selected,
     // then set the one selected both times to false, and keep the one that is now selected.
-
-    // 
+    //
     // setBlockSelection(pastId,false)
   },
   { equalityFn: shallow }
@@ -453,8 +529,8 @@ useStore.subscribe(
     // console.log('new goals/weights')
     if (newValues.goals && newValues.weights) {
       useStore.setState({
-        goals: newValues.goals,                       //will say nextGoals  CHANGED
-        weights: newValues.weights,                   //will say nextWeights  CHANGED
+        goals: newValues.goals, //will say nextGoals  CHANGED
+        weights: newValues.weights, //will say nextWeights  CHANGED
         // goals:newValues.goals, weights:newValues.weights // We will remove this when the function below is finished
       });
     }
@@ -496,7 +572,7 @@ useStore.subscribe(
 //               tempNewGoalValue = Object.values(newValues.goals[j])[0]
 //               //Interpolate
 //               tempInterp = tempOldGoalValue.add(tempNewGoalValue.sub(tempOldGoalValue) * stepSize)
-              
+
 //             }
 //             else if (Object.keys(newValues.goals[i])[0] == "Rotation"){
 //               //Rotation- 3 vector (convert to quaternion and use rotateTowards)
@@ -521,7 +597,7 @@ useStore.subscribe(
 //               tempOldGoalValue = Object.values(newValues.goals[i])[0]
 //               tempNewGoalValue = Object.values(newValues.goals[j])[0]
 //               //Interpolate
-//               //tempInterp = 
+//               //tempInterp =
 
 //             }
 //             else if (Object.keys(newValues.goals[i])[0] == "ScalarRange"){
@@ -545,7 +621,7 @@ useStore.subscribe(
 //           //Add nextGoal values and weights to interpolation values
 //         }
 //       }
-      
+
 //       // Do interpolation here
 //       // useStore.setState({ goals: interpolatedGoals, weights: interpolatedWeights });
 //        useStore.setState({ goals: newValues.nextGoals, weights: newValues.nextWeights });
@@ -561,12 +637,12 @@ useStore.subscribe(
     goals: state.goals,
     weights: state.weights,
     objectives: state.objectives,
-    isSource: state.programData?.[state.currentState]?.type === 'powerOnType'
+    isSource: state.programData?.[state.currentState]?.type === "powerOnType",
   }),
   (newValues, pastValues) => {
     console.log("new values to invoke");
     if (newValues.isSource) {
-      invoke("reset")
+      invoke("reset");
     } else if (
       newValues.goals &&
       newValues.weights &&
