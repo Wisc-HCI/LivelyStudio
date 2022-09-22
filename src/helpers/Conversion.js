@@ -726,8 +726,32 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       break;
     case "JointBounding":
       // rangeInputItems
-      // Find the min/max values. Use those to determine the scalar and the delta
-      // const minVal = flag === 'top' ? min([])
+      // Calculate the raw input value in the scale of the scalar and delta
+      const newVal = clamp((10 * localTransform.position.z + 0.5) * (jointInfo.upperBound-jointInfo.lowerBound) + jointInfo.lowerBound,jointInfo.lowerBound,jointInfo.upperBound);
+      
+      // Determine the current values
+      const currentMinVal = current.properties.scalar-current.properties.delta;
+      const currentMaxVal = current.properties.scalar+current.properties.delta;
+
+      const newScalar = 0;
+      const newDelta = 0;
+      
+      // Handle possible cases depending on whether the sphere is the top or bottom, and whether they dragged it below/above the other sphere.
+      if (flag === 'top' && newVal > currentMinVal) {
+        newScalar = (newVal + currentMinVal)/2;
+        newDelta =  newVal - newScalar;
+      } else if (flag === 'top' && newVal <= currentMinVal) {
+        newScalar = (newVal + currentMinVal)/2;
+        newDelta = currentMinVal - newScalar;
+      } else if (flag === 'bottom' && newVal < currentMaxVal) {
+        newScalar = (newVal + currentMaxVal)/2;
+        newDelta = currentMaxVal - newScalar;
+      } else if (flag === 'bottom' && newVal >= currentMaxVal) {
+        newScalar = (newVal + currentMaxVal)/2;
+        newDelta = newVal - newScalar;
+      }
+      current.properties.scalar = newScalar;
+      current.properties.delta = newDelta;
       break;
     case "PositionLiveliness":
       current.properties.size = [
