@@ -107,6 +107,8 @@ const DEFAULT_SCALAR = {
   name: "Value",
   type: SIMPLE_PROPERTY_TYPES.NUMBER,
   default: 0.0,
+  min: Number.NEGATIVE_INFINITY,
+  max: Number.POSITIVE_INFINITY,
   step: 0.01
 }
 
