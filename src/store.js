@@ -73,8 +73,14 @@ const store = (set, get) => ({
         clearTimeout(state.pendingTransition);
       }
       console.log(`initiating transition ${fromNode} -> ${toNode}`);
+      for (const [key,value] of Object.entries(state.programData)){
+        if (allBehaviorProperties.includes(value.type) && value.selected){
+          state.programData[key].selected = false;
+        }
+      }
       state.programData[fromNode].selected = false;
       state.programData[toNode].selected = true;
+
       state.currentState = toNode;
 
       // Schedule a transition if a timed transition exists
