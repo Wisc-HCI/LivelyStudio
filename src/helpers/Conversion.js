@@ -547,7 +547,7 @@ export const bp2vis = (bp, joints) => {
             z: 0,
           },
           color: { ...hexToRgb(behaviorPropertyColorLiveliness), a: 0.5 },
-          scale: { x: bp.properties.scalar, y: bp.properties.scalar, z: bp.properties.scalar },
+          scale: { x: 0.01+ bp.properties.scalar, y: 0.01 + bp.properties.scalar, z: 0.01 + bp.properties.scalar },
           highlighted: bp.selected,
           shape: "sphere",
         },
