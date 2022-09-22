@@ -174,7 +174,7 @@ export const bp2vis = (bp, joints) => {
         bp.selected,
         [jointInfo.lowerBound, jointInfo.upperBound],
         bp.properties.scalar,
-        0.1,
+        0.2,
         hexToRgb(behaviorPropertyColorMatching)
       ).forEach((item) => feedbackItems.push(item));
       break;
@@ -405,11 +405,11 @@ export const bp2vis = (bp, joints) => {
       });
       scalarInputItems(
         bp.id,
-        jointInfos[1].childLink,
+        jointInfos[1].childLink+'-translation',
         bp.selected,
         [0, jointInfo.upperBound-jointInfo.lowerBound],
         bp.properties.scalar,
-        0.05,
+        0.2,
         hexToRgb(behaviorPropertyColorMirroring)
       ).forEach((item) => feedbackItems.push(item));
       break;
@@ -470,11 +470,11 @@ export const bp2vis = (bp, joints) => {
       });
       rangeInputItems(
         bp.id,
-        jointInfo.childLink,
+        jointInfo.childLink+'-translation',
         bp.selected,
         [jointInfo.lowerBound, jointInfo.upperBound],
         [bp.properties.scalar-bp.properties.delta,bp.properties.scalar+bp.properties.delta],
-        0.05,
+        0.2,
         hexToRgb(behaviorPropertyColorBounding)
       ).forEach((item) => feedbackItems.push(item));
       break;
@@ -624,7 +624,7 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
   let jointInfo = null;
   if (current.properties.joint) {
     joints.some((j) => {
-      if (j.name === bp.properties.joint) {
+      if (j.name === current.properties.joint) {
         jointInfo = j;
         return true;
       } else {
@@ -664,8 +664,7 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       break;
     case "JointMatch":
       // TODO: FIX
-      console.log()
-      current.properties.scalar = clamp((4 * localTransform.position.z + 0.5) * (range[1]-range[0]) + range[0],range[0],range[1]);
+      current.properties.scalar = clamp((10 * localTransform.position.z + 0.5) * (jointInfo.upperBound-jointInfo.lowerBound) + jointInfo.lowerBound,jointInfo.lowerBound,jointInfo.upperBound);
       break;
     case "PositionBounding":
       if (current.properties.editMode === 'translate') {
@@ -776,8 +775,8 @@ const conicalHullVerticesVariable = (length, size) => {
   return vertices
 };
 
-const scalarInputItems = (id, frame, selected, range, value, offset, color) => {
-  const z = ((value - range[0]) / (range[1] - range[0])) * 0.25 - 0.25 / 2;
+const scalarInputItems = (id, frame, selected, rangevals, value, offset, color) => {
+  const z = ((value - rangevals[0]) / (rangevals[1] - rangevals[0])) * 0.1 - 0.05;
   return [
     {
       group: "items",
@@ -790,7 +789,7 @@ const scalarInputItems = (id, frame, selected, range, value, offset, color) => {
         rotation: { w: 1, x: 0, y: 0, z: 0 },
         color: { r: 100, g: 100, b: 100, a: 0.3 },
         scale: { x: 1, y: 1, z: 1 },
-        shapeParams: { height: 0.25, radius: 0.05 },
+        shapeParams: { height: 0.1, radius: 0.02 },
         highlighted: selected,
       },
     },
@@ -804,7 +803,7 @@ const scalarInputItems = (id, frame, selected, range, value, offset, color) => {
         position: { x: 0, y: offset || 0.05, z },
         rotation: { w: 1, x: 0, y: 0, z: 0 },
         color: { ...color, a: 1 },
-        scale: { x: 0.09, y: 0.09, z: 0.09 },
+        scale: { x: 0.03, y: 0.03, z: 0.03 },
         transformMode: selected ? "translate-z" : undefined,
         highlighted: false,
       },
@@ -815,18 +814,18 @@ const scalarInputItems = (id, frame, selected, range, value, offset, color) => {
 const rangeInputItems = (
   id,
   frame,
-  range,
+  rangevals,
   selected,
   valueRange,
   offset,
   color
 ) => {
   const zSphereTop =
-    ((valueRange[1] - range[0]) / (range[1] - range[0])) * 0.25 - 0.25 / 2;
+    ((valueRange[1] - rangevals[0]) / (rangevals[1] - rangevals[0])) * 0.1 - 0.05;
   const zSphereBottom =
-    ((valueRange[0] - range[0]) / (range[1] - range[0])) * 0.25 - 0.25 / 2;
+    ((valueRange[0] - rangevals[0]) / (rangevals[1] - rangevals[0])) * 0.1 - 0.05;
   const rangeHeight =
-    ((valueRange[1] - valueRange[0]) / (range[1] - range[0])) * 0.24;
+    ((valueRange[1] - valueRange[0]) / (rangevals[1] - rangevals[0])) * 0.09;
 
   return [
     {
@@ -840,7 +839,7 @@ const rangeInputItems = (
         rotation: { w: 1, x: 0, y: 0, z: 0 },
         color: { r: 100, g: 100, b: 100, a: 0.3 },
         scale: { x: 1, y: 1, z: 1 },
-        shapeParams: { height: 0.25, radius: 0.05 },
+        shapeParams: { height: 0.1, radius: 0.02 },
         highlighted: selected,
       },
     },
@@ -859,7 +858,7 @@ const rangeInputItems = (
         rotation: { w: 1, x: 0, y: 0, z: 0 },
         color: { ...color, a: 1 },
         scale: { x: 1, y: 1, z: 1 },
-        shapeParams: { height: rangeHeight, radius: 0.045 },
+        shapeParams: { height: rangeHeight, radius: 0.015 },
         highlighted: false,
       },
     },
@@ -873,7 +872,7 @@ const rangeInputItems = (
         position: { x: 0, y: offset || 0.05, z: zSphereBottom },
         rotation: { w: 1, x: 0, y: 0, z: 0 },
         color: { ...color, a: 1 },
-        scale: { x: 0.09, y: 0.09, z: 0.09 },
+        scale: { x: 0.03, y: 0.03, z: 0.03 },
         transformMode: selected ? "translate-z" : undefined,
         highlighted: false,
       },
@@ -888,7 +887,7 @@ const rangeInputItems = (
         position: { x: 0, y: offset || 0.05, z: zSphereTop },
         rotation: { w: 1, x: 0, y: 0, z: 0 },
         color: { ...color, a: 1 },
-        scale: { x: 0.09, y: 0.09, z: 0.09 },
+        scale: { x: 0.03, y: 0.03, z: 0.03 },
         transformMode: selected ? "translate-z" : undefined,
         highlighted: false,
       },

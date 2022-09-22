@@ -250,6 +250,7 @@ const store = (set, get) => ({
         localTransform,
         source,
         flag: shapeFlag,
+        joints: get().joints
       });
       if (newBp) {
         state.programData[bpId] = newBp;
