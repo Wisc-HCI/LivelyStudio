@@ -664,7 +664,9 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       ]).map((v) => v * RAD_2_DEG);
       break;
     case "JointMatch":
-      current.properties.scalar = clamp((10 * localTransform.position.z + 0.5) * (jointInfo.upperBound-jointInfo.lowerBound) + jointInfo.lowerBound,jointInfo.lowerBound,jointInfo.upperBound);
+      current.properties.scalar = 
+      clamp((10 * localTransform.position.z + 0.5) * (jointInfo.upperBound-jointInfo.lowerBound) + 
+      jointInfo.lowerBound,jointInfo.lowerBound,jointInfo.upperBound);
       break;
     case "PositionBounding":
       if (current.properties.editMode === 'translate') {
@@ -713,6 +715,9 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
     //   break;
     case "JointLiveliness":
       // Pill (scalarInputValue)
+      current.properties.scalar = 
+      clamp((10 * localTransform.position.z + 0.5) * (jointInfo.upperBound-jointInfo.lowerBound) + 
+      jointInfo.lowerBound,jointInfo.lowerBound,jointInfo.upperBound);
       break;
     case "PositionMirroring":
       current.properties.translation = [
