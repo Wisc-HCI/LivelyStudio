@@ -244,6 +244,7 @@ const store = (set, get) => ({
           shapeFlag = flag.replace("-", "");
         }
       });
+      
       const newBp = rs2bp({
         current: state.programData[bpId],
         worldTransform,
@@ -251,6 +252,7 @@ const store = (set, get) => ({
         source,
         flag: shapeFlag,
       });
+    
       if (newBp) {
         state.programData[bpId] = newBp;
       }
