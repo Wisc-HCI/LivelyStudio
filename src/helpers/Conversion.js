@@ -620,7 +620,7 @@ export function hexToRgb(hex) {
     : null;
 }
 
-export const rs2bp = ({ current, worldTransform, localTransform, source, joints, links }) => {
+export const rs2bp = ({ current, worldTransform, localTransform, source, joints, links, flag }) => {
  
   let jointInfo = null;
   if (current.properties.joint) {
@@ -664,7 +664,6 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       ]).map((v) => v * RAD_2_DEG);
       break;
     case "JointMatch":
-      // TODO: FIX
       current.properties.scalar = clamp((10 * localTransform.position.z + 0.5) * (jointInfo.upperBound-jointInfo.lowerBound) + jointInfo.lowerBound,jointInfo.lowerBound,jointInfo.upperBound);
       break;
     case "PositionBounding":
@@ -690,7 +689,6 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       }
       break;
     case "OrientationBounding":
-      
       current.properties.rotation = eulerFromQuaternion([
         worldTransform.quaternion.w,
         worldTransform.quaternion.x,
@@ -700,6 +698,8 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       break;
     case "JointBounding":
       // rangeInputItems
+      // Find the min/max values. Use those to determine the scalar and the delta
+      // const minVal = flag === 'top' ? min([])
       break;
     case "PositionLiveliness":
       current.properties.size = [
@@ -829,18 +829,21 @@ const scalarInputItems = (id, frame, selected, rangevals, value, offset, color) 
 const rangeInputItems = (
   id,
   frame,
-  rangevals,
   selected,
+  rangevals,
   valueRange,
   offset,
   color
 ) => {
+
   const zSphereTop =
     ((valueRange[1] - rangevals[0]) / (rangevals[1] - rangevals[0])) * 0.1 - 0.05;
   const zSphereBottom =
     ((valueRange[0] - rangevals[0]) / (rangevals[1] - rangevals[0])) * 0.1 - 0.05;
   const rangeHeight =
     ((valueRange[1] - valueRange[0]) / (rangevals[1] - rangevals[0])) * 0.09;
+
+    console.log('rangeInputItems',{rangevals,valueRange,zSphereBottom,zSphereTop})
 
   return [
     {
