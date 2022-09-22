@@ -444,18 +444,44 @@ export const bp2vis = (bp, joints) => {
       });
       break;
     case "OrientationBounding":
-      console.log("Orientationbounding" , conicalHullVertices(0.5, bp.properties.scalar));
+     
+      wxyz = quaternionFromEuler(
+        bp.properties.rotation.map((v) => v * DEG_2_RAD)
+      );
       feedbackItems.push({
         group: "hulls",
         id: bp.id,
         data: {
           name: bp.name,
           frame: bp.properties.link,
-          vertices: conicalHullVertices(0.5, bp.properties.scalar),
+          vertices: conicalHullVertices(0.25, bp.properties.scalar),
           color: { ...hexToRgb(behaviorPropertyColorBounding), a: 0.5 },
           highlighted: bp.selected,
+          
          
-         
+        },
+      });
+      feedbackItems.push({
+        group: "items",
+        id: bp.id,
+        data: {
+          name: bp.name,
+          frame: bp.properties.link + "-translation",
+          position: {
+            x: 0,
+            y: 0,
+            z: 0,
+          },
+          rotation: {
+            w: wxyz[0],
+            x: wxyz[1],
+            y: wxyz[2],
+            z: wxyz[3],
+          },
+          color: { ...hexToRgb(behaviorPropertyColorMirroring), a: 0.5 },
+          scale: { x: 0.1, y: 0.1, z: 0.1 },
+          transformMode: bp.selected ? "rotate" : undefined,
+          shape: "arrow",
         },
       });
       break;
