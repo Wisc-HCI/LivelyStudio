@@ -298,6 +298,7 @@ export const bp2vis = (bp, joints) => {
       wxyz = quaternionFromEuler(
         bp.properties.rotation.map((v) => v * DEG_2_RAD)
       );
+     
       feedbackItems.push({
         group: "items",
         id: bp.id+'-link1',
@@ -310,10 +311,10 @@ export const bp2vis = (bp, joints) => {
             z: 0,
           },
           rotation: {
-            w: 1,
-            x: 0,
-            y: 0,
-            z: 0,
+            w: wxyz[0],
+            x: wxyz[1],
+            y: wxyz[2],
+            z: wxyz[3],
           },
           color: { ...hexToRgb(behaviorPropertyColorMirroring), a: 0.3 },
           scale: { x: 0.1, y: 0.1, z: 0.1 },
@@ -326,7 +327,7 @@ export const bp2vis = (bp, joints) => {
         id: bp.id,
         data: {
           name: bp.name,
-          frame: bp.properties.link + "-translation",
+          frame: bp.properties.link1 + "-translation",
           position: {
             x: 0,
             y: 0,
@@ -620,7 +621,7 @@ export function hexToRgb(hex) {
 }
 
 export const rs2bp = ({ current, worldTransform, localTransform, source, joints, links }) => {
-  
+ 
   let jointInfo = null;
   if (current.properties.joint) {
     joints.some((j) => {
@@ -701,7 +702,11 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       // rangeInputItems
       break;
     case "PositionLiveliness":
-      // Looks like PositionBounding but only scale
+      current.properties.size = [
+        worldTransform.scale.x,
+        worldTransform.scale.y,
+        worldTransform.scale.z
+      ]
       break;
     // case "OrientationLiveliness":
     //   // Not Doing
@@ -710,10 +715,20 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       // Pill (scalarInputValue)
       break;
     case "PositionMirroring":
-      // Translate controls, should look like positionMatch
+      current.properties.translation = [
+        worldTransform.position.x,
+        worldTransform.position.y,
+        worldTransform.position.z,
+      ];
       break;
     case "OrientationMirroring":
-      // Rotate controls, should look like orientationMatch
+     // Rotate controls, should look like orientationMatch
+      current.properties.rotation = eulerFromQuaternion([
+        worldTransform.quaternion.w,
+        worldTransform.quaternion.x,
+        worldTransform.quaternion.y,
+        worldTransform.quaternion.z,
+      ]).map((v) => v * RAD_2_DEG);
       break;
     case "JointMirroring":
       // Pill control thing, should convert z value to the scalar
