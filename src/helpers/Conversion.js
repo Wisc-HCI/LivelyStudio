@@ -70,12 +70,12 @@ export const bp2lik = (bp) => {
     goal = {
       RotationRange: {
         rotation: [wxyz[1], wxyz[2], wxyz[3], wxyz[0]], // [x, y, z, w] ordering for quaternion
-        delta: bp.properties.scalar,
+        delta: toNumber(bp.properties.scalar),
       },
     };
   } else if (["JointBounding"].includes(objective.type)) {
     goal = {
-      ScalarRange: { value: bp.properties.scalar, delta: bp.properties.delta },
+      ScalarRange: { value: toNumber(bp.properties.scalar), delta: toNumber(bp.properties.delta) },
     };
   }
 
@@ -173,7 +173,7 @@ export const bp2vis = (bp, joints) => {
         jointInfo.childLink+'-translation',
         bp.selected,
         [jointInfo.lowerBound, jointInfo.upperBound],
-        bp.properties.scalar,
+        toNumber(bp.properties.scalar),
         0.2,
         hexToRgb(behaviorPropertyColorMatching)
       ).forEach((item) => feedbackItems.push(item));
@@ -240,7 +240,7 @@ export const bp2vis = (bp, joints) => {
         jointInfo.childLink,
         bp.selected,
         [0, (jointInfo.upperBound - jointInfo.lowerBound) / 2],
-        bp.properties.scalar,
+        toNumber(bp.properties.scalar),
         0.05,
         hexToRgb(behaviorPropertyColorLiveliness)
       ).forEach((item) => feedbackItems.push(item));
@@ -409,7 +409,7 @@ export const bp2vis = (bp, joints) => {
         jointInfos[1].childLink+'-translation',
         bp.selected,
         [0, jointInfo.upperBound-jointInfo.lowerBound],
-        bp.properties.scalar,
+        toNumber(bp.properties.scalar),
         0.2,
         hexToRgb(behaviorPropertyColorMirroring)
       ).forEach((item) => feedbackItems.push(item));
@@ -454,7 +454,7 @@ export const bp2vis = (bp, joints) => {
         data: {
           name: bp.name,
           frame: bp.properties.link,
-          vertices: conicalHullVertices(0.25, bp.properties.scalar),
+          vertices: conicalHullVertices(0.25, toNumber(bp.properties.scalar)),
           color: { ...hexToRgb(behaviorPropertyColorBounding), a: 0.5 },
           highlighted: bp.selected,
           
@@ -500,7 +500,7 @@ export const bp2vis = (bp, joints) => {
         jointInfo.childLink+'-translation',
         bp.selected,
         [jointInfo.lowerBound, jointInfo.upperBound],
-        [bp.properties.scalar-bp.properties.delta,bp.properties.scalar+bp.properties.delta],
+        [toNumber(bp.properties.scalar)-toNumber(bp.properties.delta),toNumber(bp.properties.scalar)+toNumber(bp.properties.delta)],
         0.2,
         hexToRgb(behaviorPropertyColorBounding)
       ).forEach((item) => feedbackItems.push(item));
@@ -595,7 +595,7 @@ export const bp2vis = (bp, joints) => {
             z: 0,
           },
           color: { ...hexToRgb(behaviorPropertyColorMatching), a: 0.3 },
-          scale: { x: bp.properties.scalar, y: bp.properties.scalar, z: bp.properties.scalar },
+          scale: { x: toNumber(bp.properties.scalar), y: toNumber(bp.properties.scalar), z: toNumber(bp.properties.scalar) },
           highlighted: bp.selected,
           shape: "sphere",
         },
@@ -730,8 +730,8 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       const newVal = clamp((10 * localTransform.position.z + 0.5) * (jointInfo.upperBound-jointInfo.lowerBound) + jointInfo.lowerBound,jointInfo.lowerBound,jointInfo.upperBound);
       
       // Determine the current values
-      const currentMinVal = current.properties.scalar-current.properties.delta;
-      const currentMaxVal = current.properties.scalar+current.properties.delta;
+      const currentMinVal = toNumber(current.properties.scalar)-toNumber(current.properties.delta);
+      const currentMaxVal = toNumber(current.properties.scalar)+toNumber(current.properties.delta);
 
       const newScalar = 0;
       const newDelta = 0;

@@ -368,7 +368,7 @@ const jointBoundingBehaviorData = {
       default: '',
     },
     scalar: DEFAULT_SCALAR,
-    delta: {...DEFAULT_SCALAR,name:'Delta'}
+    delta: {...DEFAULT_SCALAR,name:'Delta',min:0}
   }
 }
 
