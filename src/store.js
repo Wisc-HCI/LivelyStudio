@@ -10,6 +10,7 @@ import { shape2item, state2Lines, state2tfs } from "./helpers/InfoParsing";
 import shallow from "zustand/shallow";
 import { invoke } from "@tauri-apps/api/tauri";
 import { listen } from "@tauri-apps/api/event";
+import { clamp } from "lodash";
 import {
   allBehaviorProperties,
   behaviorPropertyLookup,
@@ -73,8 +74,8 @@ const store = (set, get) => ({
         clearTimeout(state.pendingTransition);
       }
       console.log(`initiating transition ${fromNode} -> ${toNode}`);
-      for (const [key,value] of Object.entries(state.programData)){
-        if (allBehaviorProperties.includes(value.type) && value.selected){
+      for (const [key, value] of Object.entries(state.programData)) {
+        if (allBehaviorProperties.includes(value.type) && value.selected) {
           state.programData[key].selected = false;
         }
       }
@@ -155,13 +156,22 @@ const store = (set, get) => ({
       state.tfs = tfs;
       state.proximityLines = proximityLines;
     }),
-  setBlockSelection: (id,id2) =>
+  setJointScalar: (bpID, value) => set((state) => {
+
+    if (state.programData[bpID]) {
+      state.programData[bpID].properties.scalar = value;
+
+
+
+    }
+  }),
+  setBlockSelection: (id, id2) =>
     set((state) => {
-     
+
       if (state.programData[id] && state.programData[id2]) {
         state.programData[id].selected = true;
         state.programData[id2].selected = false;
-       
+
       }
     }),
   setDefault: () =>
@@ -250,7 +260,7 @@ const store = (set, get) => ({
           shapeFlag = flag.replace("-", "");
         }
       });
-      
+
       const newBp = rs2bp({
         current: state.programData[bpId],
         worldTransform,
@@ -259,7 +269,7 @@ const store = (set, get) => ({
         flag: shapeFlag,
         joints: get().joints
       });
-    
+
       if (newBp) {
         state.programData[bpId] = newBp;
       }
@@ -272,6 +282,7 @@ const useStore = create(subscribeWithSelector(immerStore));
 
 const setTfs = useStore.getState().setTfs;
 const setBlockSelection = useStore.getState().setBlockSelection;
+const setJointScalar = useStore.getState().setJointScalar;
 
 const unlisten = await listen("solution-calculated", (event) => {
   if (event.payload) {
@@ -283,9 +294,9 @@ const unlisten = await listen("solution-calculated", (event) => {
 useStore.subscribe(
   (state) => {
     let bps = [];
-    state.programData[state.currentState]?.properties?.children?.forEach(child=>{
+    state.programData[state.currentState]?.properties?.children?.forEach(child => {
       if (state.programData[child].type === 'groupType') {
-        state.programData[child]?.properties?.children?.forEach(childChild=>{
+        state.programData[child]?.properties?.children?.forEach(childChild => {
           bps.push(state.programData[childChild])
         })
       } else {
@@ -483,49 +494,83 @@ useStore.subscribe(
   ({ links, joints }) => useStore.getState().updateProgramSpec(links, joints),
   { equalityFn: shallow }
 );
+// Applying joint scale to each joints when switching 
+useStore.subscribe((state) => ({
+  states: state.programData,
+  joints: state.joints
+}), (states, joints) => {
 
+  for (const [key, item] of Object.entries(states.states)) {
+
+    if (allBehaviorProperties.includes(item.type)) {
+      if (item.properties.joint) {
+
+
+        for (let i = 0; i < joints.joints.length; i++) {
+
+          if (joints.joints[i].name === item.properties.joint) {
+
+            const upperBound = joints.joints[i].upperBound;
+            const lowerBound = joints.joints[i].lowerBound;
+            const value = clamp(item.properties.scalar, lowerBound, upperBound);
+            console.log(item.id, value);
+            setJointScalar(item.id, value);
+            break;
+          }
+        }
+      }
+    }
+
+    //item.properties
+  }
+
+
+  // console.log("programData : " , states);
+  // console.log("joints : ", joints);
+
+}, { equalityFn: shallow });
 // Limit only one behavior property being selected
 useStore.subscribe(
 
   (state) => mapValues(
-    pickBy(state.programData,(d)=>allBehaviorProperties.includes(d.type)),
-    d=>d.selected
+    pickBy(state.programData, (d) => allBehaviorProperties.includes(d.type)),
+    d => d.selected
   ),
-  (newSelected,pastSelected) => {
-    
+  (newSelected, pastSelected) => {
 
-    if (!(_.isEqual(newSelected,pastSelected))){
-    
-      if (Object.keys(newSelected).length === Object.keys(pastSelected).length){
-       
+
+    if (!(_.isEqual(newSelected, pastSelected))) {
+
+      if (Object.keys(newSelected).length === Object.keys(pastSelected).length) {
+
         let setFalseID = "";
         let setTrueID = "";
         for (const [key, selected] of Object.entries(newSelected)) {
-         
-          if (!pastSelected[key] && selected === true){
-            
+
+          if (!pastSelected[key] && selected === true) {
+
             setTrueID = key;
-            
+
           }
-          if (pastSelected[key] === true && selected === true){
-            
-           setFalseID = key;
-            
+          if (pastSelected[key] === true && selected === true) {
+
+            setFalseID = key;
+
           }
 
-         
+
 
         }
-      
 
-        if (setFalseID !== "" && setTrueID!== ""){
-          setBlockSelection(setTrueID,setFalseID);
+
+        if (setFalseID !== "" && setTrueID !== "") {
+          setBlockSelection(setTrueID, setFalseID);
         }
 
       }
 
-      
-      
+
+
     }
 
 
