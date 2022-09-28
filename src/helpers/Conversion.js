@@ -49,7 +49,7 @@ export const bp2lik = (bp) => {
   } else if (objective.type === "PositionLiveliness") {
     goal = { Size: bp.properties.size };
   } else if (objective.type === "OrientationLiveliness") {
-    bp.properties.size.map((v) => v * DEG_2_RAD);
+    goal = { Size: bp.properties.size.map((v) => v * DEG_2_RAD)};
   } else if (["PositionBounding"].includes(objective.type)) {
     const wxyz = quaternionFromEuler(
       bp.properties.rotation.map((v) => v * DEG_2_RAD)
@@ -733,8 +733,8 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       const currentMinVal = toNumber(current.properties.scalar)-toNumber(current.properties.delta);
       const currentMaxVal = toNumber(current.properties.scalar)+toNumber(current.properties.delta);
 
-      const newScalar = 0;
-      const newDelta = 0;
+      let newScalar = 0;
+      let newDelta = 0;
       
       // Handle possible cases depending on whether the sphere is the top or bottom, and whether they dragged it below/above the other sphere.
       if (flag === 'top' && newVal > currentMinVal) {
@@ -827,10 +827,10 @@ const conicalHullVertices = (length, angle) => {
 const conicalHullVerticesVariable = (length, size) => {
   // const origin = new Quaternion();
   const eulers = [
-    new Euler(size.x || 0.001, 0, 0),
-    new Euler(-size.x || -0.001, 0, 0),
-    new Euler(0, size.y || 0.001, 0),
-    new Euler(0, -size.y || 0.001, 0),
+    new Euler(size.x * DEG_2_RAD || 0.001, 0, 0),
+    new Euler(-size.x * DEG_2_RAD || -0.001, 0, 0),
+    new Euler(0, size.y * DEG_2_RAD || 0.001, 0),
+    new Euler(0, -size.y * DEG_2_RAD || 0.001, 0),
   ];
   const qs = eulers.map((e) => new Quaternion().setFromEuler(e));
   const centralVec = new Vector3(0, 0, length);

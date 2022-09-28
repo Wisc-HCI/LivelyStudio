@@ -117,7 +117,6 @@ impl LivelyHandler {
           self.last_solved_state.clone(),
           None,
           None,
-          None,
           None
         );
         solver.compute_average_distance_table();
