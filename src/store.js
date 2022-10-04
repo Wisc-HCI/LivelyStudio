@@ -284,7 +284,7 @@ const setTfs = useStore.getState().setTfs;
 const setBlockSelection = useStore.getState().setBlockSelection;
 const setJointScalar = useStore.getState().setJointScalar;
 
-const unlisten = await listen("solution-calculated", (event) => {
+listen("solution-calculated", (event) => {
   if (event.payload) {
     setTfs(event.payload);
   }
