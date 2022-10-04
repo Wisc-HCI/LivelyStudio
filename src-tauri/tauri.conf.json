@@ -7,7 +7,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "Puppeteer",
+    "productName": "Lively Studio",
     "version": "0.1.0"
   },
   "tauri": {
@@ -58,7 +58,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "Puppeteer",
+        "title": "Lively Studio",
         "width": 800,
         "fileDropEnabled":false
       }

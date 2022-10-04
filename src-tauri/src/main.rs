@@ -3,12 +3,12 @@
   windows_subsystem = "windows"
 )]
 // mod plugin_lively_tk;
-use lively_tk::lively_tk::Solver;
-use lively_tk::objectives::objective::*;
-use lively_tk::utils::goals::*;
-use lively_tk::utils::info::*;
-use lively_tk::utils::shapes::*;
-use lively_tk::utils::state::State;
+use lively::lively::Solver;
+use lively::objectives::objective::*;
+use lively::utils::goals::*;
+use lively::utils::info::*;
+use lively::utils::shapes::*;
+use lively::utils::state::State;
 use serde::{Deserialize, Serialize};
 use std::{
   collections::HashMap,

@@ -771,18 +771,18 @@ export const rs2bp = ({ current, worldTransform, localTransform, source, joints,
       break;
     case "PositionMirroring":
       current.properties.translation = [
-        worldTransform.position.x,
-        worldTransform.position.y,
-        worldTransform.position.z,
+        localTransform.position.x,
+        localTransform.position.y,
+        localTransform.position.z,
       ];
       break;
     case "OrientationMirroring":
      // Rotate controls, should look like orientationMatch
       current.properties.rotation = eulerFromQuaternion([
-        worldTransform.quaternion.w,
-        worldTransform.quaternion.x,
-        worldTransform.quaternion.y,
-        worldTransform.quaternion.z,
+        localTransform.quaternion.w,
+        localTransform.quaternion.x,
+        localTransform.quaternion.y,
+        localTransform.quaternion.z,
       ]).map((v) => v * RAD_2_DEG);
       break;
     case "JointMirroring":

@@ -1,10 +1,10 @@
 //Color constants
-export const behaviorPropertyColorBase = "#fc6603"
-export const behaviorPropertyColorBounding = "#fcd703"
-export const behaviorPropertyColorMatching = "#5afc03"
-export const behaviorPropertyColorMirroring = "#03fcad"
-export const behaviorPropertyColorForces = "#a35bde"
-export const behaviorPropertyColorLiveliness = "#ff0055"
+export const behaviorPropertyColorBase = "#FEA982"
+export const behaviorPropertyColorBounding = "#FDEB80"
+export const behaviorPropertyColorMatching = "#ACFD80"
+export const behaviorPropertyColorMirroring = "#80FDD6"
+export const behaviorPropertyColorForces = "#D0ACEE"
+export const behaviorPropertyColorLiveliness = "#FF7EA9"
 
 export const STATE_TYPES = ['stateType','powerOnType','powerOffType'];
 
