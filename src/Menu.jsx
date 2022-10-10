@@ -38,6 +38,7 @@ export const Menu = ({ mode, setMode }) => {
               onSelect={(v) => setUrdf(DefaultRobots[v])}
               options={[
                 { value: "ur3", label: "UR3" },
+                { value: "ur3robotiq", label: "UR3+Robotiq" },
                 { value: "panda", label: "Panda" },
                 { value: "pepper", label: "Pepper" },
                 { value: "nao", label: "Nao" },
