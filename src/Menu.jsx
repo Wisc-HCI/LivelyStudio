@@ -39,6 +39,7 @@ export const Menu = ({ mode, setMode }) => {
               options={[
                 { value: "ur3", label: "UR3" },
                 { value: "ur3robotiq", label: "UR3+Robotiq" },
+                { value: "ur5robotiq", label: "UR5+Robotiq" },
                 { value: "panda", label: "Panda" },
                 { value: "pepper", label: "Pepper" },
                 { value: "nao", label: "Nao" },

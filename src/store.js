@@ -3,7 +3,7 @@ import create from "zustand";
 import { SceneSlice } from "robot-scene";
 import { ProgrammingSlice, DATA_TYPES, SIMPLE_PROPERTY_TYPES } from "simple-vp";
 import { programSpec } from "./programSpec";
-import { subscribeWithSelector, persist } from "zustand/middleware";
+import { subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { DEFAULTS } from "./defaults";
 import { shape2item, state2Lines, state2tfs } from "./helpers/InfoParsing";
@@ -13,7 +13,6 @@ import { listen } from "@tauri-apps/api/event";
 import { clamp } from "lodash";
 import {
   allBehaviorProperties,
-  behaviorPropertyLookup,
   STATE_TYPES,
 } from "./Constants";
 import _, {
@@ -25,26 +24,9 @@ import _, {
   last,
   cloneDeep,
   fromPairs,
-  findKey,
-  set,
+  findKey
 } from "lodash";
 import { bp2lik, bp2vis, rs2bp } from "./helpers/Conversion";
-import { indexOf } from "./helpers/Comparison";
-import { Vector3 } from "three";
-
-// import { Timer } from "./Timer";
-// import init from "puppeteer-rust";
-
-// const immer = (config) => (set, get, api) =>
-//   config(
-//     (partial, replace) => {
-//       const nextState =
-//         typeof partial === "function" ? produce(partial) : partial;
-//       return set(nextState, replace);
-//     },
-//     get,
-//     api
-//   );
 
 const DEFAULT_OBJECTIVE = {
   type: "SmoothnessMacro",
@@ -79,7 +61,11 @@ const store = (set, get) => ({
           state.programData[key].selected = false;
         }
       }
-      state.programData[fromNode].selected = false;
+
+      if (state.programData[fromNode]) {
+        state.programData[fromNode].selected = false;
+      }
+      
       state.programData[toNode].selected = true;
 
       state.currentState = toNode;
@@ -147,6 +133,15 @@ const store = (set, get) => ({
     },
   },
   ...ProgrammingSlice(set, get), // default programming slice for simple-vp,
+  tabs: [
+    {
+      title:'Main',
+      id: 'default',
+      visible: true,
+      blocks: ["powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a"]
+    }
+  ],
+  activeTab:'default',
   programSpec,
   setTfs: (robotstate) =>
     set((state) => {
@@ -621,7 +616,7 @@ useStore.subscribe(
     // objectives: state.objectives,
   }),
   (newValues) => {
-    // console.log('new goals/weights')
+    console.log('new goals/weights',newValues.goals)
     if (newValues.goals && newValues.weights) {
       useStore.setState({
         goals: newValues.goals, //will say nextGoals  CHANGED
