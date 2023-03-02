@@ -33,7 +33,7 @@ struct LivelyHandler {
   pub weights: HashMap<String,f64>,
   pub target_weights: HashMap<String,f64>,
   pub robot_info: Option<RobotInfo>,
-  pub root_bounds: Option<Vec<(f64, f64)>>,
+  pub root_bounds: Option<Vec<ScalarRange>>,
   pub shapes: Vec<Shape>,
   pub initial_time: Instant,
   pub shape_updates: Vec<ShapeUpdate>,
@@ -145,7 +145,7 @@ impl LivelyHandler {
     self.last_solved_state = None;
     match root_bounds {
       Some(bounds)=>{
-        self.root_bounds = Some(bounds);
+        self.root_bounds = Some(bounds.iter().map(|pair| ScalarRange::new(pair.0,pair.1)).collect());
       },
       None => {}
     }
@@ -196,7 +196,7 @@ impl LivelyHandler {
   }
 
   pub fn update_root_bounds(&mut self, root_bounds: Vec<(f64, f64)>) {
-    self.root_bounds = Some(root_bounds);
+    self.root_bounds = Some(root_bounds.iter().map(|pair| ScalarRange::new(pair.0,pair.1)).collect());
     // println!("Updating root bounds");
     self.update_solver();
     return;
