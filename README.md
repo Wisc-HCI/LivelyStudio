@@ -1,6 +1,10 @@
 # LivelyStudio
 A configuration and design interface for the Lively Framework
 
+## Using LivelyStudio
+
+If you just want to try out the system, you can find downloads for Windows, macOS, and Ubuntu in the [Releases section](https://github.com/Wisc-HCI/LivelyStudio/releases)
+
 ## Running:
 
 To run, follow these steps:
