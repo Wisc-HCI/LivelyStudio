@@ -5,7 +5,7 @@ import useStore from "./store";
 import { FiThumbsUp, FiSettings, FiGrid, FiEye, FiCodepen } from "react-icons/fi";
 import { DEFAULTS } from "./defaults";
 import DefaultRobots from "./DefaultRobots";
-import shallow from "zustand/shallow";
+import { shallow } from "zustand/shallow";
 // import { StatusInfo, StatusGood, StatusWarning, FormDown } from 'grommet-icons';
 
 export const Menu = ({ mode, setMode }) => {

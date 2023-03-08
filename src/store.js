@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 // import produce from "immer";
 import { SceneSlice } from "robot-scene";
 import { ProgrammingSlice, DATA_TYPES, SIMPLE_PROPERTY_TYPES } from "simple-vp";

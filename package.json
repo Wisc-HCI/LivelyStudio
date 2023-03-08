@@ -1,7 +1,7 @@
 {
   "name": "puppeteer",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "start": "tauri dev",
@@ -30,11 +30,11 @@
     "react-icons": "^4.4.0",
     "react-reflex": "^4.0.9",
     "robot-scene": "github:Wisc-HCI/robot-scene#v0.9.9",
-    "simple-vp": "github:Wisc-HCI/simple-vp#v0.8.9",
+    "simple-vp": "github:Wisc-HCI/simple-vp#v0.8.10",
     "styled-components": "^5.3.5",
     "three": "^0.142.0",
     "three-stdlib": "^2.12.1",
-    "zustand": "4.1.1"
+    "zustand": "^4.3.6"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.2.3",
