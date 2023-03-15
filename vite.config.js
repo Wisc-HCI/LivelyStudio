@@ -10,6 +10,7 @@ export default defineConfig({
     react(),
     svgr(),
   ],
+  
   assetsInclude: ["**/*.gltf", "**/*.glb"],
   // worker: {
   //   plugins: [comlink()],

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Divider, TextField, Badge, IconButton, Button, Menu, MenuItem } from "@mui/material";
 import useStore from "../store";
-import shallow from "zustand/shallow";
+import { shallow } from "zustand/shallow";
 import { pickBy } from "lodash";
 import { DATA_TYPES } from "simple-vp";
 import { IoArrowRedo } from "react-icons/io5";

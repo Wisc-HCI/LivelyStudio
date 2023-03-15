@@ -7,7 +7,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "Lively Studio",
+    "productName": "LivelyStudio",
     "version": "0.1.0"
   },
   "tauri": {
@@ -58,7 +58,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "Lively Studio",
+        "title": "LivelyStudio",
         "width": 800,
         "fileDropEnabled":false
       }
