@@ -5,6 +5,8 @@ A configuration and design interface for the Lively Framework
 
 If you just want to try out the system, you can find downloads for Windows, macOS, and Ubuntu in the [Releases section](https://github.com/Wisc-HCI/LivelyStudio/releases)
 
+_NOTE_: There is currently an issue with app signing for macOS, which makes it difficult to run on computers. While we work on that, feel free to build the app locally to execute it!
+
 ## Running:
 
 To run, follow these steps:
