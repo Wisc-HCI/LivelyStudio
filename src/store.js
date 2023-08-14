@@ -7,7 +7,7 @@ import { subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { DEFAULTS } from "./defaults";
 import { shape2item, state2Lines, state2tfs } from "./helpers/InfoParsing";
-import shallow from "zustand/shallow";
+import { shallow } from "zustand/shallow";
 import { invoke } from "@tauri-apps/api/tauri";
 import { listen } from "@tauri-apps/api/event";
 import { clamp } from "lodash";

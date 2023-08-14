@@ -56,7 +56,7 @@ export const bp2lik = (bp) => {
     );
     goal = {
       Ellipse: {
-        pose: {
+        transform: {
           translation: bp.properties.translation,
           rotation: [wxyz[1], wxyz[2], wxyz[3], wxyz[0]],
         },

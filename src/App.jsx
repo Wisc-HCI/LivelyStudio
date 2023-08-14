@@ -14,7 +14,7 @@ import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
 import MeshLookupTable from "./Meshes";
 import { DEFAULTS } from "./defaults";
 import { Backdrop, CircularProgress } from "@mui/material";
-import shallow from "zustand/shallow";
+import { shallow } from "zustand/shallow";
 import "react-reflex/styles.css";
 import 'reactflow/dist/style.css';
 import './App.css';
