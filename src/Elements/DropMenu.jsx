@@ -3,7 +3,7 @@ import { Divider, TextField, Badge, IconButton, Button, Menu, MenuItem } from "@
 import useStore from "../store";
 import { shallow } from "zustand/shallow";
 import { pickBy } from "lodash";
-import { DATA_TYPES } from "simple-vp";
+import { DATA_TYPES } from "open-vp";
 import { IoArrowRedo } from "react-icons/io5";
 import { styled } from '@mui/material/styles';
 

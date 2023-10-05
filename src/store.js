@@ -1,7 +1,7 @@
 import { create } from "zustand";
 // import produce from "immer";
 import { SceneSlice } from "robot-scene";
-import { ProgrammingSlice, DATA_TYPES, SIMPLE_PROPERTY_TYPES } from "simple-vp";
+import { ProgrammingSlice, DATA_TYPES, SIMPLE_PROPERTY_TYPES } from "open-vp";
 import { programSpec } from "./programSpec";
 import { subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -139,6 +139,12 @@ const store = (set, get) => ({
       id: 'default',
       visible: true,
       blocks: ["powerOnType-2c880f27-1777-48b8-852e-861cc5c2ed0a"]
+    },
+    {
+      title:'Scratch',
+      id: 'scratch',
+      visible: true,
+      blocks: []
     }
   ],
   activeTab:'default',

@@ -30,7 +30,7 @@
     "react-icons": "^4.4.0",
     "react-reflex": "^4.0.9",
     "robot-scene": "github:Wisc-HCI/robot-scene#v0.9.9",
-    "simple-vp": "github:Wisc-HCI/simple-vp#v0.8.11",
+    "open-vp": "github:Wisc-HCI/open-vp#v0.8.14",
     "styled-components": "^5.3.5",
     "three": "^0.142.0",
     "three-stdlib": "^2.12.1",

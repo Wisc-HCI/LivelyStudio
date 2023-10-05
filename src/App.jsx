@@ -1,7 +1,7 @@
 import { Grommet, Grid, Box, Layer } from "grommet";
 import { getTheme } from "./theme";
 import { Scene } from "robot-scene";
-import { Environment } from "simple-vp";
+import { Environment } from "open-vp";
 import useStore from "./store";
 import useMeasure from "react-use-measure";
 import { useState } from "react";
